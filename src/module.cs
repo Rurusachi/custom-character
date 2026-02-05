@@ -1,0 +1,4246 @@
+﻿// SPDX-License-Identifier: MIT
+
+using Fahrenheit.Core.FFX;
+using System;
+using System.Numerics;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+using System.Runtime.Intrinsics;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Xml.Linq;
+using TerraFX.Interop.Windows;
+using static Fahrenheit.Core.FFX.LpAbilityMapEngine;
+using static Fahrenheit.Mods.CustomCharacter.CustomCharacterModule;
+
+namespace Fahrenheit.Mods.CustomCharacter;
+
+[FhLoad(FhGameId.FFX)]
+public unsafe class CustomCharacterModule : FhModule {
+    /* [fkelava 27/6/25 00:30]
+     * A module's constructor must be parameterless. Use it to initialize local fields and objects.
+     * Fahrenheit initialization is performed in `init` instead. Read that method's XML documentation comment for more details.
+     */
+    const string game = "FFX.exe";
+    public CustomCharacterModule() { }
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate PCommand* MsGetRomItem(uint item_id, int* ref_data_end);
+    public const nint __addr_MsGetRomItem = 0x390A40;
+    private MsGetRomItem _MsGetRomItem; // => fhutil.get_fptr<MsGetRomItem>(__addr_MsGetRomItem);
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate nint MsGetExcelData(int req_elem_idx, nint excel_data_ptr, int* ref_data_end);
+    public const nint __addr_MsGetExcelData = 0x3AB890;
+    private MsGetExcelData _MsGetExcelData; // => fhutil.get_fptr<MsGetExcelData>(__addr_MsGetExcelData);
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate uint MsGetSaveItemNum(uint param_1);
+    public const nint __addr_MsGetSaveItemNum = 0x390500;
+    private MsGetSaveItemNum _MsGetSaveItemNum; // => fhutil.get_fptr<MsGetSaveItemNum>(__addr_MsGetSaveItemNum);
+
+
+    [StructLayout(LayoutKind.Explicit, Pack = 4, Size = 0x10)]
+    public struct ExcelBlock_sphere {
+        [FieldOffset(0x0)] public int desc;
+        [FieldOffset(0x4)] public int desc_hira;
+        [FieldOffset(0x8)] public int sphere_type;
+        [FieldOffset(0xC)] public int _0xc;
+    }
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate uint FUN_00a59710(nint param_1, ExcelBlock_sphere* param_2);
+    public const nint __addr_FUN_00a59710 = 0x659710;
+    private FUN_00a59710 _FUN_00a59710; // => fhutil.get_fptr<FUN_00a59710>(__addr_FUN_00a59710);
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate uint FUN_00a59760(ushort param_1, nint param_2, ExcelBlock_sphere* param_3);
+    public const nint __addr_FUN_00a59760 = 0x659760;
+    private FUN_00a59760 _FUN_00a59760; // => fhutil.get_fptr<FUN_00a59760>(__addr_FUN_00a59760);
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate uint FUN_00a49440(SphereGridNode* node, ExcelBlock_sphere* sphere);
+    public const nint __addr_FUN_00a49440 = 0x649440;
+    private FUN_00a49440 _FUN_00a49440; // => fhutil.get_fptr<FUN_00a49440>(__addr_FUN_00a49440);
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate byte MsGetSavePlyJoined(byte idx);
+    public const nint __addr_MsGetSavePlyJoined = 0x385460;
+    private MsGetSavePlyJoined _MsGetSavePlyJoined; // => fhutil.get_fptr<MsGetSavePlyJoined>(__addr_MsGetSavePlyJoined);
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void FUN_00a5a800();
+    public static int __addr_FUN_00a5a800 = 0x65a800;
+    private FUN_00a5a800 _FUN_00a5a800; // => fhutil.get_fptr<FUN_00a5a800>(__addr_FUN_00a5a800);
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void SndSepPlaySimple(uint param_1);
+    public const nint __addr_SndSepPlaySimple = 0x486DE0;
+    private SndSepPlaySimple _SndSepPlaySimple; // => fhutil.get_fptr<SndSepPlaySimple>(__addr_SndSepPlaySimple);
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void pppCreateHeap(nint param_1, nint param_2, int param_3);
+    public const nint __addr_pppCreateHeap = 0x32C570;
+    private pppCreateHeap _pppCreateHeap; // => fhutil.get_fptr<pppCreateHeap>(__addr_pppCreateHeap);
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void FUN_00a5bad0(nint param_1, int param_2, float param_3, float param_4,
+            float param_5, float param_6, float param_7, float param_8, float param_9,
+            float param_10, float param_11);
+    public const nint __addr_FUN_00a5bad0 = 0x65BAD0;
+    private FUN_00a5bad0 _FUN_00a5bad0; // => fhutil.get_fptr<FUN_00a5bad0>(__addr_FUN_00a5bad0);
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void FFXVu0InterVectorXYZ(Vector4* dest, Vector4* end, Vector4* start, float progress);
+    public const nint __addr_FFXVu0InterVectorXYZ = 0x22FF20;
+    private FFXVu0InterVectorXYZ _FFXVu0InterVectorXYZ; // => fhutil.get_fptr<FFXVu0InterVectorXYZ>(__addr_FFXVu0InterVectorXYZ);
+
+
+    [StructLayout(LayoutKind.Explicit, Pack = 1, Size = 0x2)]
+    public unsafe struct SaveSphereGridNode {
+        [FieldOffset(0x0)] public byte node_type;
+        [FieldOffset(0x1)] public byte activated_by;
+
+    }
+    [InlineArray(1024)]
+    public struct SaveSphereGridNodeArray {
+        private SaveSphereGridNode _data;
+    }
+
+    [StructLayout(LayoutKind.Explicit, Pack = 4, Size = 0x1328)]
+    public struct SaveSphereGrid {
+        [FieldOffset(0x000)] public       SaveSphereGridNodeArray nodes;
+        [FieldOffset(0xA00)] public fixed byte                    links_activated_by[1024];
+        [FieldOffset(0xF00)] public fixed ushort                  party_selected_node_idx[7];
+        [FieldOffset(0xF18)] public       SphereGridTilt          tilt_level;
+        [FieldOffset(0xF19)] public       SphereGridZoom          zoom_level;
+    }
+
+    [StructLayout(LayoutKind.Explicit, Pack = 1, Size = 0x18)]
+    public struct ExcelBlock_panel {
+        [FieldOffset(0x10)] public ushort sphere_effect;
+        [FieldOffset(0x12)] public ushort ability_id;
+        [FieldOffset(0x14)] public byte amount;
+
+        [FieldOffset(0x16)] public byte icon_id;
+    }
+
+    [InlineArray(6)]
+    public struct AbilityInlineArray {
+        private ushort _data;
+    }
+
+    public struct MsChrAbilityMap {
+        public int  hp;
+        public int  mp;
+        public byte strength;
+        public byte defense;
+        public byte magic;
+        public byte magic_defense;
+        public byte agility;
+        public byte luck;
+        public byte evasion;
+        public byte accuracy;
+        public AbilityInlineArray abilities;
+    }
+
+    
+
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    public delegate SaveSphereGrid* MsGetSaveAbilityMap();
+    public static int __addr_MsGetSaveAbilityMap = 0x385000;
+    private MsGetSaveAbilityMap _MsGetSaveAbilityMap; // => fhutil.get_fptr<MsGetSaveAbilityMap>(__addr_MsGetSaveAbilityMap);
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void* user_malloc(nint param_1);
+    public const nint __addr_user_malloc = 0x2871C0;
+    private user_malloc _user_malloc; // => fhutil.get_fptr<user_malloc>(__addr_user_malloc);
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void* FUN_00642a80(int* param_1, float* param_2);
+    public const nint __addr_FUN_00642a80 = 0x242A80;
+    private FUN_00642a80 _FUN_00642a80; // => fhutil.get_fptr<FUN_00642a80>(__addr_FUN_00642a80);
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void graphicDrawUIAbmapElement(float* param_1, char* tex_name, uint param_3);
+    public const nint __addr_graphicDrawUIAbmapElement = 0x23EAE0;
+    private graphicDrawUIAbmapElement _graphicDrawUIAbmapElement; // => fhutil.get_fptr<graphicDrawUIAbmapElement>(__addr_graphicDrawUIAbmapElement);
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void* FUN_008b70e0(nint param_1, float* param_2, int* param_3);
+    public const nint __addr_FUN_008b70e0 = 0x4B70E0;
+    private FUN_008b70e0 _FUN_008b70e0; // => fhutil.get_fptr<FUN_008b70e0>(__addr_FUN_008b70e0);
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate nint FUN_008e8fb0(nint param_1, uint param_2, byte* text, int param_4, int param_5, byte param_6,
+            byte param_7, byte param_8, byte param_9, byte param_10, byte param_11, int param_12);
+    public const nint __addr_FUN_008e8fb0 = 0x4E8FB0;
+    private FUN_008e8fb0 _FUN_008e8fb0; // => fhutil.get_fptr<FUN_008e8fb0>(__addr_FUN_008e8fb0);
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void* user_free(nint param_1);
+    public const nint __addr_user_free = 0x2FB990;
+    private user_free _user_free; // => fhutil.get_fptr<user_free>(__addr_user_free);
+
+
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void cdc_FFXVu0MulMatrix(Matrix4x4* dest, Matrix4x4* l, Matrix4x4* r);
+    public const nint __addr_cdc_FFXVu0MulMatrix = 0x305AA0;
+    private cdc_FFXVu0MulMatrix _cdc_FFXVu0MulMatrix; // => fhutil.get_fptr<cdc_FFXVu0MulMatrix>(__addr_cdc_FFXVu0MulMatrix);
+
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate int FUN_00a657c0(int param_1, temp_FUN_00a4c8d0_struct* param_2, int param_3, uint* param_4);
+    public const nint __addr_FUN_00a657c0 = 0x6657C0;
+    private FUN_00a657c0 _FUN_00a657c0; // => fhutil.get_fptr<FUN_00a657c0>(__addr_FUN_00a657c0);
+
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    public delegate FhLangId TOGetFFXLang();
+    public const nint __addr_TOGetFFXLang = 0x4AC2A0;
+    private TOGetFFXLang _TOGetFFXLang; // => fhutil.get_fptr<TOGetFFXLang>(__addr_TOGetFFXLang);
+
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    public delegate void FUN_00a572e0();
+    public const nint __addr_FUN_00a572e0 = 0x6572E0;
+    private FUN_00a572e0 _FUN_00a572e0; // => fhutil.get_fptr<FUN_00a572e0>(__addr_FUN_00a572e0);
+
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    public delegate void FUN_00a57620();
+    public const nint __addr_FUN_00a57620 = 0x657620;
+    private FUN_00a57620 _FUN_00a57620; // => fhutil.get_fptr<FUN_00a57620>(__addr_FUN_00a57620);
+
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    public delegate void FUN_00a45570();
+    public const nint __addr_FUN_00a45570 = 0x645570;
+    private FUN_00a45570 _FUN_00a45570; // => fhutil.get_fptr<FUN_00a45570>(__addr_FUN_00a45570);
+
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    public delegate void TOMenuTransFacePlyTex();
+    public const nint __addr_TOMenuTransFacePlyTex = 0x501100;
+    private TOMenuTransFacePlyTex _TOMenuTransFacePlyTex; // => fhutil.get_fptr<TOMenuTransFacePlyTex>(__addr_TOMenuTransFacePlyTex);
+
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    public delegate void FUN_00a57120();
+    public const nint __addr_FUN_00a57120 = 0x657120;
+    private FUN_00a57120 _FUN_00a57120; // => fhutil.get_fptr<FUN_00a57120>(__addr_FUN_00a57120);
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void pppInitEnv(nint param_1, int param_2, nint param_3, int param_4);
+    public const nint __addr_pppInitEnv = 0x316AB0;
+    private pppInitEnv _pppInitEnv; // => fhutil.get_fptr<pppInitEnv>(__addr_pppInitEnv);
+
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    public delegate uint MsGetSaveConfigHiragana();
+    public const nint __addr_MsGetSaveConfigHiragana = 0x3852B0;
+    private MsGetSaveConfigHiragana _MsGetSaveConfigHiragana; // => fhutil.get_fptr<MsGetSaveConfigHiragana>(__addr_MsGetSaveConfigHiragana);
+
+    public enum MenuTextFile {
+        btl_txt = 0,
+        menu_txt = 1,
+        save_txt = 3,
+        btlend_txt = 4,
+        arms_txt = 5,
+        build_txt = 6,
+        config_txt = 7,
+        item_txt = 8,
+        mmain_txt = 9,
+        name_txt = 10,
+        status_txt = 11,
+        summon_txt = 12,
+        _config_txt = 14,
+    }
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate byte* MsMenuGetText(MenuTextFile file_id, int in_req_text_out_ref_data_end, uint get_second_text);
+    public const nint __addr_MsMenuGetText = 0x38FD40;
+    private MsMenuGetText _MsMenuGetText; // => fhutil.get_fptr<MsMenuGetText>(__addr_MsMenuGetText);
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void FUN_00a45fd0(int param_1, int param_2);
+    public const nint __addr_FUN_00a45fd0 = 0x645FD0;
+    private FUN_00a45fd0 _FUN_00a45fd0; // => fhutil.get_fptr<FUN_00a45fd0>(__addr_FUN_00a45fd0);
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void FUN_00a459e0(int param_1, int param_2);
+    public const nint __addr_FUN_00a459e0 = 0x6459E0;
+    private FUN_00a459e0 _FUN_00a459e0; // => fhutil.get_fptr<FUN_00a459e0>(__addr_FUN_00a459e0);
+
+
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    public delegate void graphicAbmapCreate(void* param_1);
+    public const nint __addr_graphicAbmapCreate = 0x239140;
+    private graphicAbmapCreate _graphicAbmapCreate; // => fhutil.get_fptr<graphicAbmapCreate>(__addr_graphicAbmapCreate);
+
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    public delegate void graphicDeActivateLoadingScreen();
+    public const nint __addr_graphicDeActivateLoadingScreen = 0x23DFF0;
+    private graphicDeActivateLoadingScreen _graphicDeActivateLoadingScreen; // => fhutil.get_fptr<graphicDeActivateLoadingScreen>(__addr_graphicDeActivateLoadingScreen);
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void graphicSetFlipVsnc(uint param_1);
+    public const nint __addr_graphicSetFlipVsnc = 0x243290;
+    private graphicSetFlipVsnc _graphicSetFlipVsnc; // => fhutil.get_fptr<graphicSetFlipVsnc>(__addr_graphicSetFlipVsnc);
+
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    public delegate void FUN_00a59950();
+    public const nint __addr_FUN_00a59950 = 0x659950;
+    private FUN_00a59950 _FUN_00a59950; // => fhutil.get_fptr<FUN_00a59950>(__addr_FUN_00a59950);
+
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    public delegate void FUN_00a5b930();
+    public const nint __addr_FUN_00a5b930 = 0x65B930;
+    private FUN_00a5b930 _FUN_00a5b930; // => fhutil.get_fptr<FUN_00a5b930>(__addr_FUN_00a5b930);
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate int FUN_00786fb0(uint param_1, int param_2);
+    public const nint __addr_FUN_00786fb0 = 0x386FB0;
+    private FUN_00786fb0 _FUN_00786fb0; // => fhutil.get_fptr<FUN_00786fb0>(__addr_FUN_00786fb0);
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void FUN_00a48d70(int node_to_select, float param_2);
+    public const nint __addr_FUN_00a48d70 = 0x648D70;
+    private FUN_00a48d70 _FUN_00a48d70; // => fhutil.get_fptr<FUN_00a48d70>(__addr_FUN_00a48d70);
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate byte* TOGetSaveChrName(uint chr_id);
+    public const nint __addr_TOGetSaveChrName = 0x4AC800;
+    private TOGetSaveChrName _TOGetSaveChrName; // => fhutil.get_fptr<TOGetSaveChrName>(__addr_TOGetSaveChrName);
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate int TOGetEasyMesWFontLInterModeChrName(byte* name, int param_2);
+    public const nint __addr_TOGetEasyMesWFontLInterModeChrName = 0x4B7070;
+    private TOGetEasyMesWFontLInterModeChrName _TOGetEasyMesWFontLInterModeChrName; // => fhutil.get_fptr<TOGetEasyMesWFontLInterModeChrName>(__addr_TOGetEasyMesWFontLInterModeChrName);
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate byte* FUN_008b7bb0(byte* text, byte param_2, float* param_3, int param_4);
+    public const nint __addr_FUN_008b7bb0 = 0x4B7BB0;
+    private FUN_008b7bb0 _FUN_008b7bb0;
+
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    public delegate void FUN_00a47c60(SphereGridChrInfo* chr_info);
+    public const nint __addr_FUN_00a47c60 = 0x647C60;
+    private FUN_00a47c60 _FUN_00a47c60; // => fhutil.get_fptr<FUN_00a47c60>(__addr_FUN_00a47c60);
+
+
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    public delegate void FUN_008aaec0();
+    public const nint __addr_FUN_008aaec0 = 0x4AAEC0;
+    private FUN_008aaec0 _FUN_008aaec0; // => fhutil.get_fptr<FUN_008aaec0>(__addr_FUN_008aaec0);
+
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    public delegate void FUN_008aaf50();
+    public const nint __addr_FUN_008aaf50 = 0x4AAF50;
+    private FUN_008aaf50 _FUN_008aaf50; // => fhutil.get_fptr<FUN_008aaf50>(__addr_FUN_008aaf50);
+
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    public delegate byte TkMenuGetCurrentPlayer();
+    public const nint __addr_TkMenuGetCurrentPlayer = 0x4A9810;
+    private TkMenuGetCurrentPlayer _TkMenuGetCurrentPlayer; // => fhutil.get_fptr<TkMenuGetCurrentPlayer>(__addr_TkMenuGetCurrentPlayer);
+
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    public delegate void FUN_00a47210();
+    public const nint __addr_FUN_00a47210 = 0x647210;
+    private FUN_00a47210 _FUN_00a47210; // => fhutil.get_fptr<FUN_00a47210>(__addr_FUN_00a47210);
+
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    public delegate void FUN_00a5aca0();
+    public const nint __addr_FUN_00a5aca0 = 0x65ACA0;
+    private FUN_00a5aca0 _FUN_00a5aca0; // => fhutil.get_fptr<FUN_00a5aca0>(__addr_FUN_00a5aca0);
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void FUN_00a58ff0(nint param_1);
+    public const nint __addr_FUN_00a58ff0 = 0x658FF0;
+    private FUN_00a58ff0 _FUN_00a58ff0; // => fhutil.get_fptr<FUN_00a58ff0>(__addr_FUN_00a58ff0);
+
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void FUN_00a48f20(int param_1);
+    public const nint __addr_FUN_00a48f20 = 0x648F20;
+    private FUN_00a48f20 _FUN_00a48f20; // => fhutil.get_fptr<FUN_00a48f20>(__addr_FUN_00a48f20);
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void FUN_00a48c20(int param_1);
+    public const nint __addr_FUN_00a48c20 = 0x648C20;
+    private FUN_00a48c20 _FUN_00a48c20; // => fhutil.get_fptr<FUN_00a48c20>(__addr_FUN_00a48c20);
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void FUN_00a48e40(uint param_1, float param_2);
+    public const nint __addr_FUN_00a48e40 = 0x648E40;
+    private FUN_00a48e40 _FUN_00a48e40; // => fhutil.get_fptr<FUN_00a48e40>(__addr_FUN_00a48e40);
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void FUN_00a59860(int param_1, void* param_2);
+    public const nint __addr_FUN_00a59860 = 0x659860;
+    private FUN_00a59860 _FUN_00a59860; // => fhutil.get_fptr<FUN_00a59860>(__addr_FUN_00a59860);
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void FUN_00a5a2e0(int param_1);
+    public const nint __addr_FUN_00a5a2e0 = 0x65A2E0;
+    private FUN_00a5a2e0 _FUN_00a5a2e0; // => fhutil.get_fptr<FUN_00a5a2e0>(__addr_FUN_00a5a2e0);
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate int FUN_00a49310(int param_1, ushort param_2, uint param_3);
+    public const nint __addr_FUN_00a49310 = 0x649310;
+    private FUN_00a49310 _FUN_00a49310; // => fhutil.get_fptr<FUN_00a49310>(__addr_FUN_00a49310);
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate uint FUN_00a56e00(ushort param_1, ushort param_2, ushort** param_3);
+    public const nint __addr_FUN_00a56e00 = 0x656E00;
+    private FUN_00a56e00 _FUN_00a56e00; // => fhutil.get_fptr<FUN_00a56e00>(__addr_FUN_00a56e00);
+
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    public delegate void restoreVf00Register();
+    public const nint __addr_restoreVf00Register = 0x2EF00;
+    private restoreVf00Register _restoreVf00Register; // => fhutil.get_fptr<restoreVf00Register>(__addr_restoreVf00Register);
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void FUN_00a563b0(Vector4* param_1, Vector4* param_2, Vector4* param_3, Vector4* param_4, float param_5);
+    public const nint __addr_FUN_00a563b0 = 0x6563B0;
+    private FUN_00a563b0 _FUN_00a563b0; // => fhutil.get_fptr<FUN_00a563b0>(__addr_FUN_00a563b0);
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void FUN_00a482d0(SphereGridChrInfo* param_1, Vector4* param_2);
+    public const nint __addr_FUN_00a482d0 = 0x6482D0;
+    private FUN_00a482d0 _FUN_00a482d0; // => fhutil.get_fptr<FUN_00a482d0>(__addr_FUN_00a482d0);
+
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate bool FUN_00a49270(Vector4* param_1, Vector4* param_2);
+    public const nint __addr_FUN_00a49270 = 0x649270;
+    private FUN_00a49270 _FUN_00a49270; // => fhutil.get_fptr<FUN_00a49270>(__addr_FUN_00a49270);
+
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    public delegate void FUN_00a47440();
+    public const nint __addr_FUN_00a47440 = 0x647440;
+    private FUN_00a47440 _FUN_00a47440; // => fhutil.get_fptr<FUN_00a47440>(__addr_FUN_00a47440);
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate byte FUN_007854a0(byte param_1);
+    public const nint __addr_FUN_007854a0 = 0x3854A0;
+    private FUN_007854a0 _FUN_007854a0; // => fhutil.get_fptr<FUN_007854a0>(__addr_FUN_007854a0);
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void FUN_00a474d0(ushort param_1, ushort param_2, byte param_3);
+    public const nint __addr_FUN_00a474d0 = 0x6474D0;
+    private FUN_00a474d0 _FUN_00a474d0; // => fhutil.get_fptr<FUN_00a474d0>(__addr_FUN_00a474d0);
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate int FUN_00a5b400(int param_1, ushort param_2, uint param_3, int param_4);
+    public const nint __addr_FUN_00a5b400 = 0x65B400;
+    private FUN_00a5b400 _FUN_00a5b400; // => fhutil.get_fptr<FUN_00a5b400>(__addr_FUN_00a5b400);
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate SphereGridNode* FUN_00a56a40(float* param_1, Vector4* param_2, void* param_3);
+    public const nint __addr_FUN_00a56a40 = 0x656A40;
+    private FUN_00a56a40 _FUN_00a56a40; // => fhutil.get_fptr<FUN_00a56a40>(__addr_FUN_00a56a40);
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate byte* MsGetSaveInParty(int* param_1);
+    public const nint __addr_MsGetSaveInParty = 0x385330;
+    private MsGetSaveInParty _MsGetSaveInParty;
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate byte* MsGetSaveOutParty(int* param_1);
+    public const nint __addr_MsGetSaveOutParty = 0x385390;
+    private MsGetSaveOutParty _MsGetSaveOutParty;
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate byte FUN_008b9e60(uint param_1);
+    public const nint __addr_FUN_008b9e60 = 0x4B9E60;
+    private FUN_008b9e60 _FUN_008b9e60;
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate int FUN_008b9e70(uint param_1);
+    public const nint __addr_FUN_008b9e70 = 0x4B9E70;
+    private FUN_008b9e70 _FUN_008b9e70;
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate int FUN_008ba330(int param_1, int param_2);
+    public const nint __addr_FUN_008ba330 = 0x4BA330;
+    private FUN_008ba330 _FUN_008ba330;
+
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    public delegate void FUN_008ba3c0();
+    public const nint __addr_FUN_008ba3c0 = 0x4BA3C0;
+    private FUN_008ba3c0 _FUN_008ba3c0;
+
+
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void FUN_00a5ad30(Matrix4x4* param_1, SphereGridNode* node, float param_3);
+    public const nint __addr_FUN_00a5ad30 = 0x65AD30;
+    //private FUN_00a5ad30 _FUN_00a5ad30;
+    private FhMethodHandle<FUN_00a5ad30> _FUN_00a5ad30;
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate int FUN_00a68140(int param_1, temp_FUN_00a4c8d0_struct* param_2, int param_3, int param_4);
+    public const nint __addr_FUN_00a68140 = 0x668140;
+    //private FUN_00a68140 _FUN_00a68140;
+    private FhMethodHandle<FUN_00a68140> _FUN_00a68140;
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void FUN_00a5a360(Matrix4x4* param_1, SphereGridNode* node, Vec2s16* param_3, float param_4);
+    public const nint __addr_FUN_00a5a360 = 0x65A360;
+    //private FUN_00a5a360 _FUN_00a5a360;
+    private FhMethodHandle<FUN_00a5a360> _FUN_00a5a360;
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void FUN_00639280(int param_1);
+    public const nint __addr_FUN_00639280 = 0x239280;
+    private FUN_00639280 _FUN_00639280;
+
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    public delegate void MsInitChrAbilityMap();
+    public const nint __addr_MsInitChrAbilityMap = 0x398830;
+    private MsInitChrAbilityMap _MsInitChrAbilityMap;
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate MsChrAbilityMap* MsGetChrAbilityMap(uint chr_id);
+    public const nint __addr_MsGetChrAbilityMap = 0x398800;
+    private MsGetChrAbilityMap _MsGetChrAbilityMap;
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void MsSetChrAbilityMapCommand(uint chr_id, uint ability_id);
+    public const nint __addr_MsSetChrAbilityMapCommand = 0x398850;
+    private MsSetChrAbilityMapCommand _MsSetChrAbilityMapCommand;
+
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    public delegate void MsSetSaveParamAll();
+    public const nint __addr_MsSetSaveParamAll = 0x3869C0;
+    private MsSetSaveParamAll _MsSetSaveParamAll;
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void FUN_00a51720(uint* param_1, float* param_2, int param_3);
+    public const nint __addr_FUN_00a51720 = 0x00651720;
+    private FUN_00a51720 _FUN_00a51720;
+
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    public delegate void FUN_00a521a0(uint* param_1, float* param_2, int param_3);
+    public const nint __addr_FUN_00a521a0 = 0x006521a0;
+    private FUN_00a521a0 _FUN_00a521a0;
+
+
+    
+
+
+
+
+
+    // Hooks
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void FUN_00a44d30();
+    public static int __addr_FUN_00a44d30 = 0x644D30;
+    private FhMethodHandle<FUN_00a44d30> _FUN_00a44d30;
+
+    // Not defined in ffx-v2
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    public delegate void FUN_00a45010();
+    public static int __addr_FUN_00a45010 = 0x645010;
+    private FhMethodHandle<FUN_00a45010> _FUN_00a45010;
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate uint abmap_get_chr_point(int param_1);
+    public static int __addr_abmap_get_chr_point = 0x645870;
+    private FhMethodHandle<abmap_get_chr_point> _abmap_get_chr_point;
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void FUN_00a47d50();
+    public static int __addr_FUN_00a47d50 = 0x647d50;
+    private FhMethodHandle<FUN_00a47d50> _FUN_00a47d50;
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void FUN_00a47f00();
+    public static int __addr_FUN_00a47f00 = 0x647f00;
+    private FhMethodHandle<FUN_00a47f00> _FUN_00a47f00;
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void abmap_set_chr_posInternal_00a48a80(int chr_id, ushort node_idx);
+    public static int __addr_abmap_set_chr_posInternal_00a48a80 = 0x648A80;
+    private FhMethodHandle<abmap_set_chr_posInternal_00a48a80> _abmap_set_chr_posInternal_00a48a80;
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void FUN_00a48c80(int chr_id, ushort node_idx);
+    public static int __addr_FUN_00a48c80 = 0x648c80;
+    private FhMethodHandle<FUN_00a48c80> _FUN_00a48c80;
+
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    public delegate void FUN_00a49590();
+    public static int __addr_FUN_00a49590 = 0x649590;
+    private FhMethodHandle<FUN_00a49590> _FUN_00a49590;
+
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    public delegate void FUN_00a4b790();
+    public static int __addr_FUN_00a4b790 = 0x64b790;
+    private FhMethodHandle<FUN_00a4b790> _FUN_00a4b790;
+
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    public delegate void FUN_00a4c8d0();
+    public static int __addr_FUN_00a4c8d0 = 0x64c8d0;
+    private FhMethodHandle<FUN_00a4c8d0> _FUN_00a4c8d0;
+
+
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    public delegate void eiAbmStart();
+    public static int __addr_eiAbmStart = 0x654B40;
+    private FhMethodHandle<eiAbmStart> _eiAbmStart;
+
+    // Called when using (special?) sphere
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void FUN_00a560d0(nint param_1, int param_2, nint param_3, int param_4);
+    public static int __addr_FUN_00a560d0 = 0x6560D0;
+    private FhMethodHandle<FUN_00a560d0> _FUN_00a560d0;
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void FUN_00a56160(nint param_1, int param_2, nint param_3, int param_4);
+    public static int __addr_FUN_00a56160 = 0x656160;
+    private FhMethodHandle<FUN_00a56160> _FUN_00a56160;
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void FUN_00a57f80(uint chr_id, int node_idx, uint param_3, uint param_4, uint param_5, uint param_6);
+    public const nint __addr_FUN_00a57f80 = 0x657F80;
+    private FhMethodHandle<FUN_00a57f80> _FUN_00a57f80;
+    //private FUN_00a57f80 _FUN_00a57f80; // => fhutil.get_fptr<FUN_00a57f80>(__addr_FUN_00a57f80);
+
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void FUN_00a58080(int chr_id);
+    public const nint __addr_FUN_00a58080 = 0x658080;
+    private FhMethodHandle<FUN_00a58080> _FUN_00a58080;
+    //private FUN_00a58080 _FUN_00a58080; // => fhutil.get_fptr<FUN_00a58080>(__addr_FUN_00a58080);
+
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    public delegate void FUN_00a58ec0();
+    public const nint __addr_FUN_00a58ec0 = 0x658EC0;
+    private FhMethodHandle<FUN_00a58ec0> _FUN_00a58ec0;
+
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    public delegate void FUN_00a598a0();
+    public const nint __addr_FUN_00a598a0 = 0x6598A0;
+    private FhMethodHandle<FUN_00a598a0> _FUN_00a598a0;
+
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    public delegate void FUN_00a59990();
+    public const nint __addr_FUN_00a59990 = 0x659990;
+    private FhMethodHandle<FUN_00a59990> _FUN_00a59990;
+
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    public delegate void FUN_00a5a4b0();
+    public const nint __addr_FUN_00a5a4b0 = 0x65A4B0;
+    private FhMethodHandle<FUN_00a5a4b0> _FUN_00a5a4b0;
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void FUN_00a5a990(int param_1);
+    public const nint __addr_FUN_00a5a990 = 0x65a990;
+    private FhMethodHandle<FUN_00a5a990> _FUN_00a5a990;
+    //private FUN_00a5a990 _FUN_00a5a990; // => fhutil.get_fptr<FUN_00a5a990>(__addr_FUN_00a5a990);
+
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    public delegate void FUN_00a5b030();
+    public const nint __addr_FUN_00a5b030 = 0x65b030;
+    private FhMethodHandle<FUN_00a5b030> _FUN_00a5b030;
+    //private FUN_00a5b030 _FUN_00a5b030; // => fhutil.get_fptr<FUN_00a5b030>(__addr_FUN_00a5b030);
+
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    public delegate void FUN_00a5b7b0();
+    public const nint __addr_FUN_00a5b7b0 = 0x65B7B0;
+    private FhMethodHandle<FUN_00a5b7b0> _FUN_00a5b7b0;
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void FUN_00a5b980(uint param_1, ushort param_2, uint param_3);
+    public const nint __addr_FUN_00a5b980 = 0x65B980;
+    private FhMethodHandle<FUN_00a5b980> _FUN_00a5b980;
+    //private FUN_00a5b980 _FUN_00a5b980; // => fhutil.get_fptr<FUN_00a5b980>(__addr_FUN_00a5b980);
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void FUN_00a5bb70();
+    public const nint __addr_FUN_00a5bb70 = 0x65BB70;
+    private FhMethodHandle<FUN_00a5bb70> _FUN_00a5bb70;
+    //private FUN_00a5bb70 _FUN_00a5bb70; // => fhutil.get_fptr<FUN_00a5bb70>(__addr_FUN_00a5bb70);
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void FUN_008a8ef0(uint param_1);
+    public const nint __addr_FUN_008a8ef0 = 0x4A8EF0;
+    private FhMethodHandle<FUN_008a8ef0> _FUN_008a8ef0;
+
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    public delegate void FUN_008bddc0();
+    public const nint __addr_FUN_008bddc0 = 0x4BDDC0;
+    private FhMethodHandle<FUN_008bddc0> _FUN_008bddc0;
+
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    public delegate void FUN_00a505e0();
+    public const nint __addr_FUN_00a505e0 = 0x6505E0;
+    private FhMethodHandle<FUN_00a505e0> _FUN_00a505e0;
+
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    public delegate void FUN_00a534c0();
+    public const nint __addr_FUN_00a534c0 = 0x6534C0;
+    private FhMethodHandle<FUN_00a534c0> _FUN_00a534c0;
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void FUN_00a50ed0(int param_1);
+    public const nint __addr_FUN_00a50ed0 = 0x650ED0;
+    private FhMethodHandle<FUN_00a50ed0> _FUN_00a50ed0;
+
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    public delegate void FUN_00a4b4b0();
+    public const nint __addr_FUN_00a4b4b0 = 0x64B4B0;
+    private FhMethodHandle<FUN_00a4b4b0> _FUN_00a4b4b0;
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void FUN_00a53de0(SaveSphereGrid* save_sphere_grid);
+    public const nint __addr_FUN_00a53de0 = 0x653de0;
+    private FhMethodHandle<FUN_00a53de0> _FUN_00a53de0;
+
+
+    
+
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void eiAbmParaGet();
+    public static int __addr_eiAbmParaGet = 0x654860;
+    private FhMethodHandle<eiAbmParaGet> _eiAbmParaGet; // => fhutil.get_fptr<eiAbmParaGet>(__addr_eiAbmParaGet);
+
+    private static uint num_characters = 8;
+    private SphereGridChrInfo* custom_party_infos;
+
+    // TODO: Initialize with proper values on new game start
+    private ushort[] custom_party_selected_node_idx = new ushort[num_characters - 7];
+
+    private ushort[][] custom_starting_selected_node_idx = [
+            [0xe1, 0xe1, 0x14] // Next to Lulu
+        ];
+
+    private ushort[][][] custom_starting_activated_nodes = [
+            [
+                [], // Original
+                [], // Standard
+                [   // Expert
+                  14, 15, 16, 17, 154, 155, 156, 157, // Fire, Thunder, Water, Blizzard, Fira, Thundara, Watera, Blizzara
+                  8, 185, 3, 4, 5, 56                 // Cure, Cura, NulBlaze, NulShock, NulTide, Scan
+                ] 
+            ]
+        ];
+
+    private class CustomSphereGridState(ushort[] custom_party_selected_node_idx) {
+        [JsonInclude]
+        public ushort[] custom_party_selected_node_idx = custom_party_selected_node_idx;
+    }
+
+    public void init_fptrs() {
+        _MsGetRomItem = FhUtil.get_fptr<MsGetRomItem>(__addr_MsGetRomItem);
+        _MsGetExcelData = FhUtil.get_fptr<MsGetExcelData>(__addr_MsGetExcelData);
+        _MsGetSaveItemNum = FhUtil.get_fptr<MsGetSaveItemNum>(__addr_MsGetSaveItemNum);
+        _FUN_00a59710 = FhUtil.get_fptr<FUN_00a59710>(__addr_FUN_00a59710);
+        _FUN_00a59760 = FhUtil.get_fptr<FUN_00a59760>(__addr_FUN_00a59760);
+        _FUN_00a49440 = FhUtil.get_fptr<FUN_00a49440>(__addr_FUN_00a49440);
+        _MsGetSavePlyJoined = FhUtil.get_fptr<MsGetSavePlyJoined>(__addr_MsGetSavePlyJoined);
+        _FUN_00a5a800 = FhUtil.get_fptr<FUN_00a5a800>(__addr_FUN_00a5a800);
+        _SndSepPlaySimple = FhUtil.get_fptr<SndSepPlaySimple>(__addr_SndSepPlaySimple);
+        _pppCreateHeap = FhUtil.get_fptr<pppCreateHeap>(__addr_pppCreateHeap);
+        _FUN_00a5bad0 = FhUtil.get_fptr<FUN_00a5bad0>(__addr_FUN_00a5bad0);
+        _FFXVu0InterVectorXYZ = FhUtil.get_fptr<FFXVu0InterVectorXYZ>(__addr_FFXVu0InterVectorXYZ);
+        _MsGetSaveAbilityMap = FhUtil.get_fptr<MsGetSaveAbilityMap>(__addr_MsGetSaveAbilityMap);
+        _user_malloc = FhUtil.get_fptr<user_malloc>(__addr_user_malloc);
+        _FUN_00642a80 = FhUtil.get_fptr<FUN_00642a80>(__addr_FUN_00642a80);
+        _graphicDrawUIAbmapElement = FhUtil.get_fptr<graphicDrawUIAbmapElement>(__addr_graphicDrawUIAbmapElement);
+        _FUN_008b70e0 = FhUtil.get_fptr<FUN_008b70e0>(__addr_FUN_008b70e0);
+        _FUN_008e8fb0 = FhUtil.get_fptr<FUN_008e8fb0>(__addr_FUN_008e8fb0);
+        _user_free = FhUtil.get_fptr<user_free>(__addr_user_free);
+        _cdc_FFXVu0MulMatrix = FhUtil.get_fptr<cdc_FFXVu0MulMatrix>(__addr_cdc_FFXVu0MulMatrix);
+        _FUN_00a657c0 = FhUtil.get_fptr<FUN_00a657c0>(__addr_FUN_00a657c0);
+        _TOGetFFXLang = FhUtil.get_fptr<TOGetFFXLang>(__addr_TOGetFFXLang);
+        _FUN_00a572e0 = FhUtil.get_fptr<FUN_00a572e0>(__addr_FUN_00a572e0);
+        _FUN_00a57620 = FhUtil.get_fptr<FUN_00a57620>(__addr_FUN_00a57620);
+        _FUN_00a45570 = FhUtil.get_fptr<FUN_00a45570>(__addr_FUN_00a45570);
+        _TOMenuTransFacePlyTex = FhUtil.get_fptr<TOMenuTransFacePlyTex>(__addr_TOMenuTransFacePlyTex);
+        _FUN_00a57120 = FhUtil.get_fptr<FUN_00a57120>(__addr_FUN_00a57120);
+        _pppInitEnv = FhUtil.get_fptr<pppInitEnv>(__addr_pppInitEnv);
+        _MsGetSaveConfigHiragana = FhUtil.get_fptr<MsGetSaveConfigHiragana>(__addr_MsGetSaveConfigHiragana);
+        _MsMenuGetText = FhUtil.get_fptr<MsMenuGetText>(__addr_MsMenuGetText);
+        _FUN_00a45fd0 = FhUtil.get_fptr<FUN_00a45fd0>(__addr_FUN_00a45fd0);
+        _FUN_00a459e0 = FhUtil.get_fptr<FUN_00a459e0>(__addr_FUN_00a459e0);
+        _graphicAbmapCreate = FhUtil.get_fptr<graphicAbmapCreate>(__addr_graphicAbmapCreate);
+        _graphicDeActivateLoadingScreen = FhUtil.get_fptr<graphicDeActivateLoadingScreen>(__addr_graphicDeActivateLoadingScreen);
+        _graphicSetFlipVsnc = FhUtil.get_fptr<graphicSetFlipVsnc>(__addr_graphicSetFlipVsnc);
+        _FUN_00a59950 = FhUtil.get_fptr<FUN_00a59950>(__addr_FUN_00a59950);
+        _FUN_00a5b930 = FhUtil.get_fptr<FUN_00a5b930>(__addr_FUN_00a5b930);
+        _FUN_00786fb0 = FhUtil.get_fptr<FUN_00786fb0>(__addr_FUN_00786fb0);
+        _FUN_00a48d70 = FhUtil.get_fptr<FUN_00a48d70>(__addr_FUN_00a48d70);
+        _TOGetSaveChrName = FhUtil.get_fptr<TOGetSaveChrName>(__addr_TOGetSaveChrName);
+        _TOGetEasyMesWFontLInterModeChrName = FhUtil.get_fptr<TOGetEasyMesWFontLInterModeChrName>(__addr_TOGetEasyMesWFontLInterModeChrName);
+        _FUN_008b7bb0 = FhUtil.get_fptr<FUN_008b7bb0>(__addr_FUN_008b7bb0);
+        _FUN_00a47c60 = FhUtil.get_fptr<FUN_00a47c60>(__addr_FUN_00a47c60);
+        _FUN_008aaec0 = FhUtil.get_fptr<FUN_008aaec0>(__addr_FUN_008aaec0);
+        _FUN_008aaf50 = FhUtil.get_fptr<FUN_008aaf50>(__addr_FUN_008aaf50);
+        _TkMenuGetCurrentPlayer = FhUtil.get_fptr<TkMenuGetCurrentPlayer>(__addr_TkMenuGetCurrentPlayer);
+        _FUN_00a47210 = FhUtil.get_fptr<FUN_00a47210>(__addr_FUN_00a47210);
+        _FUN_00a5aca0 = FhUtil.get_fptr<FUN_00a5aca0>(__addr_FUN_00a5aca0);
+        _FUN_00a58ff0 = FhUtil.get_fptr<FUN_00a58ff0>(__addr_FUN_00a58ff0);
+        _FUN_00a48f20 = FhUtil.get_fptr<FUN_00a48f20>(__addr_FUN_00a48f20);
+        _FUN_00a48c20 = FhUtil.get_fptr<FUN_00a48c20>(__addr_FUN_00a48c20);
+        _FUN_00a48e40 = FhUtil.get_fptr<FUN_00a48e40>(__addr_FUN_00a48e40);
+        _FUN_00a59860 = FhUtil.get_fptr<FUN_00a59860>(__addr_FUN_00a59860);
+        _FUN_00a5a2e0 = FhUtil.get_fptr<FUN_00a5a2e0>(__addr_FUN_00a5a2e0);
+        _FUN_00a49310 = FhUtil.get_fptr<FUN_00a49310>(__addr_FUN_00a49310);
+        _FUN_00a56e00 = FhUtil.get_fptr<FUN_00a56e00>(__addr_FUN_00a56e00);
+        _restoreVf00Register = FhUtil.get_fptr<restoreVf00Register>(__addr_restoreVf00Register);
+        _FUN_00a563b0 = FhUtil.get_fptr<FUN_00a563b0>(__addr_FUN_00a563b0);
+        _FUN_00a482d0 = FhUtil.get_fptr<FUN_00a482d0>(__addr_FUN_00a482d0);
+        _FUN_00a49270 = FhUtil.get_fptr<FUN_00a49270>(__addr_FUN_00a49270);
+        _FUN_00a47440 = FhUtil.get_fptr<FUN_00a47440>(__addr_FUN_00a47440);
+        _FUN_007854a0 = FhUtil.get_fptr<FUN_007854a0>(__addr_FUN_007854a0);
+        _FUN_00a474d0 = FhUtil.get_fptr<FUN_00a474d0>(__addr_FUN_00a474d0);
+        _FUN_00a5b400 = FhUtil.get_fptr<FUN_00a5b400>(__addr_FUN_00a5b400);
+        _FUN_00a56a40 = FhUtil.get_fptr<FUN_00a56a40>(__addr_FUN_00a56a40);
+        _MsGetSaveInParty = FhUtil.get_fptr<MsGetSaveInParty>(__addr_MsGetSaveInParty);
+        _MsGetSaveOutParty = FhUtil.get_fptr<MsGetSaveOutParty>(__addr_MsGetSaveOutParty);
+        _FUN_008b9e60 = FhUtil.get_fptr<FUN_008b9e60>(__addr_FUN_008b9e60);
+        _FUN_008b9e70 = FhUtil.get_fptr<FUN_008b9e70>(__addr_FUN_008b9e70);
+        _FUN_008ba330 = FhUtil.get_fptr<FUN_008ba330>(__addr_FUN_008ba330);
+        _FUN_008ba3c0 = FhUtil.get_fptr<FUN_008ba3c0>(__addr_FUN_008ba3c0);
+        //_FUN_00a5ad30 = FhUtil.get_fptr<FUN_00a5ad30>(__addr_FUN_00a5ad30);
+        //_FUN_00a68140 = FhUtil.get_fptr<FUN_00a68140>(__addr_FUN_00a68140);
+        //_FUN_00a5a360 = FhUtil.get_fptr<FUN_00a5a360>(__addr_FUN_00a5a360);
+        _FUN_00639280 = FhUtil.get_fptr<FUN_00639280>(__addr_FUN_00639280);
+        _MsInitChrAbilityMap = FhUtil.get_fptr<MsInitChrAbilityMap>(__addr_MsInitChrAbilityMap);
+        _MsGetChrAbilityMap = FhUtil.get_fptr<MsGetChrAbilityMap>(__addr_MsGetChrAbilityMap);
+        _MsSetChrAbilityMapCommand = FhUtil.get_fptr<MsSetChrAbilityMapCommand>(__addr_MsSetChrAbilityMapCommand);
+        _MsSetSaveParamAll = FhUtil.get_fptr<MsSetSaveParamAll>(__addr_MsSetSaveParamAll);
+        _FUN_00a51720 = FhUtil.get_fptr<FUN_00a51720>(__addr_FUN_00a51720);
+        _FUN_00a521a0 = FhUtil.get_fptr<FUN_00a521a0>(__addr_FUN_00a521a0);
+
+
+
+
+    }
+
+    public override bool init(FhModContext mod_context, FileStream global_state_file) {
+        _FUN_00a44d30 = new FhMethodHandle<FUN_00a44d30>(this, game, __addr_FUN_00a44d30, h_FUN_00a44d30);
+        _FUN_00a45010 = new FhMethodHandle<FUN_00a45010>(this, game, __addr_FUN_00a45010, h_FUN_00a45010);
+        _abmap_get_chr_point = new FhMethodHandle<abmap_get_chr_point>(this, game, __addr_abmap_get_chr_point, h_abmap_get_chr_point);
+        _FUN_00a47d50 = new FhMethodHandle<FUN_00a47d50>(this, game, __addr_FUN_00a47d50, h_FUN_00a47d50);
+        _FUN_00a47f00 = new FhMethodHandle<FUN_00a47f00>(this, game, __addr_FUN_00a47f00, h_FUN_00a47f00);
+        _abmap_set_chr_posInternal_00a48a80 = new FhMethodHandle<abmap_set_chr_posInternal_00a48a80>(this, game, __addr_abmap_set_chr_posInternal_00a48a80, h_abmap_set_chr_posInternal_00a48a80);
+        _FUN_00a48c80 = new FhMethodHandle<FUN_00a48c80>(this, game, __addr_FUN_00a48c80, h_FUN_00a48c80);
+        _FUN_00a49590 = new FhMethodHandle<FUN_00a49590>(this, game, __addr_FUN_00a49590, h_FUN_00a49590);
+        _FUN_00a4b790 = new FhMethodHandle<FUN_00a4b790>(this, game, __addr_FUN_00a4b790, h_FUN_00a4b790);
+        _FUN_00a4c8d0 = new FhMethodHandle<FUN_00a4c8d0>(this, game, __addr_FUN_00a4c8d0, h_FUN_00a4c8d0);
+        _eiAbmStart   = new FhMethodHandle<eiAbmStart>(this, game, __addr_eiAbmStart, h_eiAbmStart);
+        _FUN_00a560d0 = new FhMethodHandle<FUN_00a560d0>(this, game, __addr_FUN_00a560d0, h_FUN_00a560d0);
+        _FUN_00a56160 = new FhMethodHandle<FUN_00a56160>(this, game, __addr_FUN_00a56160, h_FUN_00a56160);
+        _FUN_00a57f80 = new FhMethodHandle<FUN_00a57f80>(this, game, __addr_FUN_00a57f80, h_FUN_00a57f80);
+        _FUN_00a58080 = new FhMethodHandle<FUN_00a58080>(this, game, __addr_FUN_00a58080, h_FUN_00a58080);
+        _FUN_00a58ec0 = new FhMethodHandle<FUN_00a58ec0>(this, game, __addr_FUN_00a58ec0, h_FUN_00a58ec0);
+        _FUN_00a598a0 = new FhMethodHandle<FUN_00a598a0>(this, game, __addr_FUN_00a598a0, h_FUN_00a598a0);
+        _FUN_00a59990 = new FhMethodHandle<FUN_00a59990>(this, game, __addr_FUN_00a59990, h_FUN_00a59990);
+        _FUN_00a5a4b0 = new FhMethodHandle<FUN_00a5a4b0>(this, game, __addr_FUN_00a5a4b0, h_FUN_00a5a4b0);
+        _FUN_00a5a990 = new FhMethodHandle<FUN_00a5a990>(this, game, __addr_FUN_00a5a990, h_FUN_00a5a990);
+        _FUN_00a5b030 = new FhMethodHandle<FUN_00a5b030>(this, game, __addr_FUN_00a5b030, h_FUN_00a5b030);
+        _FUN_00a5b7b0 = new FhMethodHandle<FUN_00a5b7b0>(this, game, __addr_FUN_00a5b7b0, h_FUN_00a5b7b0);
+        _FUN_00a5b980 = new FhMethodHandle<FUN_00a5b980>(this, game, __addr_FUN_00a5b980, h_FUN_00a5b980);
+        _FUN_00a5bb70 = new FhMethodHandle<FUN_00a5bb70>(this, game, __addr_FUN_00a5bb70, h_FUN_00a5bb70);
+        _FUN_008a8ef0 = new FhMethodHandle<FUN_008a8ef0>(this, game, __addr_FUN_008a8ef0, h_FUN_008a8ef0);
+        _FUN_008bddc0 = new FhMethodHandle<FUN_008bddc0>(this, game, __addr_FUN_008bddc0, h_FUN_008bddc0);
+        _FUN_00a505e0 = new FhMethodHandle<FUN_00a505e0>(this, game, __addr_FUN_00a505e0, h_FUN_00a505e0);
+        _FUN_00a534c0 = new FhMethodHandle<FUN_00a534c0>(this, game, __addr_FUN_00a534c0, h_FUN_00a534c0);
+        _FUN_00a50ed0 = new FhMethodHandle<FUN_00a50ed0>(this, game, __addr_FUN_00a50ed0, h_FUN_00a50ed0);
+
+        _FUN_00a68140 = new FhMethodHandle<FUN_00a68140>(this, game, __addr_FUN_00a68140, h_FUN_00a68140);
+        _FUN_00a5a360 = new FhMethodHandle<FUN_00a5a360>(this, game, __addr_FUN_00a5a360, h_FUN_00a5a360);
+        _FUN_00a5ad30 = new FhMethodHandle<FUN_00a5ad30>(this, game, __addr_FUN_00a5ad30, h_FUN_00a5ad30);
+
+        _FUN_00a4b4b0 = new FhMethodHandle<FUN_00a4b4b0>(this, game, __addr_FUN_00a4b4b0, h_FUN_00a4b4b0);
+
+        _FUN_00a53de0 = new FhMethodHandle<FUN_00a53de0>(this, game, __addr_FUN_00a53de0, h_FUN_00a53de0);
+
+        _eiAbmParaGet = new FhMethodHandle<eiAbmParaGet>(this, game, __addr_eiAbmParaGet, h_eiAbmParaGet);
+
+
+        init_fptrs();
+
+        custom_party_infos = (SphereGridChrInfo*)NativeMemory.AllocZeroed((nuint)(sizeof(SphereGridChrInfo) * num_characters));
+
+        Vector4f_ARRAY_00c86010 = (Vector4*)NativeMemory.AllocZeroed((nuint)(sizeof(Vector4) * 4 * num_characters));
+        p_DAT_00c86580 = (int*)NativeMemory.AllocZeroed(sizeof(int) * num_characters);
+        p_DAT_00c86660 = (int*)NativeMemory.AllocZeroed(sizeof(int) * (num_characters+1)); // Extra is used for selection circle
+        p_DAT_00c86644 = (int*)NativeMemory.AllocZeroed(sizeof(int) * num_characters);
+        p_DAT_00c8659c = (int*)NativeMemory.AllocZeroed(sizeof(int) * num_characters);
+
+        Vector4* original_Vector4f_ARRAY_00c86010 = FhUtil.ptr_at<Vector4>(0x886010);
+        int* original_p_DAT_00c86580 = FhUtil.ptr_at<int>(0x886580);
+        int* original_p_DAT_00c86660 = FhUtil.ptr_at<int>(0x886660);
+        int* original_p_DAT_00c86644 = FhUtil.ptr_at<int>(0x886644);
+        int* original_p_DAT_00c8659c = FhUtil.ptr_at<int>(0x88659C);
+
+        for (int i = 0; i < 7; i++) {
+            Vector4f_ARRAY_00c86010[i] = original_Vector4f_ARRAY_00c86010[i];
+            p_DAT_00c86580[i] = original_p_DAT_00c86580[i];
+            p_DAT_00c86660[i] = original_p_DAT_00c86660[i];
+            p_DAT_00c86644[i] = original_p_DAT_00c86644[i];
+            p_DAT_00c8659c[i] = original_p_DAT_00c8659c[i];
+        }
+        p_DAT_00c86660[num_characters] = original_p_DAT_00c86660[7]; // Selection circle
+
+        // Use Tidus' colors for Seymour
+        Vector4f_ARRAY_00c86010[7] = original_Vector4f_ARRAY_00c86010[0];
+        p_DAT_00c86580[7] = original_p_DAT_00c86580[0];
+        p_DAT_00c86660[7] = original_p_DAT_00c86660[0];
+        p_DAT_00c86644[7] = original_p_DAT_00c86644[0];
+        p_DAT_00c8659c[7] = original_p_DAT_00c8659c[0];
+
+
+        return _FUN_00a44d30.hook() &&
+               _FUN_00a45010.hook() &&
+               _abmap_get_chr_point.hook() &&
+               _FUN_00a47d50.hook() &&
+               _FUN_00a47f00.hook() &&
+               _abmap_set_chr_posInternal_00a48a80.hook() &&
+               _FUN_00a48c80.hook() &&
+               _FUN_00a49590.hook() &&
+               _FUN_00a4b790.hook() &&
+               _FUN_00a4c8d0.hook() &&
+               _eiAbmStart.hook() &&
+               _FUN_00a560d0.hook() &&
+               _FUN_00a56160.hook() &&
+               _FUN_00a57f80.hook() &&
+               _FUN_00a58080.hook() &&
+               _FUN_00a58ec0.hook() &&
+               _FUN_00a598a0.hook() &&
+               _FUN_00a59990.hook() &&
+               _FUN_00a5a4b0.hook() &&
+               _FUN_00a5a990.hook() &&
+               _FUN_00a5b030.hook() &&
+               _FUN_00a5b7b0.hook() &&
+               _FUN_00a5b980.hook() &&
+               _FUN_00a5bb70.hook() &&
+               _FUN_008a8ef0.hook() &&
+               _FUN_008bddc0.hook() &&
+               _FUN_00a505e0.hook() &&
+               _FUN_00a50ed0.hook() &&
+               _FUN_00a534c0.hook() &&
+               _FUN_00a68140.hook() && // Testing
+               _FUN_00a5a360.hook() && // Testing
+               _FUN_00a5ad30.hook() &&
+               _FUN_00a4b4b0.hook() &&
+               _FUN_00a53de0.hook() &&
+               _eiAbmParaGet.hook();
+    }
+
+    public override void load_local_state(FileStream? local_state_file, FhLocalStateInfo local_state_info) {
+        try {
+            var loaded_state = JsonSerializer.Deserialize<CustomSphereGridState>(local_state_file);
+            if (loaded_state != null) {
+                custom_party_selected_node_idx = loaded_state.custom_party_selected_node_idx;
+            }
+        } catch {
+            custom_party_selected_node_idx = new ushort[num_characters - 7];
+        }
+    }
+    public override void save_local_state(FileStream  local_state_file) {
+        CustomSphereGridState state = new(custom_party_selected_node_idx);
+        JsonSerializer.Serialize(local_state_file, state);
+        local_state_file.SetLength(local_state_file.Position);
+    }
+
+
+
+    public unsafe struct XYWHs16 {
+        public short x;
+        public short y;
+        public short w;
+        public short h;
+    }
+    public unsafe struct MenuEntry {
+        public int text;
+        public int unknown1;
+        public int unknown2;
+    }
+
+
+
+    [StructLayout(LayoutKind.Explicit, Pack = 1, Size = 0x340)]
+    public unsafe struct SphereGridMenu {
+        [InlineArray(64)]
+        public struct MenuEntryArray {
+            private MenuEntry _data;
+        }
+
+        [FieldOffset(0x00)] public XYWHs16        pos1;
+        [FieldOffset(0x08)] public XYWHs16        pos2;
+        [FieldOffset(0x10)] public short          something1;
+        [FieldOffset(0x12)] public short          max_lines1;
+        [FieldOffset(0x14)] public short          something2;
+        [FieldOffset(0x16)] public short          max_lines2;
+        [FieldOffset(0x18)] public int            field6_0x18;
+        [FieldOffset(0x1c)] public short          field7_0x1c;
+        [FieldOffset(0x1e)] public short          num_entries;
+        [FieldOffset(0x20)] public short          field9_0x20;
+        [FieldOffset(0x22)] public short          num_columns;
+        [FieldOffset(0x24)] public byte           field11_0x24;
+        [FieldOffset(0x25)] public short          field12_0x25;
+
+        [FieldOffset(0x28)] public bool           is_full;
+
+        [FieldOffset(0x2a)] public XYWHs16        pos3;
+        [FieldOffset(0x32)] public short          field_0x32;
+        [FieldOffset(0x34)] public void*          func1;
+        [FieldOffset(0x38)] public void*          func2;
+        [FieldOffset(0x3c)] public void*          func3;
+        [FieldOffset(0x40)] public MenuEntryArray entries;
+    }
+    public unsafe struct SphereGridMenuData {
+        [InlineArray(12)]
+        public struct SphereGridMenuArray {
+            private SphereGridMenu _data;
+        }
+        public SphereGridMenuArray menus;
+        public int                 field1_0x2700;
+        public void*               func;
+    }
+
+    private nint _panel_bin_ptr => FhUtil.get_at<nint>(0x16860E0);
+
+    private LpAbilityMapEngine* lpamng => Globals.SphereGrid.lpamng;
+    private nint  sphere_bin_ptr => FhUtil.get_at<nint>(0x16860E4);
+    private SphereGridMenuData* sphere_grid_menu_ptr  => (SphereGridMenuData*)FhUtil.get_at<nint>(0x01686108);
+    private short _DAT_01a8607e => FhUtil.get_at<byte>(0x0168607e);
+    private nint  p_DAT_01a86034  => (nint)FhUtil.ptr_at<nint>(0x1686034);
+    private nint  p_DAT_016c1830  => (nint)FhUtil.ptr_at<nint>(0x12C1830);
+    private nint  p_DAT_01a86060  => (nint)FhUtil.ptr_at<nint>(0x1686060);
+    private nint* p_ppvCurPrimp => FhUtil.ptr_at<nint>(0x1F0FD2C);
+
+
+    private uint*  p_DAT_01841bf0                       => FhUtil.ptr_at<uint>(0x01441bf0);
+    private uint*  p_DAT_01841bf4                       => FhUtil.ptr_at<uint>(0x01441bf4);
+    private uint*  p_DAT_01841bec                       => FhUtil.ptr_at<uint>(0x01441bec);
+    private byte*  p_DAT_01841bd4_PauseMenuPlayerList   => FhUtil.ptr_at<byte>(0x01441bd4);
+    private uint*  p_DAT_01841be4_PauseMenuFrontlineNum => FhUtil.ptr_at<uint>(0x01441be4);
+    private uint*  p_UINT_01841bdc_PlayerListMax        => FhUtil.ptr_at<uint>(0x01441bdc);
+    private uint*  p_UINT_01841be0_PlayerListMax        => FhUtil.ptr_at<uint>(0x01441be0);
+    private uint*  p_DAT_01841be8_PauseMenuSelIdx       => FhUtil.ptr_at<uint>(0x01441be8);
+
+    private byte* p_DAT_01869ed9 => FhUtil.ptr_at<byte>(0x01469ed9);
+    private int*  p_DAT_01869ee4 => FhUtil.ptr_at<int >(0x01469ee4);
+    private byte* p_DAT_01869ed8 => FhUtil.ptr_at<byte>(0x01469ed8);
+
+    private int  DAT_023057ec   => FhUtil.get_at<int>(0x1F057EC);
+
+    private int* p_DAT_018663a8 => FhUtil.ptr_at<int>(0x14663A8);
+
+
+    //private Vector4* Vector4f_ARRAY_00c86010 => FhUtil.ptr_at<Vector4>(0x886010); // Selected character ambient(?) light color on surrounding nodes
+    //private int* p_DAT_00c86580 => FhUtil.ptr_at<int>(0x886580); // Selected character aura color?
+    //private int* p_DAT_00c86660 => FhUtil.ptr_at<int>(0x886660); // Circle color?
+    private Vector4* Vector4f_ARRAY_00c86010;
+    private int* p_DAT_00c86580;
+    private int* p_DAT_00c86660;
+    private int* p_DAT_00c86644;
+    private int* p_DAT_00c8659c;
+
+    private float* eff_sin_t => FhUtil.ptr_at<float>(0x844BE0);
+
+    private int DAT_023057f8 => FhUtil.get_at<int>(0x1F057F8);
+    private int DAT_023057fc => FhUtil.get_at<int>(0x1F057FC);
+    private int* p_DAT_01740830_sphere_grid_layout_dat => FhUtil.ptr_at<int>(0x1340830);
+
+
+    private int* p_DAT_01a85f70 => FhUtil.ptr_at<int>(0x1685F70);
+    private int* p_DAT_01a85f74 => FhUtil.ptr_at<int>(0x1685F74);
+    private int  DAT_02305800 => FhUtil.get_at<int>(0x1F05800);
+    
+    private int* p_DAT_01a860ec => FhUtil.ptr_at<int>(0x16860EC);
+    private int* p_DAT_01a860f0 => FhUtil.ptr_at<int>(0x16860F0);
+
+
+    private uint DAT_02305814 => FhUtil.get_at<uint>(0x01f05814);
+    private uint DAT_02305818 => FhUtil.get_at<uint>(0x01f05818);
+    private uint DAT_0230581c => FhUtil.get_at<uint>(0x01f0581c);
+    private uint DAT_02305820 => FhUtil.get_at<uint>(0x01f05820);
+
+    private short DAT_02305810 => FhUtil.get_at<short>(0x01f05810);
+    private short DAT_02305808 => FhUtil.get_at<short>(0x01f05808);
+    private uint  DAT_02305830 => FhUtil.get_at<uint>(0x01f05830);
+    private uint  DAT_0230580c => FhUtil.get_at<uint>(0x01f0580c);
+    private short DAT_02305804 => FhUtil.get_at<short>(0x01f05804);
+
+
+
+
+
+
+    private Vector4* asmreg_0_zero => FhUtil.ptr_at<Vector4>(0x88F508); // Vector4i in Ghidra
+
+    private float* _asmreg_Q => FhUtil.ptr_at<float>(0x88F788);
+    private Vector4* asmreg_vf0  => FhUtil.ptr_at<Vector4>(0x80a004);
+    private Vector4* asmreg_vf4  => FhUtil.ptr_at<Vector4>(0x88F7D0);
+    private Vector4* asmreg_vf5  => FhUtil.ptr_at<Vector4>(0x88F7E0);
+    private Vector4* asmreg_vf7  => FhUtil.ptr_at<Vector4>(0x88F800);
+    private Vector4* asmreg_vf8  => FhUtil.ptr_at<Vector4>(0x88F810);
+    private Vector4* asmreg_vf9  => FhUtil.ptr_at<Vector4>(0x88F820);
+    private Vector4* asmreg_vf10 => FhUtil.ptr_at<Vector4>(0x88F830);
+    private Vector4* asmreg_vf26 => FhUtil.ptr_at<Vector4>(0x88F930);
+    private Vector4* asmreg_vf27 => FhUtil.ptr_at<Vector4>(0x88F940);
+    private Vector4* asmreg_vf28 => FhUtil.ptr_at<Vector4>(0x88F950);
+    private Vector4* asmreg_vf29 => FhUtil.ptr_at<Vector4>(0x88F960);
+    private Vector4* asmreg_vf30 => FhUtil.ptr_at<Vector4>(0x88F970);
+    private Vector4* asmreg_vf31 => FhUtil.ptr_at<Vector4>(0x88F980);
+    private Vector4* asmreg_ACC  => FhUtil.ptr_at<Vector4>(0x88F790);
+
+
+    private SphereGridLinkPoint* SphereGridLinkPoint_ARRAY_01693160 => FhUtil.ptr_at<SphereGridLinkPoint>(0x1293160);
+
+
+
+    private void h_FUN_00a44d30() {
+        ushort uVar1;
+        ushort uVar2;
+        SphereGridMenuData* iVar3;
+        uint uVar4;
+        PCommand *pMVar5;
+        //byte *puVar6;
+        int iVar6;
+        ExcelBlock_sphere local_28;
+        int local_c;
+        uint local_8;
+
+        iVar3 = sphere_grid_menu_ptr;
+        iVar6 = 0;
+        uVar1 = custom_party_infos[lpamng->current_chr_id].current_node_idx;
+        if (0 < sphere_grid_menu_ptr->menus[8].num_entries) {
+            //puVar6 = (byte*)(sphere_grid_menu_ptr + 0x1a44);
+            ref MenuEntry entry = ref sphere_grid_menu_ptr->menus[8].entries[iVar6];
+            do {
+                //uVar2 = *(ushort*)(puVar6 + 4);
+                uVar2 = (ushort)entry.unknown2;
+                local_8 = lpamng->current_chr_id;
+                uVar4 = _MsGetSaveItemNum(uVar2);
+                if (uVar4 == 0) {
+                    //*puVar6 = 1;
+                    entry.unknown1 = 1;
+                }
+                else {
+                    local_28.sphere_type = 1 << ((byte)local_8 & 0x1f);
+                    local_28.desc_hira = (int)local_8;
+                    local_28._0xc = 0;
+                    pMVar5 = _MsGetRomItem(uVar2, &local_c);
+                    if (pMVar5->command_pdata.sphere_grid_role == 0xff) {
+                        local_28.desc = 0;
+                    }
+                    else {
+                        local_28.desc =
+                             (int)_MsGetExcelData(pMVar5->command_pdata.sphere_grid_role, sphere_bin_ptr, &local_c);
+                    }
+                    if ((void*)local_28.desc != (void*)0x0) {
+                        if (*(char*)(local_28.desc + 0xc) == ' ') {
+                            _FUN_00a59710((nint)FhUtil.ptr_at<nint>(__addr_FUN_00a49440), &local_28);
+                        }
+                        else {
+                            _FUN_00a59760(uVar1, (nint)FhUtil.ptr_at<nint>(__addr_FUN_00a49440), &local_28);
+                        }
+                    }
+                    if (local_28._0xc == 0) {
+                        //*puVar6 = 1;
+                        entry.unknown1 = 1;
+                    } else {
+                        //*puVar6 = 0;
+                        entry.unknown1 = 0;
+                    }
+                }
+                iVar6 = iVar6 + 1;
+                //puVar6 = puVar6 + 0xc;
+            } while (iVar6 < iVar3->menus[8].num_entries);
+        }
+        return;
+    }
+
+    void h_FUN_00a45010() {
+        //ushort abmap_input_1 = lpamng->abmap_input[1];
+        //_FUN_00a45010.orig_fptr();
+        byte *pbVar1;
+        ushort uVar2;
+        SphereGridMenuData *pSVar3;
+
+        _FUN_00a58ff0(0x0);
+        if ((lpamng->field_0x115cd == 0) && (lpamng->field_0x115b0 == 0)) {
+            _FUN_00a58ec0.hook_fptr();
+            if (lpamng->field_0x115b0 == 0) {
+                if (lpamng->field_0x115c4 == 0) {
+                    lpamng->field_0x115c4 = 1;
+                    _FUN_00a48f20(6);
+                }
+                uVar2 = lpamng->abmap_input[1];
+                if ((uVar2 & 0x20) != 0) {
+                    _SndSepPlaySimple(0x80000001);
+                    lpamng->field_0x11666 = 0;
+                    _FUN_00a48c20(6);
+                    _FUN_00a48c20(1);
+                    _FUN_00a48c20(2);
+                    _FUN_00a48c20(3);
+                    _FUN_00a48c20(4);
+                    _FUN_00a48c20(5);
+                    lpamng->field_0x115c8 = 0;
+                    _FUN_00a48e40(custom_party_infos[lpamng->current_chr_id].current_node_idx, 0x3e800000);
+                    return;
+                }
+                if ((uVar2 & 0x40) != 0) {
+                    _SndSepPlaySimple(0x80000001);
+                    _FUN_00a48c20(6);
+                    _FUN_00a48c20(1);
+                    _FUN_00a48c20(2);
+                    _FUN_00a48c20(3);
+                    _FUN_00a48c20(4);
+                    _FUN_00a48c20(5);
+                    lpamng->field_0x115c8 = 0;
+                    pSVar3 = sphere_grid_menu_ptr;
+                    *(byte*)((int)&sphere_grid_menu_ptr->menus[10].num_columns + 1) = 1;
+                    //FUN_00a59860(0xb, FUN_00a56060);
+                    _FUN_00a59860(0xb, FhUtil.ptr_at<nint>(0x656060));
+                    pbVar1 = &pSVar3->menus[0].field11_0x24;
+                    *pbVar1 = (byte)(*pbVar1 | 0xc);
+                    *(short*)&pSVar3->menus[0].field6_0x18 = 0;
+                    return;
+                }
+                if (((((sphere_grid_menu_ptr->menus[6].func1 == (void*)0x0) &&
+                      (sphere_grid_menu_ptr->menus[1].func1 == (void*)0x0)) &&
+                     ((sphere_grid_menu_ptr->menus[3].func1 == (void*)0x0 &&
+                      ((sphere_grid_menu_ptr->menus[2].func1 == (void*)0x0 &&
+                       (sphere_grid_menu_ptr->menus[4].func1 == (void*)0x0)))))) &&
+                    (sphere_grid_menu_ptr->menus[5].func1 == (void*)0x0)) && ((uVar2 & 0x10) != 0)) {
+                    _SndSepPlaySimple(0x80000001);
+                    lpamng->field_0x115c8 = (byte)(lpamng->field_0x115c8 + 1);
+                    if (5 < lpamng->field_0x115c8) {
+                        lpamng->field_0x115c8 = 0;
+                    }
+                    switch (lpamng->field_0x115c8) {
+                        case 0:
+                            _FUN_00a48c20(5);
+                            _FUN_00a48f20(6);
+                            return;
+                        case 1:
+                            *(byte*)((int)&sphere_grid_menu_ptr->menus[6].num_columns + 1) = 0;
+                            _FUN_00a48f20(1);
+                            return;
+                        case 2:
+                            _FUN_00a5a2e0(3);
+                            *(byte*)((int)&sphere_grid_menu_ptr->menus[1].num_columns + 1) = 0;
+                            _FUN_00a48f20(3);
+                            return;
+                        case 3:
+                            _FUN_00a5a2e0(2);
+                            *(byte*)((int)&sphere_grid_menu_ptr->menus[3].num_columns + 1) = 0;
+                            _FUN_00a48f20(2);
+                            return;
+                        case 4:
+                            _FUN_00a5a2e0(4);
+                            *(byte*)((int)&sphere_grid_menu_ptr->menus[2].num_columns + 1) = 0;
+                            _FUN_00a48f20(4);
+                            return;
+                        case 5:
+                            _FUN_00a5a2e0(5);
+                            *(byte*)((int)&sphere_grid_menu_ptr->menus[4].num_columns + 1) = 0;
+                            _FUN_00a48f20(5);
+                            return;
+                    }
+                }
+            }
+        }
+        return;
+    }
+
+    uint h_abmap_get_chr_point(int param_1) {
+        byte bVar1;
+
+        bVar1 = _MsGetSavePlyJoined((byte)param_1);
+        if (bVar1 == 0) {
+            return 0xffffffff;
+        }
+        return custom_party_infos[param_1].current_node_idx;
+    }
+
+    void h_FUN_00a47d50() {
+        float fVar1;
+        float fVar2;
+        float fVar3;
+        LpAbilityMapEngine *plVar4;
+        float *pfVar5;
+        int iVar6;
+        uint uStack_8;
+
+        iVar6 = 0;
+        uStack_8 = lpamng->field_0x11650;
+        pfVar5 = &custom_party_infos[0].pos_circle_radius;
+        fVar1 = lpamng->field_0x1162c;
+        fVar2 = lpamng->field_0x11628;
+        fVar3 = lpamng->field_0x11628;
+        plVar4 = lpamng;
+        do {
+            if ((0.0 < *pfVar5 != float.IsNaN(*pfVar5)) && (*(ushort*)(pfVar5 + 2) == plVar4->field295_0x1164e)) {
+                *pfVar5 = (fVar1 - fVar2) * (uStack_8 / 40.0f) + fVar3;
+                _FUN_00a58080.hook_fptr(iVar6);
+                plVar4 = lpamng;
+            }
+            iVar6 = iVar6 + 1;
+            pfVar5 = pfVar5 + 0x14;
+            if (iVar6 == num_characters) pfVar5 = (float*)((int)lpamng + 0x112b8 + 0x3c);
+        } while (iVar6 < num_characters+1);
+        if ((plVar4->field_0x11650 < 0x14) && (0x13 < plVar4->field_0x11650 + 1)) {
+            _FUN_00a5bb70.hook_fptr();
+            _eiAbmParaGet.hook_fptr();
+            lpamng->nodes[lpamng->field295_0x1164e].node_type = lpamng->field294_0x1164c;
+            lpamng->field_0x116a8 = lpamng->field295_0x1164e;
+            lpamng->field_0x116ac = 1;
+            lpamng->link_points = SphereGridLinkPoint_ARRAY_01693160;
+            _FUN_00a5a800();
+            plVar4 = lpamng;
+        }
+        plVar4->field_0x11650 += 1;
+        if (_DAT_01a8607e == 0) {
+            iVar6 = 0;
+            pfVar5 = &custom_party_infos[0].pos_circle_radius;
+            plVar4 = lpamng;
+            do {
+                if ((0.0 < *pfVar5 != float.IsNaN(*pfVar5)) && (*(ushort*)(pfVar5 + 2) == plVar4->field295_0x1164e)) {
+                    *pfVar5 = plVar4->field_0x1162c;
+                    _FUN_00a58080.hook_fptr(iVar6);
+                    plVar4 = lpamng;
+                }
+                iVar6 = iVar6 + 1;
+                pfVar5 = pfVar5 + 0x14;
+                if (iVar6 == num_characters) pfVar5 = (float*)((int)lpamng + 0x112b8 + 0x3c);
+            } while (iVar6 < num_characters+1);
+            plVar4->field_0x115a8 = plVar4->field_0x115b0;
+            lpamng->field_0x115b0 = 0;
+            lpamng->field_0x115ac = lpamng->field_0x115b4;
+            lpamng->field_0x115b4 = 0;
+        }
+        return;
+    }
+
+    void h_FUN_00a47f00() {
+        byte bVar1;
+        float progress;
+        LpAbilityMapEngine *plVar2;
+        Vector4 local_28;
+        Vector4 local_18;
+
+        plVar2 = lpamng;
+        bVar1 = lpamng->_0x1164c;
+        if (bVar1 == 0) {
+            lpamng->_0x1164d += 1;
+            lpamng->field_0x115c6 = (byte)(-0x80 - (char)(((uint)lpamng->_0x1164d << 7) / 0x28));
+            if (0x7f < lpamng->field_0x115c6) {
+                lpamng->field_0x115c6 = 0x80;
+            }
+            if (_DAT_01a8607e == 0) {
+                custom_party_infos[lpamng->field_0x11638].pos_circle_radius = 0.0f;
+                lpamng->_0x1164c = 1;
+                lpamng->field_0x115c6 = 0;
+            }
+        }
+        else {
+            if (bVar1 == 1) {
+                local_18.X = lpamng->nodes[lpamng->field_0x11634].x;
+                local_18.Y = lpamng->nodes[lpamng->field_0x11634].y;
+                local_18.Z = 0.0f;
+                local_18.W = 1.0f;
+                progress = lpamng->field_0x11620 + 0.083333336f;
+                lpamng->field_0x11620 = progress;
+                if (1.0 <= progress) {
+                    plVar2->_0x1164c = 2;
+                    lpamng->_0x1164d = 0;
+                    _SndSepPlaySimple(0x80000070);
+                    plVar2 = lpamng;
+                    (lpamng->cam_desired_pos).X = local_18.X;
+                    (plVar2->cam_desired_pos).Y = local_18.Y;
+                    (plVar2->cam_desired_pos).Z = local_18.Z;
+                    (plVar2->cam_desired_pos).W = local_18.W;
+                    _pppCreateHeap(p_DAT_01a86034, p_DAT_016c1830, 0x7d000);
+                    _FUN_00a5bad0(p_DAT_01a86060, 1, local_18.X, local_18.Y, 0, 0, 0, 0, 0.5f, 0.5f, 0.5f);
+                    custom_party_infos[lpamng->field_0x11638].current_node_idx = lpamng->field_0x11634;
+                    _FUN_00a5a990.hook_fptr(lpamng->field_0x11638);
+                    _FUN_00a58080.hook_fptr(lpamng->field_0x11638);
+                    lpamng->field_0x115c7 = 1;
+                    _FUN_00a5b030.hook_fptr();
+                    return;
+                }
+                _FFXVu0InterVectorXYZ(&local_28, &local_18, &lpamng->cam_previous_desired_pos, progress);
+                (lpamng->cam_desired_pos).X = local_28.X;
+                (lpamng->cam_desired_pos).Y = local_28.Y;
+                return;
+            }
+            if (bVar1 == 2) {
+                lpamng->_0x1164d += 1;
+                lpamng->field_0x115c6 = (byte)(((uint)lpamng->_0x1164d << 7) / 0x28);
+                if (0x7f < lpamng->field_0x115c6) {
+                    lpamng->field_0x115c6 = 0x80;
+                }
+                if (_DAT_01a8607e == 0) {
+                    lpamng->field_0x115c6 = 0x80;
+                    lpamng->field_0x115a8 = lpamng->field_0x115b0;
+                    lpamng->field_0x115b0 = 0;
+                    lpamng->field_0x115ac = lpamng->field_0x115b4;
+                    lpamng->field_0x115b4 = 0;
+                    return;
+                }
+            }
+        }
+        return;
+    }
+
+    void h_abmap_set_chr_posInternal_00a48a80(int chr_id, ushort node_idx) {
+        float node_y;
+        LpAbilityMapEngine *_lpamng;
+        ushort current_node;
+        float node_x;
+
+        _lpamng = lpamng;
+        current_node = custom_party_infos[chr_id].current_node_idx;
+        _SndSepPlaySimple(0x80000070);
+        lpamng->_0x1164c = 0;
+        lpamng->_0x1164d = 0;
+        node_x = _lpamng->nodes[current_node].x;
+        lpamng->cam_desired_pos.X = node_x;
+        lpamng->cam_previous_desired_pos.X = node_x;
+        node_y = _lpamng->nodes[current_node].y;
+        lpamng->cam_desired_pos.Y = node_y;
+        lpamng->cam_previous_desired_pos.Y = node_y;
+        lpamng->field_0x11620 = 0;
+        lpamng->field_0x11634 = node_idx;
+        lpamng->field_0x11638 = (byte)chr_id;
+        _pppCreateHeap(p_DAT_01a86034, p_DAT_016c1830, 0x7d000);
+        _FUN_00a5bad0(p_DAT_01a86060, 2, _lpamng->nodes[current_node].x,
+                     _lpamng->nodes[current_node].y, 0, 0, 0, 0, 0.5f, 0.5f, 0.5f);
+        if (lpamng->field_0x115b4 == 0) {
+            lpamng->field_0x115b4 = lpamng->field_0x115ac;
+            lpamng->field_0x115ac = (int)FhUtil.ptr_at<int>(0x64C430);
+        }
+        if (lpamng->field_0x115b0 == 0) {
+            lpamng->field_0x115b0 = lpamng->field_0x115a8;
+            lpamng->field_0x115a8 = (int)FhUtil.ptr_at<int>(__addr_FUN_00a47f00);
+        }
+        return;
+    }
+
+    void h_FUN_00a48c80(int chr_id, ushort node_idx) {
+        lpamng->field_0x11632 = custom_party_infos[chr_id].current_node_idx;
+        lpamng->field_0x11630 = lpamng->field_0x11632;
+        lpamng->field_0x11634 = node_idx;
+        lpamng->field_0x11620 = 1.0f;
+        lpamng->field272_0x11624 = 0.0f;
+        lpamng->field_0x11638 = (byte)chr_id;
+        if (lpamng->field_0x115b0 == 0) {
+            lpamng->field_0x115b0 = lpamng->field_0x115a8;
+            lpamng->field_0x115a8 = (int)FhUtil.ptr_at<int>(0x659990);
+        }
+        return;
+    }
+
+    void h_FUN_00a49590() {
+        byte bVar1;
+        float fVar2;
+        SaveSphereGrid *save_ability_map;
+        LpAbilityMapEngine *plVar3;
+        int link_idx;
+        int node_idx;
+        SphereGridTilt tilt_level;
+
+        save_ability_map = _MsGetSaveAbilityMap();
+        node_idx = 0;
+        plVar3 = lpamng;
+        if (0 < lpamng->node_count) {
+            do {
+                if (plVar3->nodes[node_idx].node_type != NodeType.NULL) {
+                    bVar1 = save_ability_map->nodes[node_idx].node_type;
+                    if (bVar1 == 0xff) {
+                        plVar3->nodes[node_idx].node_type = NodeType.NULL;
+                        //* (ushort*)((int)plVar3->nodes[0].links_ptr + node_offset + -6) = 0xffff;
+                    }
+                    else {
+                        plVar3->nodes[node_idx].node_type = (NodeType)(ushort)bVar1;
+                        //*(ushort*)((int)plVar3->nodes[0].links + node_offset + -6) = (ushort)bVar1;
+                    }
+                    plVar3->nodes[node_idx].activated_by = save_ability_map->nodes[node_idx].activated_by;
+                    //*(byte*)((int)plVar3->nodes[0].links + node_offset + 0x15) =
+                    //     save_ability_map->nodes[node_idx].activated_by;
+                    plVar3 = lpamng;
+                }
+                node_idx = node_idx + 1;
+            } while (node_idx < plVar3->node_count);
+        }
+        link_idx = 0;
+        if (0 < plVar3->link_count) {
+            do {
+                plVar3->links[link_idx].activated_by = save_ability_map->links_activated_by[link_idx];
+                //(&plVar3->links[0].activated_by)[link_offset] = save_ability_map->links_activated_by[link_idx]
+                ;
+                link_idx = link_idx + 1;
+                plVar3 = lpamng;
+            } while (link_idx < lpamng->link_count);
+        }
+        // TODO: Handle extra characters
+        custom_party_infos[0].current_node_idx = save_ability_map->party_selected_node_idx[0];
+        custom_party_infos[1].current_node_idx = save_ability_map->party_selected_node_idx[1];
+        custom_party_infos[2].current_node_idx = save_ability_map->party_selected_node_idx[2];
+        custom_party_infos[3].current_node_idx = save_ability_map->party_selected_node_idx[3];
+        custom_party_infos[4].current_node_idx = save_ability_map->party_selected_node_idx[4];
+        custom_party_infos[5].current_node_idx = save_ability_map->party_selected_node_idx[5];
+        custom_party_infos[6].current_node_idx = save_ability_map->party_selected_node_idx[6];
+        for (int i = 0; i < num_characters - 7; i++) {
+            custom_party_infos[i+7].current_node_idx = custom_party_selected_node_idx[i];
+        }
+        lpamng->tilt_level = save_ability_map->tilt_level;
+        lpamng->zoom_level = save_ability_map->zoom_level;
+        plVar3 = lpamng;
+        tilt_level = lpamng->tilt_level;
+        if (tilt_level != SphereGridTilt.Flat) {
+            if (tilt_level == SphereGridTilt.SlightTilt) {
+                fVar2 = -3640.0f;
+                goto LAB_00a496fe;
+            }
+            if (tilt_level == SphereGridTilt.FarTilt) {
+                fVar2 = -7281.0f;
+                goto LAB_00a496fe;
+            }
+        }
+        fVar2 = 0.0f;
+    LAB_00a496fe:
+        node_idx = (int)(fVar2); // Is this equivalent to ftol(fVar2)?
+        (plVar3->tilt_vector)[0] = node_idx;
+        switch (lpamng->zoom_level) {
+            default:
+                fVar2 = 1.0f;
+                break;
+            case SphereGridZoom.Medium:
+                fVar2 = 0.5f;
+                break;
+            case SphereGridZoom.Far:
+                fVar2 = 0.25f;
+                break;
+            case SphereGridZoom.VeryFar:
+                fVar2 = 0.125f;
+                break;
+        }
+        (lpamng->zoom_vector).Z = fVar2;
+        (lpamng->zoom_vector).Y = fVar2;
+        (lpamng->zoom_vector).X = fVar2;
+        if (0.375 < fVar2) {
+            lpamng->field374_0x116b0 = 2;
+            return;
+        }
+        lpamng->field374_0x116b0 = -2;
+        return;
+    }
+
+    void h_FUN_00a4b790() {
+        //var _asmreg_ACC  = asmreg_ACC;
+        //var _asmreg_vf26 = asmreg_vf26;
+        //var _asmreg_vf27 = asmreg_vf27;
+        //var _asmreg_vf28 = asmreg_vf28;
+        //var _asmreg_vf29 = asmreg_vf29;
+        //var _asmreg_vf30 = asmreg_vf30;
+        //var _asmreg_vf31 = asmreg_vf31;
+
+        float x;
+        LpAbilityMapEngine *plVar1;
+        byte bVar2;
+        float *piVar3;
+        int iVar4;
+        SphereGridChrInfo *pSVar5;
+        int iVar6;
+        int *piVar7;
+        float fVar8;
+        float extraout_ST0;
+        float fVar9;
+        float extraout_ST1;
+        float extraout_ST1_00;
+        int local_294;
+        float *local_290;
+        float local_28c;
+        int local_288 = 0;
+        int local_284;
+        int *local_280;
+        int local_27c;
+        int local_278;
+        float *local_274;
+        float local_270 = 0f;
+        float local_26c = 0f;
+        int local_268;
+        float local_264;
+        float[] _local_260 = new float[8];
+        fixed (float* local_260 = _local_260) {
+            int local_25c;
+            int local_258;
+            int local_254;
+            float local_250;
+            float local_24c;
+            float local_248;
+            float local_244;
+            float[] _local_240 = new float[32];
+            fixed (float* local_240 = _local_240) {
+
+                int[] _local_1a8 = new int[32];
+                fixed (int* local_1a8 = _local_1a8) {
+                    int[] _local_128 = new int[2];
+                    fixed (int* local_128 = _local_128) {
+                        float[] _local_118 = new float[3];
+                        fixed (float* local_118 = _local_118) {
+                            char[] _local_108 = new char[256];
+                            fixed (char* local_108 = _local_108) {
+
+                                piVar3 = (float*)_user_malloc(0x1ec);
+                                Span<float> _piVar3 = new Span<float>(piVar3, 0x7b);
+                                fVar9 = 0f;
+                                fVar8 = 16.0f;
+                                //local_274 = &custom_party_infos[0].pos_circle_radius;
+                                var chr_info = &custom_party_infos[0];
+
+                                local_268 = 7;
+                                piVar7 = local_1a8 + 3;
+                                local_290 = piVar3;
+                                do {
+                                    asmreg_vf27->X = chr_info->label_pos.X;
+                                    asmreg_vf27->Y = chr_info->label_pos.Y;
+                                    asmreg_vf27->Z = chr_info->label_pos.Z;
+                                    asmreg_vf27->W = chr_info->label_pos.W;
+                                    asmreg_vf28->X = (lpamng->field90_0x113e0).M11;
+                                    asmreg_vf28->Y = (lpamng->field90_0x113e0).M12;
+                                    asmreg_vf28->Z = (lpamng->field90_0x113e0).M13;
+                                    asmreg_vf28->W = (lpamng->field90_0x113e0).M14;
+                                    asmreg_vf29->X = (lpamng->field90_0x113e0).M21;
+                                    asmreg_vf29->Y = (lpamng->field90_0x113e0).M22;
+                                    asmreg_vf29->Z = (lpamng->field90_0x113e0).M23;
+                                    asmreg_vf29->W = (lpamng->field90_0x113e0).M24;
+                                    asmreg_vf30->X = (lpamng->field90_0x113e0).M31;
+                                    asmreg_vf30->Y = (lpamng->field90_0x113e0).M32;
+                                    asmreg_vf30->Z = (lpamng->field90_0x113e0).M33;
+                                    asmreg_vf30->W = (lpamng->field90_0x113e0).M34;
+                                    asmreg_vf31->X = (lpamng->field90_0x113e0).M41;
+                                    asmreg_vf31->Y = (lpamng->field90_0x113e0).M42;
+                                    asmreg_vf31->Z = (lpamng->field90_0x113e0).M43;
+                                    asmreg_vf31->W = (lpamng->field90_0x113e0).M44;
+                                    asmreg_ACC->X = asmreg_vf27->Z * asmreg_vf30->X +
+                                                    asmreg_vf27->Y * asmreg_vf29->X + asmreg_vf27->X * asmreg_vf28->X;
+                                    asmreg_ACC->Y = asmreg_vf30->Y * asmreg_vf27->Z +
+                                                    asmreg_vf29->Y * asmreg_vf27->Y + asmreg_vf28->Y * asmreg_vf27->X;
+                                    asmreg_ACC->Z = asmreg_vf30->Z * asmreg_vf27->Z +
+                                                    asmreg_vf29->Z * asmreg_vf27->Y + asmreg_vf28->Z * asmreg_vf27->X;
+                                    *piVar7 = 0;
+                                    asmreg_ACC->W = asmreg_vf27->Z * asmreg_vf30->W +
+                                                    asmreg_vf27->Y * asmreg_vf29->W + asmreg_vf27->X * asmreg_vf28->W;
+                                    asmreg_vf26->X = asmreg_ACC->X + asmreg_vf0->W * asmreg_vf31->X;
+                                    asmreg_vf26->Y = asmreg_vf31->Y * asmreg_vf0->W + asmreg_ACC->Y;
+                                    asmreg_vf26->Z = asmreg_vf31->Z * asmreg_vf0->W + asmreg_ACC->Z;
+                                    asmreg_vf26->W = asmreg_vf0->W * asmreg_vf31->W + asmreg_ACC->W;
+                                    piVar3[0xc] = asmreg_vf26->X;
+                                    piVar3[0xd] = asmreg_vf26->Y;
+                                    piVar3[0xe] = asmreg_vf26->Z;
+                                    piVar3[0xf] = asmreg_vf26->W;
+                                    if ((fVar9 < chr_info->pos_circle_radius != (float.IsNaN(fVar9) || float.IsNaN(chr_info->pos_circle_radius))) &&
+                                       (fVar9 < piVar3[0xf] != (float.IsNaN(fVar9) || float.IsNaN(piVar3[0xf])))) {
+                                        asmreg_vf4->W = piVar3[0xf];
+                                        asmreg_vf5->X = piVar3[0xf];
+                                        iVar6 = 0;
+                                        *_asmreg_Q = asmreg_vf0->W / asmreg_vf5->X;
+                                        asmreg_vf4->X = *_asmreg_Q * piVar3[0xc];
+                                        asmreg_vf4->Y = piVar3[0xd] * *_asmreg_Q;
+                                        asmreg_vf4->Z = *_asmreg_Q * piVar3[0xe];
+                                        piVar3[0xc] = asmreg_vf4->X;
+                                        piVar3[0xd] = asmreg_vf4->Y;
+                                        piVar3[0xe] = asmreg_vf4->Z;
+                                        piVar3[0xf] = asmreg_vf4->W;
+                                        asmreg_vf8->X = piVar3[0xc];
+                                        asmreg_vf8->Y = piVar3[0xd];
+                                        asmreg_vf8->Z = piVar3[0xe];
+                                        asmreg_vf8->W = piVar3[0xf];
+                                        local_260[0] = piVar3[0xc];
+                                        local_260[1] = piVar3[0xd];
+                                        local_260[2] = piVar3[0xe];
+                                        local_260[3] = piVar3[0xf];
+                                        local_28c = asmreg_vf8->Z;
+                                        local_284 = BitConverter.SingleToInt32Bits(asmreg_vf8->X);
+                                        local_280 = (int*)BitConverter.SingleToInt32Bits(asmreg_vf8->Y);
+                                        local_264 = asmreg_vf8->W;
+                                        do {
+                                            iVar4 = (int)((float)(*(local_260 + iVar6) * fVar8));
+                                            *(int*)(asmreg_vf7 + iVar6) = iVar4;
+                                            iVar6 = iVar6 + 1;
+                                            //fVar8 = extraout_ST1;
+                                        } while (iVar6 < 2);
+                                        local_260[4] = (float)local_284;
+                                        local_260[5] = (float)(int)local_280;
+                                        local_260[6] = local_28c;
+                                        local_260[7] = local_264;
+                                        asmreg_vf7->Z = (float)(int)(local_28c);
+                                        asmreg_vf7->W = (float)(int)(local_260[7]);
+                                        piVar3[0x18] = asmreg_vf7->X;
+                                        piVar3[0x19] = asmreg_vf7->Y;
+                                        piVar3[0x1a] = asmreg_vf7->Z;
+                                        piVar3[0x1b] = asmreg_vf7->W;
+                                        piVar7[-3] = BitConverter.SingleToInt32Bits(piVar3[0x18]) >> 4;
+                                        piVar7[-2] = BitConverter.SingleToInt32Bits(piVar3[0x19]) >> 4;
+                                        *piVar7 = 1;
+                                        //fVar9 = extraout_ST0;
+                                        //fVar8 = extraout_ST1_00;
+                                    }
+                                    //local_274 = local_274 + 0x14;
+                                    chr_info += 1;
+                                    piVar7 = piVar7 + 4;
+                                    local_268 = local_268 + -1;
+                                } while (local_268 != 0);
+                                local_280 = local_1a8;
+                                local_284 = 7;
+                                local_274 = (float*)0x0;
+                                pSVar5 = custom_party_infos;
+                                var temp = &custom_party_infos[0];
+                                local_268 = 0;
+                                do {
+                                    if ((fVar9 < pSVar5->pos_circle_radius ==
+                                         (float.IsNaN(fVar9) || float.IsNaN(pSVar5->pos_circle_radius))) || (local_280[3] == 0))
+                                        goto LAB_00a4c3cd;
+                                    local_268 = *local_280 + -0x800;
+                                    local_118[0] = (float)local_268;
+                                    bVar2 = (byte)(pSVar5->field26_0x4e & 3);
+                                    if ((bVar2 == 0) || (bVar2 == 2)) {
+                                        local_118[1] = ((pSVar5->pos).X - local_118[0]) + (pSVar5->pos).Y;
+                                    }
+                                    else {
+                                        local_118[1] = (pSVar5->pos).Y - ((pSVar5->pos).X - local_118[0]);
+                                    }
+                                    local_118[2] = 1.0f;
+                                    _FUN_00642a80(local_128, local_118);
+                                    iVar6 = local_128[0] + 0x100;
+                                    iVar4 = local_128[1] + 0xd0;
+                                    if (pSVar5->field22_0x46 != 0) {
+                                        iVar6 = iVar6 + (pSVar5->field22_0x46 >> 4);
+                                    }
+                                    if (pSVar5->field23_0x48 != 0) {
+                                        iVar4 = iVar4 + (pSVar5->field23_0x48 >> 4);
+                                    }
+                                    local_264 = (float)(uint)(local_274 != (float*)(uint)lpamng->current_chr_id ? 1 : 0);
+                                    local_268 = (pSVar5->field_0x38 + pSVar5->name_width);
+                                    local_27c = iVar6;
+                                    local_278 = iVar4;
+                                    //local_268 = local_268; // ???
+                                    local_294 = 0x13;
+                                    switch (pSVar5->field26_0x4e & 3) {
+                                        case 0:
+                                            local_26c = 0.25f;
+                                            break;
+                                        case 1:
+                                            local_26c = 0.51464844f;
+                                            iVar6 = iVar6 + (-7 - local_268);
+                                            local_27c = iVar6;
+                                            break;
+                                        case 2:
+                                            local_26c = 0.51464844f;
+                                            iVar6 = iVar6 + (-7 - local_268);
+                                            local_27c = iVar6;
+                                            goto LAB_00a4bdd3;
+                                        case 3:
+                                            local_26c = 0.25f;
+                                        LAB_00a4bdd3:
+                                            local_288 = 1;
+                                            local_270 = 0.119140625f;
+                                            goto default;
+                                        default:
+                                            goto switchD_00a4bd71_caseD_4;
+                                    }
+                                    iVar4 = iVar4 + -0x13;
+                                    local_270 = 0.18554688f;
+                                    local_288 = 0x13;
+                                    local_278 = iVar4;
+                                switchD_00a4bd71_caseD_4:
+
+                                    if (!(0.5 < local_26c == float.IsNaN(local_26c))) {
+                                        if (local_264 == 1.0) local_26c = 0.76464844f;
+                                        LAB_00a4be2f:
+                                        local_240[0] = (float)(local_268 + iVar6);
+                                        local_240[1] = (float)local_278;
+                                        local_240[8] = (float)(iVar6 + 7 + local_268);
+                                        local_240[0x11] = (float)(iVar4 + 0x13);
+                                        local_240[4] = 1.79366e-43f;
+                                        local_240[5] = 1.79366e-43f;
+                                        local_240[6] = 1.79366e-43f;
+                                        local_240[7] = 1.79366e-43f;
+                                        local_240[0xc] = 1.79366e-43f;
+                                        local_240[0xd] = 1.79366e-43f;
+                                        local_240[0xe] = 1.79366e-43f;
+                                        local_240[0xf] = 1.79366e-43f;
+                                        local_240[0x14] = 1.79366e-43f;
+                                        local_240[2] = local_26c + 0.20996094f;
+                                        local_240[0x15] = 1.79366e-43f;
+                                        local_240[0x16] = 1.79366e-43f;
+                                        local_240[0x17] = 1.79366e-43f;
+                                        local_240[0x1c] = 1.79366e-43f;
+                                        local_240[0x1d] = 1.79366e-43f;
+                                        local_240[0x1e] = 1.79366e-43f;
+                                        local_240[0x1f] = 1.79366e-43f;
+                                        local_240[3] = local_270;
+                                        local_240[10] = local_26c + 0.23632813f;
+                                        local_240[0xb] = local_270;
+                                        local_264 = local_270 + 0.05078125f;
+                                        local_240[9] = local_240[1];
+                                        local_240[0x10] = local_240[0];
+                                        local_240[0x12] = local_240[2];
+                                        local_240[0x13] = local_264;
+                                        local_240[0x18] = local_240[8];
+                                        local_240[0x19] = local_240[0x11];
+                                        local_240[0x1a] = local_240[10];
+                                        local_240[0x1b] = local_264;
+                                        _graphicDrawUIAbmapElement(local_240, local_108, 5);
+                                        local_264 = (float)local_27c;
+                                        local_240[10] = local_26c;
+                                        local_240[0x1a] = local_26c;
+                                        local_240[8] = local_264;
+                                        local_240[0x18] = local_264;
+                                    }
+                                    else {
+                                        if (local_264 == 1.0) local_26c = 0.0f;
+                                    LAB_00a4c0e9:
+                                        local_240[0] = (float)local_27c;
+                                        local_240[1] = (float)local_278;
+                                        local_240[8] = (float)(iVar6 + 7);
+                                        local_240[0x11] = (float)(iVar4 + 0x13);
+                                        local_240[4] = 1.79366e-43f;
+                                        local_240[5] = 1.79366e-43f;
+                                        local_240[6] = 1.79366e-43f;
+                                        local_240[7] = 1.79366e-43f;
+                                        local_240[0xc] = 1.79366e-43f;
+                                        local_240[0xd] = 1.79366e-43f;
+                                        local_240[0xe] = 1.79366e-43f;
+                                        local_240[0xf] = 1.79366e-43f;
+                                        local_240[0x14] = 1.79366e-43f;
+                                        local_240[0x15] = 1.79366e-43f;
+                                        local_240[3] = local_270;
+                                        local_240[0x16] = 1.79366e-43f;
+                                        local_240[0x17] = 1.79366e-43f;
+                                        local_240[10] = local_26c + 0.026367188f;
+                                        local_240[0x1c] = 1.79366e-43f;
+                                        local_240[0x1d] = 1.79366e-43f;
+                                        local_240[0x1e] = 1.79366e-43f;
+                                        local_240[0x1f] = 1.79366e-43f;
+                                        local_240[0xb] = local_270;
+                                        local_264 = local_270 + 0.05078125f;
+                                        local_240[2] = local_26c;
+                                        local_240[9] = local_240[1];
+                                        local_240[0x10] = local_240[0];
+                                        local_240[0x12] = local_26c;
+                                        local_240[0x13] = local_264;
+                                        local_240[0x18] = local_240[8];
+                                        local_240[0x19] = local_240[0x11];
+                                        local_240[0x1a] = local_240[10];
+                                        local_240[0x1b] = local_264;
+                                        _graphicDrawUIAbmapElement(local_240, local_108, 5);
+                                        local_240[0] = (float)(local_268 + 7 + iVar6);
+                                        local_264 = local_26c + 0.23632813f;
+                                        local_240[2] = local_264;
+                                        local_240[0x10] = local_240[0];
+                                        local_240[0x12] = local_264;
+                                    }
+                                    _graphicDrawUIAbmapElement(local_240, local_108, 5);
+                                    _FUN_008b70e0((nint)pSVar5->chr_name, &local_28c, &local_294);
+                                    bVar2 = (byte)(pSVar5->field26_0x4e & 3);
+                                    if ((bVar2 == 1) || (bVar2 == 2)) {
+                                        x = ((float)local_268 - BitConverter.SingleToInt32Bits(local_28c)) * 0.5f;
+                                    }
+                                    else {
+                                        x = ((float)local_268 - BitConverter.SingleToInt32Bits(local_28c)) * 0.5f + 7.0f;
+                                    }
+                                    local_268 = BitConverter.SingleToInt32Bits(local_28c);
+                                    local_268 = (int)(x);
+                                    plVar1 = lpamng;
+                                    iVar4 = pSVar5->field25_0x4c + local_288 + local_278;
+                                    iVar6 = (int)((lpamng->zoom_vector).Y * 100.0);
+                                    *p_ppvCurPrimp = _FUN_008e8fb0(*p_ppvCurPrimp + 0x10, 0xffffffff, pSVar5->chr_name,
+                                                               local_27c + local_268, iVar4, 0, 0, 0x80, 0x80, 0x80,
+                                                               plVar1->field_0x115b9, iVar6);
+                                    fVar9 = 0f;
+                                LAB_00a4c3cd:
+                                    local_280 = local_280 + 4;
+                                    local_274 = (float*)((int)local_274 + 1);
+                                    pSVar5 = pSVar5 + 1;
+                                    local_284 = local_284 + -1;
+                                    if (local_284 == 0) {
+                                        _user_free((nint)local_290);
+                                        return;
+                                    }
+                                } while (true);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    [StructLayout(LayoutKind.Explicit, Pack = 4, Size = 0x48)]
+    public struct temp_FUN_00a4c8d0_struct {
+        [FieldOffset(0x00)] public int        field0_0x0;
+        [FieldOffset(0x04)] public int        field1_0x4;
+        [FieldOffset(0x08)] public ushort     field2_0x8;
+        [FieldOffset(0x0a)] public byte       field3_0xa;
+        [FieldOffset(0x0b)] public byte       field4_0xb;
+        [FieldOffset(0x0c)] public int        field5_0xc;
+        [FieldOffset(0x10)] public int        field6_0x10;
+        [FieldOffset(0x14)] public int        field7_0x14;
+        [FieldOffset(0x18)] public int        rgba; // rgba ?
+        [FieldOffset(0x1b)] public byte       a; // a ?
+        [FieldOffset(0x1c)] public int        field10_0x1c;
+        [FieldOffset(0x20)] public Matrix4x4* field11_0x20;
+        [FieldOffset(0x24)] public int        field12_0x24;
+        [FieldOffset(0x28)] public int        field13_0x28;
+        [FieldOffset(0x2c)] public Matrix4x4* field14_0x2c;
+        [FieldOffset(0x30)] public int        field15_0x30;
+        [FieldOffset(0x34)] public int        field16_0x34;
+        [FieldOffset(0x38)] public int        field17_0x38;
+        [FieldOffset(0x3c)] public int        field18_0x3c;
+        [FieldOffset(0x40)] public int        field19_0x40;
+        [FieldOffset(0x44)] public Matrix4x4* field20_0x44;
+    }
+
+    void h_FUN_00a4c8d0() {
+        short sVar1;
+        ushort uVar2;
+        LpAbilityMapEngine *plVar3;
+        int iVar4;
+        uint uVar5;
+        //float *pfVar6;
+        //double extraout_ST0;
+        double fVar7;
+        uint uStack_154 = 0;
+        temp_FUN_00a4c8d0_struct local_150 = new();
+        Matrix4x4 local_d8 = new();
+        Matrix4x4 local_98 = new();
+        Matrix4x4 local_58 = new();
+
+        plVar3 = lpamng;
+        iVar4 = DAT_023057fc;
+        local_150.field0_0x0 = 4;
+        local_150.rgba = p_DAT_00c86580[lpamng->current_chr_id]; // Extend with custom color for Seymour
+        //local_150.field8_0x18 = *(p_DAT_00c86580 + (uint)lpamng->current_chr_id * 4);
+        local_150.a = (byte)(((long)lpamng->field_0x115c5 * 0x55555556) >> 0x20);
+        local_150.field2_0x8 = 0x48;
+        local_150.field11_0x20 = &local_d8;
+        local_150.field20_0x44 = &local_98;
+        local_98.M43 = 4.0f;
+        local_98.M13 = asmreg_0_zero->Z;
+        local_98.M23 = asmreg_0_zero->Z;
+        local_98.M33 = asmreg_0_zero->Z;
+        local_58.M13 = asmreg_0_zero->Z;
+        local_58.M23 = asmreg_0_zero->Z;
+        local_150.field10_0x1c = 0;
+        local_98.M44 = 1.0f;
+        local_150.field3_0xa = 0;
+        local_150.field18_0x3c = 0;
+        local_150.field17_0x38 = 0;
+        local_150.field1_0x4 = (int)p_DAT_01740830_sphere_grid_layout_dat;
+        local_150.field5_0xc = 0;
+        local_150.field6_0x10 = 0;
+        local_150.field7_0x14 = 0;
+        local_150.field19_0x40 = 0;
+        local_150.field14_0x2c = (Matrix4x4*)0;
+        local_150.field13_0x28 = 0;
+        local_150.field12_0x24 = 0;
+        local_98.M11 = asmreg_0_zero->X;
+        local_98.M12 = asmreg_0_zero->Y;
+        local_98.M14 = asmreg_0_zero->W;
+        local_98.M21 = asmreg_0_zero->X;
+        local_98.M22 = asmreg_0_zero->Y;
+        local_98.M24 = asmreg_0_zero->W;
+        local_98.M31 = asmreg_0_zero->X;
+        local_98.M32 = asmreg_0_zero->Y;
+        local_98.M34 = asmreg_0_zero->W;
+        local_98.M41 = asmreg_0_zero->X;
+        local_98.M42 = asmreg_0_zero->Y;
+        local_58.M12 = asmreg_0_zero->Y;
+        local_58.M14 = asmreg_0_zero->W;
+        local_58.M21 = asmreg_0_zero->X;
+        local_58.M24 = asmreg_0_zero->W;
+        local_58.M31 = asmreg_0_zero->X;
+        local_58.M32 = asmreg_0_zero->Y;
+        local_58.M34 = asmreg_0_zero->W;
+        local_58.M11 = (float)((lpamng->field_0x115a4 * 3.0 + 125.0) * 0.0007812500116415322);
+        local_58.M41 = lpamng->field95_0x11520.X;
+        local_58.M42 = lpamng->field95_0x11520.Y;
+        local_58.M43 = 0.0f;
+        local_58.M44 = 1.0f;
+        local_58.M22 = local_58.M11;
+        local_58.M33 = local_58.M11;
+        _cdc_FFXVu0MulMatrix(&local_d8, &lpamng->field90_0x113e0, &local_58);
+        _FUN_00a657c0(iVar4, &local_150, 4, &lpamng->field_0x116a4);
+        sVar1 = lpamng->field_0x11698;
+        uVar2 = custom_party_infos[lpamng->current_chr_id].current_node_idx;
+        local_150.field2_0x8 = 0x48;
+        local_150.field11_0x20 = &local_d8;
+        local_150.field20_0x44 = &local_98;
+        local_98.M43 = 3.0f;
+        local_98.M44 = 1.0f;
+        local_150.field10_0x1c = 0;
+        local_150.field3_0xa = 0;
+        local_150.field18_0x3c = 0;
+        local_150.field17_0x38 = 0;
+        local_150.field1_0x4 = (int)p_DAT_01740830_sphere_grid_layout_dat;
+        local_150.field5_0xc = 0;
+        local_150.field6_0x10 = 0;
+        local_150.field7_0x14 = 0;
+        local_150.field19_0x40 = 0;
+        local_150.field14_0x2c = (Matrix4x4*)0;
+        local_150.field13_0x28 = 0;
+        local_150.field12_0x24 = 0;
+        local_98.M11 = asmreg_0_zero->X;
+        local_98.M12 = asmreg_0_zero->Y;
+        local_98.M13 = asmreg_0_zero->Z;
+        local_98.M14 = asmreg_0_zero->W;
+        local_98.M21 = asmreg_0_zero->X;
+        local_98.M22 = asmreg_0_zero->Y;
+        local_98.M23 = asmreg_0_zero->Z;
+        local_98.M24 = asmreg_0_zero->W;
+        local_98.M31 = asmreg_0_zero->X;
+        local_98.M32 = asmreg_0_zero->Y;
+        local_98.M33 = asmreg_0_zero->Z;
+        local_98.M34 = asmreg_0_zero->W;
+        local_98.M41 = asmreg_0_zero->X;
+        local_98.M42 = asmreg_0_zero->Y;
+        local_58.M11 = asmreg_0_zero->X;
+        local_58.M12 = asmreg_0_zero->Y;
+        local_58.M43 = 0.0f;
+        local_58.M44 = 1.0f;
+        local_58.M21 = asmreg_0_zero->X;
+        local_58.M31 = asmreg_0_zero->X;
+        local_58.M41 = asmreg_0_zero->X;
+        uVar5 = 0;
+        local_58.M13 = asmreg_0_zero->Z;
+        local_58.M14 = asmreg_0_zero->W;
+        local_58.M22 = asmreg_0_zero->Y;
+        local_58.M23 = asmreg_0_zero->Z;
+        local_58.M24 = asmreg_0_zero->W;
+        local_58.M32 = asmreg_0_zero->Y;
+        local_58.M33 = asmreg_0_zero->Z;
+        local_58.M34 = asmreg_0_zero->W;
+        local_58.M42 = asmreg_0_zero->Y;
+        local_150.field0_0x0 = 0x24;
+        //pfVar6 = &custom_party_infos[0].pos_circle_radius;
+        SphereGridChrInfo* chr_info = &custom_party_infos[0];
+        do {
+            fVar7 = 0.0012499999720603228;
+            if (uVar5 == num_characters) {
+                local_98.M43 = 2.0f;
+            }
+            //if ((0.0 < *pfVar6 != float.IsNaN(*pfVar6)) &&
+            //   (((uVar2 != *(ushort*)(pfVar6 + 2) || (uVar5 == lpamng->current_chr_id)) || (uVar5 == 7)))) {
+            if ((0.0 < chr_info->pos_circle_radius != float.IsNaN(chr_info->pos_circle_radius)) &&
+               (((uVar2 != chr_info->current_node_idx || (uVar5 == lpamng->current_chr_id)) || (uVar5 == num_characters)))) {
+                uStack_154 = (uStack_154 & 0xFFFFFF00) |
+                     (uint)((int)Math.Round((eff_sin_t[(int)(uVar5 * 0x2000 + (uint)(ushort)(sVar1 << 0xb)) >> 4 &
+                                                 0xfff] + 1.0f) * 16.0f) & 0xFF);
+                local_150.rgba = (p_DAT_00c86660)[uVar5];
+                local_150.a = (byte)((char)uStack_154 + 0x60U);
+                var select_cursor_alpha = lpamng->select_cursor_alpha;
+                if (lpamng->select_cursor_alpha < 1.0) {
+                    uStack_154 = (byte)((char)uStack_154 + 0x60U);
+                    iVar4 = (int)(lpamng->select_cursor_alpha * (float)uStack_154);
+                    local_150.a = (byte)iVar4;
+                    //fVar7 = extraout_ST0;
+                }
+                //local_58.M11 = (float)(fVar7 * *pfVar6);
+                //local_58.M41 = (((SphereGridChrInfo*)(pfVar6 + -0xf))->pos).X;
+                //local_58.M42 = pfVar6[-0xe];
+                local_58.M11 = (float)(fVar7 * chr_info->pos_circle_radius);
+                local_58.M41 = chr_info->pos.X;
+                local_58.M42 = chr_info->pos.Y;
+                local_58.M22 = local_58.M11;
+                local_58.M33 = local_58.M11;
+                _cdc_FFXVu0MulMatrix(&local_d8, &lpamng->field90_0x113e0, &local_58);
+                _FUN_00a657c0(DAT_023057f8, &local_150, 4, &lpamng->field_0x116a4);
+            }
+            uVar5 = uVar5 + 1;
+            //pfVar6 = pfVar6 + 0x14;
+            chr_info += 1;
+            if (uVar5 == num_characters) chr_info = (SphereGridChrInfo*)((int)lpamng + 0x112b8);
+        } while ((int)uVar5 < num_characters+1);
+        return;
+    }
+
+    void h_eiAbmStart() {
+        float fVar1;
+        short sVar2;
+        ushort uVar3;
+        short pSVar4;
+        short pSVar5;
+        LpAbilityMapEngine *plVar6;
+        byte joined;
+        FhLangId LVar7;
+        //undefined3 extraout_var;
+        uint uVar8;
+        byte *pbVar9;
+        LpAbilityMapEngine *plVar10;
+        uint chr_id;
+        //int iVar11;
+        int chr_id_00;
+        SphereGridMenuData *menuData;
+
+        *p_DAT_01a85f70 = 0;
+        LVar7 = _TOGetFFXLang();
+        /* Japanese, Korean, Chinese, or Debug */
+        if ((LVar7 == FhLangId.Japanese) || ((8 < (int)LVar7 && ((int)LVar7 < 0xc)))) {
+            *p_DAT_01a85f74 = 1;
+        }
+        else {
+            *p_DAT_01a85f74 = 0;
+        }
+        _FUN_00a572e0();
+        _FUN_00a57620();
+        _FUN_00a45570();
+        _TOMenuTransFacePlyTex();
+        chr_id = 0;
+        lpamng->active_indicators = 0;
+        do {
+            joined = _MsGetSavePlyJoined((byte)chr_id);
+            if (joined == 1) {
+                lpamng->active_indicators = (byte)(lpamng->active_indicators | joined << ((byte)chr_id & 0x1f));
+                _FUN_00a57f80.hook_fptr(chr_id, 0, 0x40000000, 0x80404040, 0x80404040, 0x80808080);
+            }
+            chr_id = chr_id + 1;
+        } while ((int)chr_id < num_characters);
+        _FUN_00a49590.hook_fptr();
+        chr_id_00 = 0;
+        //iVar11 = 0;
+        plVar10 = lpamng;
+        do {
+            //fVar1 = *(float*)((int)&custom_party_infos[0].pos_circle_radius + iVar11);
+            ///* ... ignore casts, iVar11 is basically the index */
+            //if (0.0 < fVar1 != float.IsNaN(fVar1)) {
+            //    uVar3 = *(ushort*)((int)&custom_party_infos[0].current_node_idx + iVar11);
+            //    *(float*)((int)&custom_party_infos[0].pos.x + iVar11) = (float)(int)plVar10->nodes[uVar3].x
+            //    ;
+            //    *(float*)((int)&custom_party_infos[0].pos.y + iVar11) = (float)(int)plVar10->nodes[uVar3].y
+            //    ;
+            //    *(undefined4*)((int)&custom_party_infos[0].pos.z + iVar11) = 0;
+            //    *(undefined4*)((int)&custom_party_infos[0].pos.w + iVar11) = 0x3f800000;
+            //    plVar6 = lpamng;
+            //    *(float*)((int)&custom_party_infos[0].pos_circle_radius + iVar11) =
+            //         (float)(int)(lpamng->node_type_infos
+            //                      [lpamng->nodes
+            //                       [*(ushort*)((int)&custom_party_infos[0].current_node_idx + iVar11)].
+            //                       node_type].width >> 1) + 3.0;
+            //    FUN_00a58080(plVar6, plVar10, chr_id_00);
+            //    plVar10 = lpamng;
+            //}
+            //iVar11 = iVar11 + 0x50;
+            //chr_id_00 = chr_id_00 + 1;
+
+            ref SphereGridChrInfo chr_info = ref custom_party_infos[chr_id_00];
+            fVar1 = chr_info.pos_circle_radius;
+            if (0.0 < fVar1 != float.IsNaN(fVar1)) {
+                uVar3 = chr_info.current_node_idx;
+                chr_info.pos.X = plVar10->nodes[uVar3].x;
+                chr_info.pos.Y = plVar10->nodes[uVar3].y;
+                chr_info.pos.Z = 0;
+                chr_info.pos.W = 1.0f;
+                plVar6 = lpamng;
+                chr_info.pos_circle_radius =
+                     (float)(int)(lpamng->node_type_infos
+                                  [(int)lpamng->nodes
+                                   [chr_info.current_node_idx].
+                                   node_type].width >> 1) + 3.0f;
+                _FUN_00a58080.hook_fptr(chr_id_00);
+                plVar10 = lpamng;
+            }
+            //iVar11 = iVar11 + 0x50;
+            chr_id_00 = chr_id_00 + 1;
+        //} while (iVar11 < 0x230);
+        } while (chr_id_00 < num_characters);
+        plVar10->field_0x115c7 = 1;
+        plVar10 = lpamng;
+        uVar3 = custom_party_infos[lpamng->current_chr_id].current_node_idx;
+        lpamng->selected_node_idx = uVar3;
+        (plVar10->field11_0x112b8).X = plVar10->nodes[uVar3].x;
+        (plVar10->field11_0x112b8).Y = plVar10->nodes[uVar3].y;
+        (plVar10->field11_0x112b8).Z = 0.0f;
+        (plVar10->field11_0x112b8).W = 1.0f;
+        sVar2 = lpamng->node_type_infos[(int)lpamng->nodes[uVar3].node_type].width;
+        plVar10->field_0x11306 = 0;
+        plVar10->field_0x112d8 = 0x80808080;
+        plVar10->field_0x112dc = 0x80808080;
+        plVar10->field_0x112f4 = (sVar2 >> 1) + 3.0f;
+        plVar10->field_0x112e0 = 0x80ffffff;
+        plVar10->field_0x112f8 = 0x40000000;
+        plVar10 = lpamng;
+        (lpamng->cam_desired_pos).X = (lpamng->field11_0x112b8).X;
+        (plVar10->cam_desired_pos).Y = (plVar10->field11_0x112b8).Y;
+        (plVar10->cam_desired_pos).Z = (plVar10->field11_0x112b8).Z;
+        (plVar10->cam_desired_pos).W = (plVar10->field11_0x112b8).W;
+        lpamng->link_points = SphereGridLinkPoint_ARRAY_01693160;
+        _FUN_00a5a800();
+        _FUN_00a57120();
+        _FUN_00a5b030.hook_fptr();
+        _pppInitEnv(p_DAT_01a86034, DAT_02305800, p_DAT_016c1830, 0x7d000);
+        menuData = sphere_grid_menu_ptr;
+        menuData->menus[0].pos2.x = 0x30;
+        menuData->menus[0].pos2.y = 0x23;
+        menuData->menus[0].pos2.w = 0x1a0;
+        menuData->menus[0].pos2.h = 0x14;
+        menuData->menus[0].pos1.x = 0x30;
+        menuData->menus[0].pos1.y = 0x23;
+        menuData->menus[0].pos1.w = 0x1a0;
+        menuData->menus[0].pos1.h = 0x14;
+        menuData->menus[0].something2 = 0x1a;
+        menuData->menus[0].max_lines2 = 1;
+        menuData->menus[0].something1 = 0x1a;
+        menuData->menus[0].max_lines1 = 1;
+        menuData->menus[0].num_entries = 0;
+        menuData->menus[0].field9_0x20 = 0xf;
+        menuData->menus[0].num_columns = 0x101;
+        menuData->menus[0].func2 = FhUtil.ptr_at<nint>(0x64F930); // FUN_00a4f930
+        menuData->menus[0].func3 = FhUtil.ptr_at<nint>(0x6570A0); // FUN_00a570a0
+        menuData->menus[0].field6_0x18 = 0;
+        menuData->menus[0].field12_0x25 = 0;
+        menuData->menus[0].field11_0x24 = 0;
+        menuData->menus[0].is_full = false;
+        menuData->menus[0].func1 = (void*)0;
+        *(uint*)&menuData->menus[7].pos2 = 0x00cd0030;
+        menuData->menus[7].pos2.w = 0x50;
+        menuData->menus[7].pos2.h = 0x28;
+        *(uint*)&menuData->menus[7].pos1 = 0x00cd0030;
+        menuData->menus[7].pos1.w = 0x50;
+        menuData->menus[7].pos1.h = 0x28;
+        menuData->menus[7].something2 = 5;
+        menuData->menus[7].max_lines2 = 2;
+        menuData->menus[7].something1 = 5;
+        menuData->menus[7].max_lines1 = 2;
+        menuData->menus[7].num_columns = 1;
+        menuData->menus[7].func2 = FhUtil.ptr_at<nint>(0x64F930); // FUN_00a4f930
+        menuData->menus[7].func3 = FhUtil.ptr_at<nint>(0x6570A0); // FUN_00a570a0
+        if (*p_DAT_01a85f74 == 0) {
+            menuData->menus[7].num_entries = 0;
+            menuData->menus[7].field9_0x20 = 10;
+        }
+        else {
+            menuData->menus[7].num_entries = 0;
+            menuData->menus[7].field9_0x20 = 0x12;
+        }
+        menuData->menus[7].func1 = (void*)0;
+        menuData->menus[7].is_full = false;
+        menuData->menus[7].field11_0x24 = 0;
+        menuData->menus[7].field12_0x25 = 0;
+        menuData->menus[7].field6_0x18 = 0;
+        uVar8 = _MsGetSaveConfigHiragana();
+        pbVar9 = _MsMenuGetText(MenuTextFile.mmain_txt, 0x1f, uVar8 & 1);
+        menuData = sphere_grid_menu_ptr;
+        sVar2 = sphere_grid_menu_ptr->menus[7].num_entries;
+        if (sVar2 < 0x40) {
+            sphere_grid_menu_ptr->menus[7].is_full =
+                 (int)((uint)(byte)sphere_grid_menu_ptr->menus[7].num_columns *
+                      (int)sphere_grid_menu_ptr->menus[7].max_lines2) < (int)(short)(sVar2 + 1);
+            menuData->menus[7].num_entries = (short)(sVar2 + 1);
+            menuData->menus[7].entries[sVar2].text = (int)pbVar9;
+            menuData->menus[7].entries[sVar2].unknown2 = 0x1f;
+            *(byte*)&menuData->menus[7].entries[sVar2].unknown1 = 0;
+        }
+        else {
+            //dbgPrintf("addMenuPrim error!!!  menu->mprimn >= MAXMENUPRIM\n", 0x40);
+            //debug_exit_trace(0);
+        }
+        uVar8 = _MsGetSaveConfigHiragana();
+        pbVar9 = _MsMenuGetText(MenuTextFile.mmain_txt, 0x1e, uVar8 & 1);
+        menuData = sphere_grid_menu_ptr;
+        sVar2 = sphere_grid_menu_ptr->menus[7].num_entries;
+        if (sVar2 < 0x40) {
+            sphere_grid_menu_ptr->menus[7].is_full =
+                 (int)((uint)(byte)sphere_grid_menu_ptr->menus[7].num_columns *
+                      (int)sphere_grid_menu_ptr->menus[7].max_lines2) < (int)(short)(sVar2 + 1);
+            menuData->menus[7].num_entries = (short)(sVar2 + 1);
+            menuData->menus[7].entries[sVar2].text = (int)pbVar9;
+            menuData->menus[7].entries[sVar2].unknown2 = 0x1e;
+            *(byte*)&menuData->menus[7].entries[sVar2].unknown1 = 0;
+        }
+        else {
+            //dbgPrintf("addMenuPrim error!!!  menu->mprimn >= MAXMENUPRIM\n", 0x40);
+            //debug_exit_trace(0);
+            menuData = sphere_grid_menu_ptr;
+        }
+        *(uint*)&menuData->menus[8].pos2 = 0x00cd0030;
+        *(uint*)&menuData->menus[8].pos1 = 0x00cd0030;
+        menuData->menus[8].num_entries = 0;
+        menuData->menus[8].field9_0x20 = 8;
+        menuData->menus[8].num_columns = 1;
+        menuData->menus[8].func2 = FhUtil.ptr_at<nint>(0x64F630); // FUN_00a4f630
+        menuData->menus[8].func3 = FhUtil.ptr_at<nint>(0x657040); // FUN_00a57040
+        menuData->menus[8].field6_0x18 = 0;
+        menuData->menus[8].field12_0x25 = 0;
+        menuData->menus[8].field11_0x24 = 0;
+        menuData->menus[8].is_full = false;
+        menuData->menus[8].func1 = (void*)0;
+        if (*p_DAT_01a85f74 == 0) {
+            menuData->menus[8].pos2.w = 0xb0;
+            menuData->menus[8].pos2.h = 0x50;
+            menuData->menus[8].pos1.w = 0xb0;
+            menuData->menus[8].pos1.h = 0x50;
+            menuData->menus[8].something2 = 0xb;
+            menuData->menus[8].max_lines2 = 4;
+            menuData->menus[8].something1 = 0xb;
+            menuData->menus[8].max_lines1 = 4;
+        }
+        else {
+            menuData->menus[8].pos2.w = 0x90;
+            menuData->menus[8].pos2.h = 0x50;
+            menuData->menus[8].pos1.w = 0x90;
+            menuData->menus[8].pos1.h = 0x50;
+            menuData->menus[8].something2 = 9;
+            menuData->menus[8].max_lines2 = 4;
+            menuData->menus[8].something1 = 9;
+            menuData->menus[8].max_lines1 = 4;
+        }
+        menuData->menus[8].num_entries = 0;
+        _FUN_00a45fd0(8, 3);
+        menuData = sphere_grid_menu_ptr;
+        *(uint*)&sphere_grid_menu_ptr->menus[6].pos2 = 0x01640030;
+        *(uint*)&menuData->menus[6].pos1 = 0x01640030;
+        menuData->menus[6].num_entries = 0;
+        menuData->menus[6].field9_0x20 = 0x14;
+        menuData->menus[6].num_columns = 1;
+        menuData->menus[6].func2 = FhUtil.ptr_at<nint>(0x64F9E0); // FUN_00a4f9e0;
+        menuData->menus[6].field6_0x18 = 0;
+        menuData->menus[6].field12_0x25 = 0;
+        menuData->menus[6].field11_0x24 = 0;
+        menuData->menus[6].is_full = false;
+        menuData->menus[6].func3 = (void*)0x0;
+        menuData->menus[6].func1 = (void*)0;
+        if (*p_DAT_01a85f74 == 0) {
+            menuData->menus[6].pos2.w = 0xb0;
+            menuData->menus[6].pos2.h = 0x14;
+            menuData->menus[6].pos1.w = 0xb0;
+            menuData->menus[6].pos1.h = 0x14;
+            menuData->menus[6].something2 = 0xb;
+            menuData->menus[6].max_lines2 = 1;
+            menuData->menus[6].something1 = 0xb;
+            menuData->menus[6].max_lines1 = 1;
+        }
+        else {
+            menuData->menus[6].pos2.w = 0x80;
+            menuData->menus[6].pos2.h = 0x14;
+            menuData->menus[6].pos1.w = 0x80;
+            menuData->menus[6].pos1.h = 0x14;
+            menuData->menus[6].something2 = 8;
+            menuData->menus[6].max_lines2 = 1;
+            menuData->menus[6].something1 = 8;
+            menuData->menus[6].max_lines1 = 1;
+        }
+        uVar8 = _MsGetSaveConfigHiragana();
+        pbVar9 = _MsMenuGetText(MenuTextFile.mmain_txt, 0x23, uVar8 & 1);
+        menuData = sphere_grid_menu_ptr;
+        sVar2 = sphere_grid_menu_ptr->menus[6].num_entries;
+        if (sVar2 < 0x40) {
+            sphere_grid_menu_ptr->menus[6].is_full =
+                 (int)((uint)(byte)sphere_grid_menu_ptr->menus[6].num_columns *
+                      (int)sphere_grid_menu_ptr->menus[6].max_lines2) < (int)(short)(sVar2 + 1);
+            menuData->menus[6].num_entries = (short)(sVar2 + 1);
+            menuData->menus[6].entries[sVar2].text = (int)pbVar9;
+            menuData->menus[6].entries[sVar2].unknown2 = 0x23;
+            *(byte*)&menuData->menus[6].entries[sVar2].unknown1 = 0;
+        }
+        else {
+            //dbgPrintf("addMenuPrim error!!!  menu->mprimn >= MAXMENUPRIM\n", 0x40);
+            //debug_exit_trace(0);
+            menuData = sphere_grid_menu_ptr;
+        }
+        menuData->menus[1].num_entries = 0;
+        menuData->menus[1].field9_0x20 = 0x20;
+        menuData->menus[1].num_columns = 2;
+        menuData->menus[1].func2 = FhUtil.ptr_at<nint>(0x64FA30); // FUN_00a4fa30
+        menuData->menus[1].field6_0x18 = 0;
+        menuData->menus[1].field12_0x25 = 0;
+        menuData->menus[1].field11_0x24 = 0;
+        menuData->menus[1].is_full = false;
+        menuData->menus[1].func3 = (void*)0x0;
+        menuData->menus[1].func1 = (void*)0;
+        if (*p_DAT_01a85f74 == 0) {
+            *(uint*)&menuData->menus[1].pos2 = 0x01140088;
+            menuData->menus[1].pos2.w = 0xf0;
+            menuData->menus[1].pos2.h = 100;
+            *(uint*)&menuData->menus[1].pos1 = 0x01140088;
+            menuData->menus[1].pos1.w = 0xf0;
+            menuData->menus[1].pos1.h = 100;
+            menuData->menus[1].something2 = 0xf;
+            menuData->menus[1].max_lines2 = 5;
+            menuData->menus[1].something1 = 0xf;
+            menuData->menus[1].max_lines1 = 5;
+        }
+        else {
+            *(uint*)&menuData->menus[1].pos2 = 0x011400a0;
+            menuData->menus[1].pos2.w = 0xc0;
+            menuData->menus[1].pos2.h = 100;
+            *(uint*)&menuData->menus[1].pos1 = 0x011400a0;
+            menuData->menus[1].pos1.w = 0xc0;
+            menuData->menus[1].pos1.h = 100;
+            menuData->menus[1].something2 = 0xc;
+            menuData->menus[1].max_lines2 = 5;
+            menuData->menus[1].something1 = 0xc;
+            menuData->menus[1].max_lines1 = 5;
+        }
+        uVar8 = _MsGetSaveConfigHiragana();
+        pbVar9 = _MsMenuGetText(MenuTextFile.status_txt, 0, uVar8 & 1);
+        menuData = sphere_grid_menu_ptr;
+        sVar2 = sphere_grid_menu_ptr->menus[1].num_entries;
+        if (sVar2 < 0x40) {
+            sphere_grid_menu_ptr->menus[1].is_full =
+                 (int)((uint)(byte)sphere_grid_menu_ptr->menus[1].num_columns *
+                      (int)sphere_grid_menu_ptr->menus[1].max_lines2) < (int)(short)(sVar2 + 1);
+            menuData->menus[1].num_entries = (short)(sVar2 + 1);
+            menuData->menus[1].entries[sVar2].text = (int)pbVar9;
+            menuData->menus[1].entries[sVar2].unknown2 = 0;
+            *(byte*)&menuData->menus[1].entries[sVar2].unknown1 = 0;
+        }
+        else {
+            //dbgPrintf("addMenuPrim error!!!  menu->mprimn >= MAXMENUPRIM\n", 0x40);
+            //debug_exit_trace(0);
+        }
+        uVar8 = _MsGetSaveConfigHiragana();
+        pbVar9 = _MsMenuGetText(MenuTextFile.status_txt, 1, uVar8 & 1);
+        menuData = sphere_grid_menu_ptr;
+        sVar2 = sphere_grid_menu_ptr->menus[1].num_entries;
+        if (sVar2 < 0x40) {
+            sphere_grid_menu_ptr->menus[1].is_full =
+                 (int)((uint)(byte)sphere_grid_menu_ptr->menus[1].num_columns *
+                      (int)sphere_grid_menu_ptr->menus[1].max_lines2) < (int)(short)(sVar2 + 1);
+            menuData->menus[1].num_entries = (short)(sVar2 + 1);
+            menuData->menus[1].entries[sVar2].text = (int)pbVar9;
+            menuData->menus[1].entries[sVar2].unknown2 = 1;
+            *(byte*)&menuData->menus[1].entries[sVar2].unknown1 = 0;
+        }
+        else {
+            //dbgPrintf("addMenuPrim error!!!  menu->mprimn >= MAXMENUPRIM\n", 0x40);
+            //debug_exit_trace(0);
+        }
+        uVar8 = _MsGetSaveConfigHiragana();
+        pbVar9 = _MsMenuGetText(MenuTextFile.status_txt, 7, uVar8 & 1);
+        menuData = sphere_grid_menu_ptr;
+        sVar2 = sphere_grid_menu_ptr->menus[1].num_entries;
+        if (sVar2 < 0x40) {
+            sphere_grid_menu_ptr->menus[1].is_full =
+                 (int)((uint)(byte)sphere_grid_menu_ptr->menus[1].num_columns *
+                      (int)sphere_grid_menu_ptr->menus[1].max_lines2) < (int)(short)(sVar2 + 1);
+            menuData->menus[1].num_entries = (short)(sVar2 + 1);
+            menuData->menus[1].entries[sVar2].text = (int)pbVar9;
+            menuData->menus[1].entries[sVar2].unknown2 = 2;
+            *(byte*)&menuData->menus[1].entries[sVar2].unknown1 = 0;
+        }
+        else {
+            //dbgPrintf("addMenuPrim error!!!  menu->mprimn >= MAXMENUPRIM\n", 0x40);
+            //debug_exit_trace(0);
+        }
+        uVar8 = _MsGetSaveConfigHiragana();
+        pbVar9 = _MsMenuGetText(MenuTextFile.status_txt, 0xb, uVar8 & 1);
+        menuData = sphere_grid_menu_ptr;
+        sVar2 = sphere_grid_menu_ptr->menus[1].num_entries;
+        if (sVar2 < 0x40) {
+            sphere_grid_menu_ptr->menus[1].is_full =
+                 (int)((uint)(byte)sphere_grid_menu_ptr->menus[1].num_columns *
+                      (int)sphere_grid_menu_ptr->menus[1].max_lines2) < (int)(short)(sVar2 + 1);
+            menuData->menus[1].num_entries = (short)(sVar2 + 1);
+            menuData->menus[1].entries[sVar2].text = (int)pbVar9;
+            menuData->menus[1].entries[sVar2].unknown2 = 3;
+            *(byte*)&menuData->menus[1].entries[sVar2].unknown1 = 0;
+        }
+        else {
+            //dbgPrintf("addMenuPrim error!!!  menu->mprimn >= MAXMENUPRIM\n", 0x40);
+            //debug_exit_trace(0);
+        }
+        uVar8 = _MsGetSaveConfigHiragana();
+        pbVar9 = _MsMenuGetText(MenuTextFile.status_txt, 8, uVar8 & 1);
+        menuData = sphere_grid_menu_ptr;
+        sVar2 = sphere_grid_menu_ptr->menus[1].num_entries;
+        if (sVar2 < 0x40) {
+            sphere_grid_menu_ptr->menus[1].is_full =
+                 (int)((uint)(byte)sphere_grid_menu_ptr->menus[1].num_columns *
+                      (int)sphere_grid_menu_ptr->menus[1].max_lines2) < (int)(short)(sVar2 + 1);
+            menuData->menus[1].num_entries = (short)(sVar2 + 1);
+            menuData->menus[1].entries[sVar2].text = (int)pbVar9;
+            menuData->menus[1].entries[sVar2].unknown2 = 4;
+            *(byte*)&menuData->menus[1].entries[sVar2].unknown1 = 0;
+        }
+        else {
+            //dbgPrintf("addMenuPrim error!!!  menu->mprimn >= MAXMENUPRIM\n", 0x40);
+            //debug_exit_trace(0);
+        }
+        uVar8 = _MsGetSaveConfigHiragana();
+        pbVar9 = _MsMenuGetText(MenuTextFile.status_txt, 0xc, uVar8 & 1);
+        menuData = sphere_grid_menu_ptr;
+        sVar2 = sphere_grid_menu_ptr->menus[1].num_entries;
+        if (sVar2 < 0x40) {
+            sphere_grid_menu_ptr->menus[1].is_full =
+                 (int)((uint)(byte)sphere_grid_menu_ptr->menus[1].num_columns *
+                      (int)sphere_grid_menu_ptr->menus[1].max_lines2) < (int)(short)(sVar2 + 1);
+            menuData->menus[1].num_entries = (short)(sVar2 + 1);
+            menuData->menus[1].entries[sVar2].text = (int)pbVar9;
+            menuData->menus[1].entries[sVar2].unknown2 = 5;
+            *(byte*)&menuData->menus[1].entries[sVar2].unknown1 = 0;
+        }
+        else {
+            //dbgPrintf("addMenuPrim error!!!  menu->mprimn >= MAXMENUPRIM\n", 0x40);
+            //debug_exit_trace(0);
+        }
+        uVar8 = _MsGetSaveConfigHiragana();
+        pbVar9 = _MsMenuGetText(MenuTextFile.status_txt, 9, uVar8 & 1);
+        menuData = sphere_grid_menu_ptr;
+        sVar2 = sphere_grid_menu_ptr->menus[1].num_entries;
+        if (sVar2 < 0x40) {
+            sphere_grid_menu_ptr->menus[1].is_full =
+                 (int)((uint)(byte)sphere_grid_menu_ptr->menus[1].num_columns *
+                      (int)sphere_grid_menu_ptr->menus[1].max_lines2) < (int)(short)(sVar2 + 1);
+            menuData->menus[1].num_entries = (short)(sVar2 + 1);
+            menuData->menus[1].entries[sVar2].text = (int)pbVar9;
+            menuData->menus[1].entries[sVar2].unknown2 = 6;
+            *(byte*)&menuData->menus[1].entries[sVar2].unknown1 = 0;
+        }
+        else {
+            //dbgPrintf("addMenuPrim error!!!  menu->mprimn >= MAXMENUPRIM\n", 0x40);
+            //debug_exit_trace(0);
+        }
+        uVar8 = _MsGetSaveConfigHiragana();
+        pbVar9 = _MsMenuGetText(MenuTextFile.status_txt, 0xd, uVar8 & 1);
+        menuData = sphere_grid_menu_ptr;
+        sVar2 = sphere_grid_menu_ptr->menus[1].num_entries;
+        if (sVar2 < 0x40) {
+            sphere_grid_menu_ptr->menus[1].is_full =
+                 (int)((uint)(byte)sphere_grid_menu_ptr->menus[1].num_columns *
+                      (int)sphere_grid_menu_ptr->menus[1].max_lines2) < (int)(short)(sVar2 + 1);
+            menuData->menus[1].num_entries = (short)(sVar2 + 1);
+            menuData->menus[1].entries[sVar2].text = (int)pbVar9;
+            menuData->menus[1].entries[sVar2].unknown2 = 7;
+            *(byte*)&menuData->menus[1].entries[sVar2].unknown1 = 0;
+        }
+        else {
+            //dbgPrintf("addMenuPrim error!!!  menu->mprimn >= MAXMENUPRIM\n", 0x40);
+            //debug_exit_trace(0);
+        }
+        uVar8 = _MsGetSaveConfigHiragana();
+        pbVar9 = _MsMenuGetText(MenuTextFile.status_txt, 10, uVar8 & 1);
+        menuData = sphere_grid_menu_ptr;
+        sVar2 = sphere_grid_menu_ptr->menus[1].num_entries;
+        if (sVar2 < 0x40) {
+            sphere_grid_menu_ptr->menus[1].is_full =
+                 (int)((uint)(byte)sphere_grid_menu_ptr->menus[1].num_columns *
+                      (int)sphere_grid_menu_ptr->menus[1].max_lines2) < (int)(short)(sVar2 + 1);
+            menuData->menus[1].num_entries = (short)(sVar2 + 1);
+            menuData->menus[1].entries[sVar2].text = (int)pbVar9;
+            menuData->menus[1].entries[sVar2].unknown2 = 8;
+            *(byte*)&menuData->menus[1].entries[sVar2].unknown1 = 0;
+        }
+        else {
+            //dbgPrintf("addMenuPrim error!!!  menu->mprimn >= MAXMENUPRIM\n", 0x40);
+            //debug_exit_trace(0);
+        }
+        uVar8 = _MsGetSaveConfigHiragana();
+        pbVar9 = _MsMenuGetText(MenuTextFile.status_txt, 0xe, uVar8 & 1);
+        menuData = sphere_grid_menu_ptr;
+        sVar2 = sphere_grid_menu_ptr->menus[1].num_entries;
+        if (sVar2 < 0x40) {
+            sphere_grid_menu_ptr->menus[1].is_full =
+                 (int)((uint)(byte)sphere_grid_menu_ptr->menus[1].num_columns *
+                      (int)sphere_grid_menu_ptr->menus[1].max_lines2) < (int)(short)(sVar2 + 1);
+            menuData->menus[1].num_entries = (short)(sVar2 + 1);
+            menuData->menus[1].entries[sVar2].text = (int)pbVar9;
+            menuData->menus[1].entries[sVar2].unknown2 = 9;
+            *(byte*)&menuData->menus[1].entries[sVar2].unknown1 = 0;
+        }
+        else {
+            //dbgPrintf("addMenuPrim error!!!  menu->mprimn >= MAXMENUPRIM\n", 0x40);
+            //debug_exit_trace(0);
+            menuData = sphere_grid_menu_ptr;
+        }
+        menuData->menus[3].num_entries = 0;
+        menuData->menus[3].field9_0x20 = 0x20;
+        menuData->menus[3].num_columns = 3;
+        menuData->menus[3].func2 = FhUtil.ptr_at<nint>(0x64F250); // FUN_00a4f250
+        menuData->menus[3].field6_0x18 = 0;
+        menuData->menus[3].field12_0x25 = 0;
+        menuData->menus[3].field11_0x24 = 0;
+        menuData->menus[3].is_full = false;
+        menuData->menus[3].func3 = (void*)0x0;
+        menuData->menus[3].func1 = (void*)0;
+        if (*p_DAT_01a85f74 == 0) {
+            *(uint*)&menuData->menus[3].pos2 = 0x00d80048;
+            menuData->menus[3].pos2.w = 0x170;
+            menuData->menus[3].pos2.h = 0xa0;
+            *(uint*)&menuData->menus[3].pos1 = 0x00d80048;
+            menuData->menus[3].pos1.w = 0x170;
+            menuData->menus[3].pos1.h = 0xa0;
+            menuData->menus[3].something2 = 0x17;
+            menuData->menus[3].max_lines2 = 8;
+            menuData->menus[3].something1 = 0x17;
+            menuData->menus[3].max_lines1 = 8;
+        }
+        else {
+            *(uint*)&menuData->menus[3].pos2 = 0x00d8005f;
+            *(uint*)&menuData->menus[3].pos2.w = 0x00a00140;
+            *(uint*)&menuData->menus[3].pos1 = 0x00d8005f;
+            *(uint*)&menuData->menus[3].pos1.w = 0x00a00140;
+            menuData->menus[3].something2 = 0x14;
+            menuData->menus[3].max_lines2 = 8;
+            menuData->menus[3].something1 = 0x14;
+            menuData->menus[3].max_lines1 = 8;
+        }
+        _FUN_00a459e0(3, 0x40);
+        menuData = sphere_grid_menu_ptr;
+        menuData->menus[2].num_entries = 0;
+        menuData->menus[2].field9_0x20 = 0x20;
+        menuData->menus[2].func2 = FhUtil.ptr_at<nint>(0x64F9A0); // FUN_00a4f9a0
+        menuData->menus[2].field6_0x18 = 0;
+        menuData->menus[2].field12_0x25 = 0;
+        menuData->menus[2].field11_0x24 = 0;
+        menuData->menus[2].is_full = false;
+        menuData->menus[2].func3 = (void*)0x0;
+        menuData->menus[2].func1 = (void*)0;
+        if (*p_DAT_01a85f74 == 0) {
+            *(uint*)&menuData->menus[2].pos2 = 0x00d80048;
+            menuData->menus[2].pos2.w = 0x170;
+            menuData->menus[2].pos2.h = 0xa0;
+            *(uint*)&menuData->menus[2].pos1 = 0x00d80048;
+            menuData->menus[2].pos1.w = 0x170;
+            menuData->menus[2].pos1.h = 0xa0;
+            menuData->menus[2].something2 = 0x17;
+            menuData->menus[2].max_lines2 = 8;
+            menuData->menus[2].something1 = 0x17;
+            menuData->menus[2].max_lines1 = 8;
+            menuData->menus[2].num_columns = 3;
+        }
+        else {
+            *(uint*)&menuData->menus[2].pos2 = 0x01000060;
+            menuData->menus[2].pos2.w = 0x140;
+            menuData->menus[2].pos2.h = 0x78;
+            *(uint*)&menuData->menus[2].pos1 = 0x01000060;
+            menuData->menus[2].pos1.w = 0x140;
+            menuData->menus[2].pos1.h = 0x78;
+            menuData->menus[2].something2 = 0x14;
+            menuData->menus[2].max_lines2 = 6;
+            menuData->menus[2].something1 = 0x14;
+            menuData->menus[2].max_lines1 = 6;
+            menuData->menus[2].num_columns = 4;
+        }
+        _FUN_00a459e0(2, 0x41);
+        menuData = sphere_grid_menu_ptr;
+        menuData->menus[4].num_entries = 0;
+        menuData->menus[4].field9_0x20 = 0x20;
+        menuData->menus[4].num_columns = 4;
+        menuData->menus[4].func2 = FhUtil.ptr_at<nint>(0x64F250); // FUN_00a4f250;
+        menuData->menus[4].field6_0x18 = 0;
+        menuData->menus[4].field12_0x25 = 0;
+        menuData->menus[4].field11_0x24 = 0;
+        menuData->menus[4].is_full = false;
+        menuData->menus[4].func3 = (void*)0x0;
+        menuData->menus[4].func1 = (void*)0;
+        if (*p_DAT_01a85f74 == 0) {
+            *(uint*)&menuData->menus[4].pos2 = 0x01000040;
+            menuData->menus[4].pos2.w = 0x180;
+            menuData->menus[4].pos2.h = 0x78;
+            *(uint*)&menuData->menus[4].pos1 = 0x01000040;
+            menuData->menus[4].pos1.w = 0x180;
+            menuData->menus[4].pos1.h = 0x78;
+            menuData->menus[4].something2 = 0x18;
+            menuData->menus[4].max_lines2 = 6;
+            menuData->menus[4].something1 = 0x18;
+            menuData->menus[4].max_lines1 = 6;
+        }
+        else {
+            *(uint*)&menuData->menus[4].pos2 = 0x01000060;
+            menuData->menus[4].pos2.w = 0x140;
+            menuData->menus[4].pos2.h = 0x78;
+            *(uint*)&menuData->menus[4].pos1 = 0x01000060;
+            menuData->menus[4].pos1.w = 0x140;
+            menuData->menus[4].pos1.h = 0x78;
+            menuData->menus[4].something2 = 0x14;
+            menuData->menus[4].max_lines2 = 6;
+            menuData->menus[4].something1 = 0x14;
+            menuData->menus[4].max_lines1 = 6;
+        }
+        _FUN_00a459e0(4, 0x45);
+        menuData = sphere_grid_menu_ptr;
+        menuData->menus[5].num_entries = 0;
+        menuData->menus[5].field9_0x20 = 0x20;
+        menuData->menus[5].num_columns = 4;
+        menuData->menus[5].func2 = FhUtil.ptr_at<nint>(0x64F250); // FUN_00a4f250;
+        menuData->menus[5].field6_0x18 = 0;
+        menuData->menus[5].field12_0x25 = 0;
+        menuData->menus[5].field11_0x24 = 0;
+        menuData->menus[5].is_full = false;
+        menuData->menus[5].func3 = (void*)0x0;
+        menuData->menus[5].func1 = (void*)0;
+        if (*p_DAT_01a85f74 == 0) {
+            *(uint*)&menuData->menus[5].pos2 = 0x01140040;
+            menuData->menus[5].pos2.w = 0x180;
+            menuData->menus[5].pos2.h = 100;
+            *(uint*)&menuData->menus[5].pos1 = 0x01140040;
+            menuData->menus[5].pos1.w = 0x180;
+            menuData->menus[5].pos1.h = 100;
+            menuData->menus[5].something2 = 0x18;
+            menuData->menus[5].max_lines2 = 5;
+            menuData->menus[5].something1 = 0x18;
+            menuData->menus[5].max_lines1 = 5;
+        }
+        else {
+            *(uint*)&menuData->menus[5].pos2 = 0x01140060;
+            menuData->menus[5].pos2.w = 0x140;
+            menuData->menus[5].pos2.h = 100;
+            *(uint*)&menuData->menus[5].pos1 = 0x01140060;
+            menuData->menus[5].pos1.w = 0x140;
+            menuData->menus[5].pos1.h = 100;
+            menuData->menus[5].something2 = 0x14;
+            menuData->menus[5].max_lines2 = 5;
+            menuData->menus[5].something1 = 0x14;
+            menuData->menus[5].max_lines1 = 5;
+        }
+        _FUN_00a459e0(5, 0x44);
+        menuData = sphere_grid_menu_ptr;
+        *(uint*)&sphere_grid_menu_ptr->menus[9].pos2 = 0x00cd0030;
+        *(uint*)&menuData->menus[9].pos1 = 0x00cd0030;
+        menuData->menus[9].num_entries = 0;
+        menuData->menus[9].field9_0x20 = 10;
+        menuData->menus[9].num_columns = 1;
+        menuData->menus[9].func2 = FhUtil.ptr_at<nint>(0x64FB70); // FUN_00a4fb70
+        menuData->menus[9].field6_0x18 = 0;
+        menuData->menus[9].field12_0x25 = 0;
+        menuData->menus[9].field11_0x24 = 0;
+        menuData->menus[9].is_full = false;
+        menuData->menus[9].func3 = (void*)0x0;
+        menuData->menus[9].func1 = (void*)0;
+        if (*p_DAT_01a85f74 == 0) {
+            menuData->menus[9].pos2.w = 0x90;
+            menuData->menus[9].pos2.h = 0x14;
+            menuData->menus[9].pos1.w = 0x90;
+            menuData->menus[9].pos1.h = 0x14;
+            menuData->menus[9].something2 = 9;
+            menuData->menus[9].max_lines2 = 1;
+            menuData->menus[9].something1 = 9;
+            menuData->menus[9].max_lines1 = 1;
+        }
+        else {
+            menuData->menus[9].pos2.w = 0x60;
+            menuData->menus[9].pos2.h = 0x14;
+            menuData->menus[9].pos1.w = 0x60;
+            menuData->menus[9].pos1.h = 0x14;
+            menuData->menus[9].something2 = 6;
+            menuData->menus[9].max_lines2 = 1;
+            menuData->menus[9].something1 = 6;
+            menuData->menus[9].max_lines1 = 1;
+        }
+        uVar8 = _MsGetSaveConfigHiragana();
+        pbVar9 = _MsMenuGetText(MenuTextFile.mmain_txt, 0x2b, uVar8 & 1);
+        menuData = sphere_grid_menu_ptr;
+        sVar2 = sphere_grid_menu_ptr->menus[9].num_entries;
+        if (sVar2 < 0x40) {
+            sphere_grid_menu_ptr->menus[9].is_full =
+                 (int)((uint)(byte)sphere_grid_menu_ptr->menus[9].num_columns *
+                      (int)sphere_grid_menu_ptr->menus[9].max_lines2) < (int)(short)(sVar2 + 1);
+            menuData->menus[9].num_entries = (short)(sVar2 + 1);
+            menuData->menus[9].entries[sVar2].text = (int)pbVar9;
+            menuData->menus[9].entries[sVar2].unknown2 = 0x2b;
+            *(byte*)&menuData->menus[9].entries[sVar2].unknown1 = 0;
+        }
+        else {
+            //dbgPrintf("addMenuPrim error!!!  menu->mprimn >= MAXMENUPRIM\n", 0x40);
+            //debug_exit_trace(0);
+            menuData = sphere_grid_menu_ptr;
+        }
+        *(uint*)&menuData->menus[10].pos2 = 0x00cd0030;
+        *(uint*)&menuData->menus[10].pos1 = 0x00cd0030;
+        menuData->menus[10].num_entries = 0;
+        menuData->menus[10].field9_0x20 = 10;
+        menuData->menus[10].num_columns = 1;
+        menuData->menus[10].func2 = FhUtil.ptr_at<nint>(0x64FB70); // FUN_00a4fb70
+        menuData->menus[10].field6_0x18 = 0;
+        menuData->menus[10].field12_0x25 = 0;
+        menuData->menus[10].field11_0x24 = 0;
+        menuData->menus[10].is_full = false;
+        menuData->menus[10].func3 = (void*)0x0;
+        menuData->menus[10].func1 = (void*)0;
+        if (*p_DAT_01a85f74 == 0) {
+            menuData->menus[10].pos2.w = 0x90;
+            menuData->menus[10].pos2.h = 0x14;
+            menuData->menus[10].pos1.w = 0x90;
+            menuData->menus[10].pos1.h = 0x14;
+            menuData->menus[10].something2 = 9;
+            menuData->menus[10].max_lines2 = 1;
+            menuData->menus[10].something1 = 9;
+            menuData->menus[10].max_lines1 = 1;
+        }
+        else {
+            menuData->menus[10].pos2.w = 0x70;
+            menuData->menus[10].pos2.h = 0x14;
+            menuData->menus[10].pos1.w = 0x70;
+            menuData->menus[10].pos1.h = 0x14;
+            menuData->menus[10].something2 = 7;
+            menuData->menus[10].max_lines2 = 1;
+            menuData->menus[10].something1 = 7;
+            menuData->menus[10].max_lines1 = 1;
+        }
+        uVar8 = _MsGetSaveConfigHiragana();
+        pbVar9 = _MsMenuGetText(MenuTextFile.mmain_txt, 0x2e, uVar8 & 1);
+        menuData = sphere_grid_menu_ptr;
+        sVar2 = sphere_grid_menu_ptr->menus[10].num_entries;
+        if (sVar2 < 0x40) {
+            sphere_grid_menu_ptr->menus[10].num_entries = (short)(sVar2 + 1);
+            menuData->menus[10].is_full =
+                 (int)((uint)(byte)sphere_grid_menu_ptr->menus[10].num_columns * sphere_grid_menu_ptr->menus[10].max_lines2) < (int)(short)(sVar2 + 1);
+            menuData->menus[10].entries[sVar2].text = (int)pbVar9;
+            menuData->menus[10].entries[sVar2].unknown2 = 0x2e;
+            *(byte*)&menuData->menus[10].entries[sVar2].unknown1 = 0;
+        }
+        else {
+            //dbgPrintf("addMenuPrim error!!!  menu->mprimn >= MAXMENUPRIM\n", 0x40);
+            //debug_exit_trace(0);
+            menuData = sphere_grid_menu_ptr;
+        }
+        *(uint*)&menuData->menus[0xb].pos2 = 0x00f50030;
+        menuData->menus[0xb].pos2.w = 0x50;
+        menuData->menus[0xb].pos2.h = 0x28;
+        *(uint*)&menuData->menus[0xb].pos1 = 0x00f50030;
+        menuData->menus[0xb].pos1.w = 0x50;
+        menuData->menus[0xb].pos1.h = 0x28;
+        menuData->menus[0xb].something2 = 5;
+        menuData->menus[0xb].max_lines2 = 2;
+        menuData->menus[0xb].something1 = 5;
+        menuData->menus[0xb].max_lines1 = 2;
+        menuData->menus[0xb].num_entries = 0;
+        menuData->menus[0xb].field9_0x20 = 0xf;
+        menuData->menus[0xb].field6_0x18 = 0;
+        menuData->menus[0xb].num_columns = 1;
+        menuData->menus[0xb].field12_0x25 = 0;
+        menuData->menus[0xb].field11_0x24 = 0;
+        menuData->menus[0xb].is_full = false;
+        menuData->menus[0xb].func2 = FhUtil.ptr_at<nint>(0x64F930); // FUN_00a4f930;
+        menuData->menus[0xb].func3 = (void*)0x0;
+        menuData->menus[0xb].func1 = (void*)0;
+        uVar8 = _MsGetSaveConfigHiragana();
+        pbVar9 = _MsMenuGetText(MenuTextFile.mmain_txt, 0x2c, uVar8 & 1);
+        menuData = sphere_grid_menu_ptr;
+        sVar2 = sphere_grid_menu_ptr->menus[0xb].num_entries;
+        if (sVar2 < 0x40) {
+            sphere_grid_menu_ptr->menus[0xb].num_entries = (short)(sVar2 + 1);
+            menuData->menus[0xb].is_full =
+                 (int)((uint)(byte)sphere_grid_menu_ptr->menus[0xb].num_columns * sphere_grid_menu_ptr->menus[0xb].max_lines2) < (int)(short)(sVar2 + 1);
+            menuData->menus[0xb].entries[sVar2].text = (int)pbVar9;
+            menuData->menus[0xb].entries[sVar2].unknown2 = 0x2c;
+            *(byte*)&menuData->menus[0xb].entries[sVar2].unknown1 = 0;
+        }
+        else {
+            //dbgPrintf("addMenuPrim error!!!  menu->mprimn >= MAXMENUPRIM\n", 0x40);
+            //debug_exit_trace(0);
+        }
+        uVar8 = _MsGetSaveConfigHiragana();
+        pbVar9 = _MsMenuGetText(MenuTextFile.mmain_txt, 0x2d, uVar8 & 1);
+        menuData = sphere_grid_menu_ptr;
+        sVar2 = sphere_grid_menu_ptr->menus[0xb].num_entries;
+        if (sVar2 < 0x40) {
+            sphere_grid_menu_ptr->menus[0xb].num_entries = (short)(sVar2 + 1);
+            menuData->menus[0xb].is_full =
+                 (int)((uint)(byte)sphere_grid_menu_ptr->menus[0xb].num_columns * sphere_grid_menu_ptr->menus[0xb].max_lines2) < (int)(short)(sVar2 + 1);
+            menuData->menus[0xb].entries[sVar2].text = (int)pbVar9;
+            menuData->menus[0xb].entries[sVar2].unknown2 = 0x2d;
+            *(byte*)&menuData->menus[0xb].entries[sVar2].unknown1 = 0;
+        }
+        else {
+            //dbgPrintf("addMenuPrim error!!!  menu->mprimn >= MAXMENUPRIM\n", 0x40);
+            //debug_exit_trace(0);
+        }
+        _graphicAbmapCreate(*(void**)&lpamng->field_0x116a4);
+        _graphicDeActivateLoadingScreen();
+        _graphicSetFlipVsnc(2);
+        *p_DAT_01a860ec = (int)_user_malloc(0x200);
+        *p_DAT_01a860f0 = (int)_user_malloc(0x200);
+        return;
+    }
+
+    void h_FUN_00a560d0(nint param_1, int param_2, nint param_3, int param_4) {
+        SphereGridMenuData *pSVar1;
+        bool bVar2;
+
+        pSVar1 = sphere_grid_menu_ptr;
+        if (param_4 != 0) {
+            bVar2 = *p_DAT_01a85f74 == 0;
+            *(byte*)((int)&sphere_grid_menu_ptr->menus[8].num_columns + 1) = 1;
+            *(int*)&pSVar1->menus[8].pos3 = 0x01640030;
+            pSVar1->menus[8].field_0x32 = 0;
+            pSVar1->menus[8].func1 = FhUtil.ptr_at<nint>(0x65A080); // FUN_00a5a080
+            if (bVar2) {
+                pSVar1->menus[8].pos3.w = 0xb0;
+                pSVar1->menus[8].pos3.h = 0x14;
+            }
+            else {
+                pSVar1->menus[8].pos3.w = 0x90;
+                pSVar1->menus[8].pos3.h = 0x14;
+            }
+            _FUN_00a5b980.hook_fptr((uint)lpamng->current_chr_id,
+                         custom_party_infos[lpamng->current_chr_id].current_node_idx,
+                         (uint)*(ushort*)(param_2 + 8));
+            return;
+        }
+        _FUN_00a59950();
+        return;
+    }
+
+    void h_FUN_00a56160(nint param_1, int param_2, nint param_3, int param_4) {
+        byte bVar1;
+        SphereGridMenuData *pSVar2;
+        LpAbilityMapEngine *plVar3;
+        int iVar4;
+        byte *pbVar5;
+
+        _FUN_00a5b930();
+        plVar3 = lpamng;
+        if (param_3 == 0) {
+            _SndSepPlaySimple(0x80000052);
+            _FUN_00786fb0(lpamng->current_chr_id, lpamng->field_0x1161c);
+        }
+        else if (param_3 == 1) {
+            iVar4 = (int)lpamng->link_count;
+            _SndSepPlaySimple(0x80000004);
+            if (iVar4 != 0) {
+                pbVar5 = &plVar3->links[0].activated_by;
+                do {
+                    iVar4 = iVar4 + -1;
+                    if ((pbVar5[2] & 8) != 0) {
+                        *pbVar5 = (byte)(*pbVar5 & ~(1 << (lpamng->current_chr_id & 0x1f)));
+                        lpamng->field_0x116ac = 1;
+                    }
+                    pbVar5 = pbVar5 + 0x14;
+                } while (iVar4 != 0);
+            }
+            plVar3 = lpamng;
+            bVar1 = lpamng->field_0x11638;
+            custom_party_infos[bVar1].current_node_idx = lpamng->field_0x11630;
+            _FUN_00a5a990.hook_fptr(lpamng->field_0x11638);
+            _FUN_00a58080.hook_fptr(lpamng->field_0x11638);
+            lpamng->field_0x115c7 = 1;
+            _FUN_00a5b030.hook_fptr();
+            _FUN_00a48d70(custom_party_infos[bVar1].current_node_idx, 0.5f);
+            if (lpamng->field_0x115b0 == 0) {
+                lpamng->field_0x115b0 = lpamng->field_0x115a8;
+                lpamng->field_0x115a8 = (int)FhUtil.ptr_at<nint>(0x659E80); // FUN_00a59e80;
+            }
+        }
+        iVar4 = lpamng->link_count;
+        if (iVar4 != 0) {
+            pbVar5 = &lpamng->links[0].field_0xe;
+            do {
+                *pbVar5 = (byte)(*pbVar5 & 0xf0);
+                pbVar5 = pbVar5 + 0x14;
+                iVar4 = iVar4 + -1;
+            } while (iVar4 != 0);
+        }
+        pSVar2 = sphere_grid_menu_ptr;
+        *(byte*)((int)&sphere_grid_menu_ptr->menus[9].num_columns + 1) = 0;
+        pSVar2->menus[7].pos2.x = pSVar2->menus[7].pos1.x;
+        pSVar2->menus[7].pos2.y = pSVar2->menus[7].pos1.y;
+        pSVar2->menus[7].pos2.w = pSVar2->menus[7].pos1.w;
+        pSVar2->menus[7].pos2.h = pSVar2->menus[7].pos1.h;
+        pSVar2->menus[7].something2 = pSVar2->menus[7].something1;
+        pSVar2->menus[7].max_lines2 = pSVar2->menus[7].max_lines1;
+        lpamng->field_0x1161c = 0;
+        return;
+    }
+
+    int custom_TOGetEasyMesWFontLInterModeChrName(byte* name, int param_2) {
+        float fVar1;
+        int in_EAX;
+        float char_width;
+        int width_sum;
+        byte cur_char;
+
+        width_sum = 0;
+        cur_char = *name;
+        *p_DAT_018663a8 = 0;
+        while (cur_char != 0x0) {
+            name = _FUN_008b7bb0(name, 0, &char_width, param_2);
+            width_sum = (int)(width_sum + char_width);
+            *p_DAT_018663a8 = *p_DAT_018663a8 + 1;
+            cur_char = *name;
+        }
+        return width_sum;
+    }
+
+    void h_FUN_00a57f80(uint chr_id, int node_idx, uint param_3, uint param_4, uint param_5, uint param_6) {
+        float x;
+        LpAbilityMapEngine *plVar1;
+        byte *chr_name;
+        int name_width_int;
+        SphereGridChrInfo *chr_info;
+        float name_width;
+        short node_size;
+        _logger.Debug($"{chr_id}");
+
+        plVar1 = lpamng;
+        chr_info = &custom_party_infos[(int)chr_id];
+        chr_info->current_node_idx = (ushort)node_idx;
+        (chr_info->pos).X = (float)(int)plVar1->nodes[node_idx].x;
+        (chr_info->pos).Y = (float)(int)plVar1->nodes[node_idx].y;
+        (chr_info->pos).Z = 0.0f;
+        (chr_info->pos).W = 1.0f;
+        node_size = lpamng->node_type_infos[(int)lpamng->nodes[node_idx].node_type].width;
+        chr_info->a = param_4;
+        chr_info->b = param_5;
+        chr_info->pos_circle_radius = (node_size >> 1) + 3.0f;
+        chr_info->field26_0x4e = 0;
+        chr_info->c = param_6;
+        chr_info->field_0x40 = param_3;
+        if ((int)chr_id < num_characters) {
+            chr_name = _TOGetSaveChrName(chr_id);
+            chr_info->chr_name = chr_name;
+            //TOGetEasyMesWFontLInterModeChrName(chr_name, 0x1);
+            //x = (float)name_width;
+            int width = custom_TOGetEasyMesWFontLInterModeChrName(chr_name, 0x1);
+            x = width;
+            if (x < 32.0f != float.IsNaN(x)) {
+                x = 32.0f;
+            }
+            name_width_int = (int)x;
+            chr_info->name_width = (short)name_width_int;
+            chr_info->field7_0x32 = 0x10;
+        }
+        return;
+    }
+
+    void h_FUN_00a58080(int chr_id) {
+        ushort uVar1;
+        short pos_y;
+        uint uVar2;
+        short pos_x;
+        uint uVar3;
+        SphereGridChrInfo *chr_info;
+        if (chr_id >= num_characters) {
+            // last character + 1 is valid
+            chr_info = (SphereGridChrInfo*)((int)lpamng + 0x112b8);
+            return;
+        } else {
+            chr_info = &custom_party_infos[chr_id];
+        }
+        uVar1 = (ushort)(chr_info->field26_0x4e * 0x4000 + 0x2000);
+        _FUN_00a47c60(chr_info);
+        (chr_info->label_pos).X =
+             eff_sin_t[(int)(uVar1 + 0x4000) >> 4 & 0xfff] * chr_info->pos_circle_radius +
+             (chr_info->pos).X;
+        (chr_info->label_pos).Y = (chr_info->pos).Y - eff_sin_t[uVar1 >> 4] * chr_info->pos_circle_radius;
+        (chr_info->label_pos).Z = 0.0f;
+        (chr_info->label_pos).W = 1.0f;
+        uVar2 = DAT_02305814;
+        uVar3 = DAT_02305818;
+        if ((chr_info->field26_0x4e & 4) == 0) {
+            uVar2 = DAT_0230581c;
+            uVar3 = DAT_02305820;
+        }
+        pos_y = (short)uVar2;
+        pos_x = (short)uVar3;
+        /* Different label rendering positions */
+        switch (chr_info->field26_0x4e & 3) {
+            case 0:
+                /* Topright */
+                chr_info->field23_0x48 = (short)-pos_y;
+                chr_info->field22_0x46 = pos_x;
+                chr_info->field24_0x4a = DAT_02305810;
+                chr_info->field25_0x4c = DAT_02305808;
+                return;
+            case 1:
+                /* Topleft */
+                chr_info->field23_0x48 = (short)-pos_y;
+                chr_info->field22_0x46 = (short)-pos_x;
+                chr_info->field24_0x4a = (short)-((short)DAT_02305830 + (short)DAT_0230580c);
+                chr_info->field25_0x4c = DAT_02305808;
+                return;
+            case 2:
+                /* Bottomleft */
+                chr_info->field23_0x48 = pos_y;
+                chr_info->field22_0x46 = (short)-pos_x;
+                chr_info->field24_0x4a = (short)-((short)DAT_02305830 + (short)DAT_0230580c);
+                chr_info->field25_0x4c = DAT_02305804;
+                return;
+            case 3:
+                /* Bottomright */
+                chr_info->field22_0x46 = pos_x;
+                chr_info->field23_0x48 = pos_y;
+                chr_info->field24_0x4a = DAT_02305810;
+                chr_info->field25_0x4c = DAT_02305804;
+                return;
+        }
+        return;
+    }
+
+    void h_FUN_00a58ec0() {
+        byte bVar1;
+
+        if (lpamng->field_0x115b0 != 0) {
+            return;
+        }
+        if ((lpamng->abmap_input[3] & 4) == 0) {
+            if ((lpamng->abmap_input[3] & 8) == 0) goto LAB_00a58fdb;
+            lpamng->field_0x115be = 2;
+            _FUN_008aaec0();
+        }
+        else {
+            _FUN_008aaf50();
+            lpamng->field_0x115be = 1;
+        }
+        lpamng->field_0x115bf = 0;
+        lpamng->field_0x115bd = lpamng->current_chr_id;
+        bVar1 = _TkMenuGetCurrentPlayer();
+        lpamng->current_chr_id = bVar1;
+        if (lpamng->field_0x115bd == lpamng->current_chr_id) {
+            lpamng->field_0x115be = 0;
+        }
+        else {
+            lpamng->field_0x116ac = 1;
+            lpamng->field_0x116a8 = 0xffffffff;
+            _SndSepPlaySimple(0x80000004);
+        }
+        _FUN_00a48d70(custom_party_infos[lpamng->current_chr_id].current_node_idx, 0.25f);
+        if (lpamng->field_0x115b0 == 0) {
+            lpamng->field_0x115b0 = lpamng->field_0x115a8;
+            lpamng->field_0x115a8 = (int)FhUtil.ptr_at<nint>(0x659E80); // FUN_00a59e80;
+        }
+        _FUN_00a47210();
+        _FUN_00a5aca0();
+    LAB_00a58fdb:
+        _FUN_00a5b030.hook_fptr();
+        return;
+    }
+
+
+    void h_FUN_00a598a0() {
+        ushort uVar1;
+        SphereGridMenuData *pSVar2;
+        int iVar3;
+        int iVar4;
+        int *piVar5;
+
+        pSVar2 = sphere_grid_menu_ptr;
+        uVar1 = custom_party_infos[lpamng->current_chr_id].current_node_idx;
+        iVar4 = 0;
+        if (0 < sphere_grid_menu_ptr->menus[8].num_entries) {
+            piVar5 = &sphere_grid_menu_ptr->menus[8].entries[0].unknown1;
+            do {
+                iVar3 = _FUN_00a49310(lpamng->current_chr_id, uVar1, (uint)(piVar5[1] & 0xffff));
+                *(bool*)piVar5 = iVar3 == 0;
+                iVar4 = iVar4 + 1;
+                piVar5 = piVar5 + 3;
+            } while (iVar4 < pSVar2->menus[8].num_entries);
+        }
+        pSVar2 = sphere_grid_menu_ptr;
+        *(short*)((int)&sphere_grid_menu_ptr->menus[8].num_columns + 1) = 0x301;
+        *(byte*)&pSVar2->menus[8].field12_0x25 = 1;
+        *(short*)&pSVar2->field1_0x2700 = 8;
+        pSVar2->func = FhUtil.ptr_at<nint>(__addr_FUN_00a560d0); // FUN_00a560d0;
+        return;
+    }
+
+    void h_FUN_00a59990() {
+        byte *puVar1;
+        float fVar2;
+        ushort uVar3;
+        LpAbilityMapEngine *plVar4;
+        uint uVar5;
+        int iVar6;
+        SphereGridChrInfo *pSVar7;
+        float fVar8;
+        Vector4 local_58 = new();
+        ushort *local_44;
+        //int local_40;
+        //float fStack_3c;
+        Vector4 local_38 = new();
+        Vector4 local_28 = new();
+        Vector4 local_18 = new();
+
+        plVar4 = lpamng;
+        puVar1 = &lpamng->field_0x11638;
+        lpamng->field_0x11620 = lpamng->field272_0x11624 + lpamng->field_0x11620;
+        pSVar7 = &custom_party_infos[*puVar1];
+        if (lpamng->field_0x116ac == 0) {
+            lpamng->field_0x116ac = 1;
+        }
+        local_18.X = (float)lpamng->nodes[lpamng->field_0x11632].x;
+        //local_44 = (ushort*)(int)lpamng->nodes[lpamng->field_0x11632].y;
+        //local_18.Y = (float)(int)local_44;
+        local_18.Y = (float)lpamng->nodes[lpamng->field_0x11632].y;
+        fVar2 = lpamng->field_0x11620;
+        if (!float.IsNaN(fVar2) && 1.0f < fVar2 != (fVar2 == 1.0f)) {
+            do {
+                local_18.W = 1.0f;
+                local_18.Z = 0.0f;
+                lpamng->field_0x115f8 = 0;
+                plVar4 = lpamng;
+                if (lpamng->field_0x11632 == lpamng->field_0x11634) {
+                //LAB_00a59d91:
+                    (pSVar7->pos).X = local_18.X;
+                    (pSVar7->pos).Y = local_18.Y;
+                    (pSVar7->pos).Z = local_18.Z;
+                    (pSVar7->pos).W = local_18.W;
+                    lpamng->field_0x115c7 = 1;
+                    lpamng->field_0x115a8 = lpamng->field_0x115b0;
+                    lpamng->field_0x115b0 = 0;
+                    return;
+                }
+                uVar5 = _FUN_00a56e00(lpamng->field_0x11632, lpamng->field_0x11634,
+                                     &local_44);
+                plVar4->field_0x11632 = (ushort)uVar5;
+                //if (*(short*)&lpamng->field_0x11632 == -1) goto LAB_00a59d91;
+                if (*(short*)&lpamng->field_0x11632 == -1) {
+                    (pSVar7->pos).X = local_18.X;
+                    (pSVar7->pos).Y = local_18.Y;
+                    (pSVar7->pos).Z = local_18.Z;
+                    (pSVar7->pos).W = local_18.W;
+                    lpamng->field_0x115c7 = 1;
+                    lpamng->field_0x115a8 = lpamng->field_0x115b0;
+                    lpamng->field_0x115b0 = 0;
+                    return;
+                }
+                lpamng->field_0x11636 = local_44[2];
+                if ((byte)((byte)local_44[6] & (byte)(1 << (lpamng->field_0x11638 & 0x1f))) == 0) {
+                    *(byte*)(local_44 + 6) = (byte)(1 << (lpamng->field_0x11638 & 0x1f) | (byte)local_44[6]);
+                    *(byte*)(local_44 + 7) = (byte)((byte)local_44[7] | 8);
+                    *(ushort**)&lpamng->field_0x115f8 = local_44;
+                }
+                pSVar7->current_node_idx = *(ushort*)&lpamng->field_0x11632;
+                plVar4 = lpamng;
+                (lpamng->cam_previous_desired_pos).X = (pSVar7->pos).X;
+                (plVar4->cam_previous_desired_pos).Y = (pSVar7->pos).Y;
+                (plVar4->cam_previous_desired_pos).Z = (pSVar7->pos).Z;
+                (plVar4->cam_previous_desired_pos).W = (pSVar7->pos).W;
+                local_18.X = (float)lpamng->nodes[lpamng->field_0x11632].x;
+                //iVar6 = (int)lpamng->nodes[*(ushort*)&lpamng->field_0x11632].y;
+                //_local_40 = CONCAT44(iVar6, local_40);
+                //local_18.y = (float)iVar6;
+                local_18.Y = (float)lpamng->nodes[lpamng->field_0x11632].y;
+                asmreg_vf9->X = (lpamng->cam_previous_desired_pos).X;
+                asmreg_vf9->Y = (lpamng->cam_previous_desired_pos).Y;
+                asmreg_vf10->X = local_18.X - asmreg_vf9->X;
+                asmreg_vf9->Z = (lpamng->cam_previous_desired_pos).Z;
+                asmreg_vf9->W = (lpamng->cam_previous_desired_pos).W;
+                asmreg_vf10->Y = local_18.Y - asmreg_vf9->Y;
+                asmreg_vf10->W = local_18.W;
+                asmreg_vf10->Z = local_18.Z - asmreg_vf9->Z;
+                _restoreVf00Register();
+                local_38.X = asmreg_vf10->X;
+                local_38.Y = asmreg_vf10->Y;
+                local_38.Z = asmreg_vf10->Z;
+                asmreg_vf10->Y = asmreg_vf10->Y * asmreg_vf10->Y;
+                local_38.W = asmreg_vf10->W;
+                asmreg_vf10->Z = asmreg_vf10->Z * asmreg_vf10->Z;
+                asmreg_vf10->X = asmreg_vf10->Z + asmreg_vf10->Y + asmreg_vf10->X * asmreg_vf10->X;
+                //_local_40 = CONCAT44(ABS(asmreg_vf10->x), local_40);
+                //fVar8 = _CIsqrt((float10)ABS(asmreg_vf10->x));
+                fVar8 = (float)Math.Sqrt(Math.Abs(asmreg_vf10->X));
+                *_asmreg_Q = (float)fVar8;
+                asmreg_vf10->X = asmreg_vf0->X + *_asmreg_Q;
+                if (0.0f < asmreg_vf10->X == float.IsNaN(asmreg_vf10->X)) {
+                    fVar2 = 0.53333336f;
+                }
+                else {
+                    fVar2 = 8.0f / asmreg_vf10->X;
+                }
+                lpamng->field272_0x11624 = fVar2;
+                plVar4 = lpamng;
+                lpamng->field_0x11620 = lpamng->field_0x11620 - 1.0f;
+                lpamng->field_0x11628 = pSVar7->pos_circle_radius;
+                iVar6 = (int)(lpamng->node_type_infos[(int)lpamng->nodes[pSVar7->current_node_idx].node_type].width
+                             >> 1);
+                lpamng->field_0x1162c = (float)iVar6 + 3.0f;
+                //local_40 = SUB84((double)iVar6, 0);
+                local_18.X = (float)(int)lpamng->nodes[lpamng->field_0x11632].x;
+                iVar6 = (int)lpamng->nodes[lpamng->field_0x11632].y;
+                //_local_40 = CONCAT44(iVar6, local_40);
+                local_18.Y = (float)iVar6;
+                fVar2 = plVar4->field_0x11620;
+            } while (!float.IsNaN(fVar2) && 1.0f < fVar2 != (fVar2 == 1.0f));
+        }
+        local_18.W = 1.0f;
+        local_18.Z = 0.0f;
+        uVar3 = lpamng->field_0x11636;
+        if (uVar3 == 0xffff) {
+            _FFXVu0InterVectorXYZ
+                      (&local_28, &local_18, &lpamng->cam_previous_desired_pos,
+                       lpamng->field_0x11620);
+            (pSVar7->pos).X = local_28.X;
+            (pSVar7->pos).Y = local_28.Y;
+        }
+        else {
+            local_58.X = (float)lpamng->nodes[uVar3].x;
+            local_58.Y = (float)lpamng->nodes[uVar3].y;
+            local_58.Z = 0.0f;
+            local_58.W = 1.0f;
+            _FUN_00a563b0(&pSVar7->pos, &lpamng->cam_previous_desired_pos, &local_18, &local_58,
+                         lpamng->field_0x11620);
+        }
+        pSVar7->pos_circle_radius =
+             (lpamng->field_0x1162c - lpamng->field_0x11628) *
+             lpamng->field_0x11620 + lpamng->field_0x11628;
+        lpamng->field_0x115c7 = 1;
+        _FUN_00a5b030.hook_fptr();
+        return;
+    }
+
+    void h_FUN_00a5a4b0() {
+        bool bVar1;
+        uint uVar2;
+        SphereGridChrInfo *pSVar3;
+        //undefined3 extraout_var;
+        //undefined3 extraout_var_00;
+        Vector4 *pfVar4;
+        int iVar5;
+        int chr_id;
+        Vector4 *pfVar6;
+        int local_80;
+        int local_7c;
+        Vector4[] _local_78 = new Vector4[7];
+
+        fixed (Vector4* local_78 = _local_78) {
+            chr_id = 0;
+        iVar5 = 0;
+        do {
+            (&custom_party_infos[0].field26_0x4e)[iVar5] = 0;
+            _FUN_00a58080.hook_fptr(chr_id);
+            iVar5 = iVar5 + 0x50;
+            chr_id = chr_id + 1;
+        //} while (iVar5 < 0x230);
+        } while (chr_id < num_characters);
+        local_7c = 0;
+        uVar2 = lpamng->current_chr_id;
+        pfVar4 = local_78;
+            do {
+                pSVar3 = &custom_party_infos[(int)uVar2];
+                _FUN_00a482d0(pSVar3, pfVar4);
+                do {
+                    iVar5 = 0;
+                    pfVar6 = local_78;
+                    while (true) {
+                        if (local_7c <= iVar5) goto LAB_00a5a56c;
+                        bVar1 = _FUN_00a49270(pfVar4, pfVar6);
+                        //if (CONCAT31(extraout_var, bVar1) != 0) break;
+                        if (bVar1) break;
+                        iVar5 = iVar5 + 1;
+                        pfVar6 = pfVar6 + 1;
+                    }
+                    pSVar3->field26_0x4e = (byte)(pSVar3->field26_0x4e + 1);
+                    _FUN_00a58080.hook_fptr((int)uVar2);
+                    _FUN_00a482d0(pSVar3, pfVar4);
+                } while (pSVar3->field26_0x4e < num_characters);
+            LAB_00a5a56c:
+                local_7c = local_7c + 1;
+                pfVar4 = pfVar4 + 1;
+                uVar2 = (uint)((6 < (int)(uVar2 + 1) ? 1 : 0) - 1 & uVar2 + 1);
+            } while (local_7c < num_characters);
+            uVar2 = lpamng->current_chr_id;
+            local_80 = 0;
+            pfVar4 = local_78;
+            do {
+                pSVar3 = &custom_party_infos[(int)uVar2];
+                do {
+                    iVar5 = 0;
+                    pfVar6 = local_78;
+                    while (true) {
+                        if (6 < iVar5) goto LAB_00a5a606;
+                        if ((local_80 != iVar5) &&
+                        //   (bVar1 = FUN_00a49270(pfVar4, pfVar6), CONCAT31(extraout_var_00, bVar1) != 0)) break;
+                             _FUN_00a49270(pfVar4, pfVar6)) break;
+                        iVar5 = iVar5 + 1;
+                        pfVar6 = pfVar6 + 1;
+                    }
+                    pSVar3->field26_0x4e = (byte)(pSVar3->field26_0x4e + 1);
+                    _FUN_00a58080.hook_fptr((int)uVar2);
+                    _FUN_00a482d0(pSVar3, pfVar4);
+                } while (pSVar3->field26_0x4e < num_characters);
+            LAB_00a5a606:
+                local_80 = local_80 + 1;
+                pfVar4 = pfVar4 + 1;
+                uVar2 = (uint)((6 < (int)(uVar2 + 1) ? 1 : 0) - 1 & uVar2 + 1);
+                if (6 < local_80) {
+                    return;
+                }
+            } while (true);
+        }
+    }
+
+    void h_FUN_00a5a990(int param_1) {
+        ushort uVar1;
+        LpAbilityMapEngine *plVar2;
+        SphereGridChrInfo *pSVar3;
+
+        plVar2 = lpamng;
+        pSVar3 = &custom_party_infos[param_1];
+        uVar1 = pSVar3->current_node_idx;
+        (pSVar3->pos).X = (float)lpamng->nodes[uVar1].x;
+        (pSVar3->pos).Y = (float)plVar2->nodes[uVar1].y;
+        (pSVar3->pos).Z = 0.0f;
+        (pSVar3->pos).W = 1.0f;
+        pSVar3->pos_circle_radius =
+             (lpamng->node_type_infos[(int)lpamng->nodes[pSVar3->current_node_idx].node_type].width
+                         >> 1) + 3.0f;
+        return;
+    }
+
+    void h_FUN_00a5b030() {
+        LpAbilityMapEngine *__lpamng;
+        LpAbilityMapEngine *_lpamng;
+        byte chr_id;
+
+        _lpamng = lpamng;
+        chr_id = lpamng->current_chr_id;
+        lpamng->field193_0x115a0 = 256.0f;
+        __lpamng = lpamng;
+        (lpamng->field95_0x11520).X = custom_party_infos[chr_id].pos.X;
+        (__lpamng->field95_0x11520).Y = custom_party_infos[chr_id].pos.Y;
+        (__lpamng->field95_0x11520).Z = custom_party_infos[chr_id].pos.Z;
+        (__lpamng->field95_0x11520).W = custom_party_infos[chr_id].pos.W;
+        (lpamng->field95_0x11520).Z = custom_party_infos[chr_id].pos.Z - 32.0f;
+        _lpamng = lpamng;
+        chr_id = lpamng->current_chr_id;
+        (lpamng->field144_0x11560).X = Vector4f_ARRAY_00c86010[chr_id].X;
+        (_lpamng->field144_0x11560).Y = Vector4f_ARRAY_00c86010[chr_id].Y;
+        (_lpamng->field144_0x11560).Z = Vector4f_ARRAY_00c86010[chr_id].Z;
+        (_lpamng->field144_0x11560).W = Vector4f_ARRAY_00c86010[chr_id].W;
+        (lpamng->field95_0x11520).W = lpamng->field193_0x115a0 + lpamng->field193_0x115a0;
+        _FUN_00a47440();
+        return;
+    }
+
+    void h_FUN_00a5b7b0() {
+        ushort uVar1;
+        ushort uVar2;
+        byte *pbVar3;
+        uint uVar4;
+        int iVar5;
+        byte bVar6;
+
+        uVar1 = custom_party_infos[lpamng->current_chr_id].current_node_idx;
+        lpamng->field_0x115a8 = (int)FhUtil.ptr_at<nint>(0x644EF0); // FUN_00a44ef0
+        lpamng->field_0x115ac = (int)FhUtil.ptr_at<nint>(0x645440); // FUN_00a45440
+        bVar6 = lpamng->current_chr_id;
+        uVar2 = _FUN_007854a0(bVar6);
+        _FUN_00a474d0(uVar1, uVar2, bVar6);
+        iVar5 = lpamng->node_count;
+        if (iVar5 != 0) {
+            pbVar3 = (byte*)&lpamng->nodes[0].properties;
+            do {
+                iVar5 = iVar5 + -1;
+                if (*(ushort*)(pbVar3 + -0x1c) != 0xffff) {
+                    *pbVar3 = (byte)(*pbVar3 & 0xfc);
+                }
+                pbVar3 = pbVar3 + 0x28;
+            } while (iVar5 != 0);
+        }
+        uVar4 = _FUN_007854a0(lpamng->current_chr_id);
+        iVar5 = lpamng->node_count;
+        if (iVar5 != 0) {
+            pbVar3 = (byte*)&lpamng->nodes[0].properties;
+            do {
+                iVar5 = iVar5 + -1;
+                if ((*(ushort*)(pbVar3 + -0x1c) != 0xffff) &&
+                   (*(ushort*)(pbVar3 + 2) <= (ushort)((uVar4 & 0xffff) << 2))) {
+                    *pbVar3 = (byte)(*pbVar3 | 3);
+                }
+                pbVar3 = pbVar3 + 0x28;
+            } while (iVar5 != 0);
+        }
+        lpamng->field_0x116a0 = 0;
+        lpamng->field_0x1169c = 0;
+        lpamng->field_0x1161c = 0;
+        _FUN_00a48d70(uVar1, 0.25f);
+        if (lpamng->field_0x115b0 != 0) {
+            lpamng->field_0x115c3 = 1;
+            return;
+        }
+        lpamng->field_0x115b0 = lpamng->field_0x115a8;
+        lpamng->field_0x115a8 = (int)FhUtil.ptr_at<nint>(0x659E80); // FUN_00a59e80;
+        lpamng->field_0x115c3 = 1;
+        return;
+    }
+
+    // Calculates valid nodes for item?
+    void h_FUN_00a5b980(uint chr_id, ushort node_idx, uint item_id) {
+        uint node_to_select;
+        byte *pbVar1;
+        SphereGridNode *psVar2;
+        int iVar3;
+        float local_8;
+
+        iVar3 = lpamng->node_count;
+        if (iVar3 != 0) {
+            pbVar1 = (byte*)&lpamng->nodes[0].properties;
+            do {
+                iVar3 = iVar3 + -1;
+                if (*(ushort*)(pbVar1 + -0x1c) != 0xffff) {
+                    *pbVar1 = (byte)(*pbVar1 & 0xfc);
+                }
+                pbVar1 = pbVar1 + 0x28;
+            } while (iVar3 != 0);
+        }
+        _FUN_00a5b400((int)chr_id, node_idx, item_id, 3);
+        lpamng->field_0x116a0 = 0;
+        lpamng->field_0x1169c = 0;
+        lpamng->field_0x115a8 = (int)FhUtil.ptr_at<nint>(0x6452D0); // abmCalcSpheUseCurMove
+        lpamng->field_0x115ac = (int)FhUtil.ptr_at<nint>(0x645500); // FUN_00a45500
+        psVar2 = _FUN_00a56a40(&local_8, &custom_party_infos[lpamng->current_chr_id].pos,
+                              //abmCalcChrMoveCurMoveCheck);
+                              FhUtil.ptr_at<nint>(0x645000));
+        node_to_select = (uint)(((int)psVar2 + (-0x808 - (int)lpamng)) / 0x28);
+        if ((psVar2 != (SphereGridNode*)0x0) && (node_to_select != lpamng->selected_node_idx)) {
+            _FUN_00a48d70((int)node_to_select, 0.5f);
+            if (lpamng->field_0x115b0 == 0) {
+                lpamng->field_0x115b0 = lpamng->field_0x115a8;
+                lpamng->field_0x115a8 = (int)FhUtil.ptr_at<nint>(0x659E80); // FUN_00a59e80;
+                lpamng->field_0x115c3 = 1;
+                return;
+            }
+            lpamng->field_0x115c3 = 1;
+            return;
+        }
+        lpamng->field_0x115c3 = 1;
+        return;
+    }
+
+    void h_FUN_00a5bb70() {
+        LpAbilityMapEngine *plVar1;
+        SaveSphereGrid *ability_map;
+        int node_idx;
+        int link_idx;
+        int node_offset;
+        int link_offset;
+
+        ability_map = _MsGetSaveAbilityMap();
+        node_idx = 0;
+        if (0 < lpamng->node_count) {
+            node_offset = 0;
+            do {
+                plVar1 = lpamng;
+                ability_map->nodes[node_idx].node_type =
+                     //*(byte*)((int)lpamng->nodes[0].links_ptr + node_offset + -6);
+                     (byte)lpamng->nodes[node_idx].node_type;
+                ability_map->nodes[node_idx].activated_by =
+                     //*(byte*)((int)plVar1->nodes[0].links_ptr + node_offset + 0x15);
+                     lpamng->nodes[node_idx].activated_by;
+                node_idx = node_idx + 1;
+                node_offset = node_offset + 0x28;
+            } while (node_idx < lpamng->node_count);
+        }
+        link_idx = 0;
+        if (0 < lpamng->link_count) {
+            link_offset = 0;
+            do {
+                ability_map->links_activated_by[link_idx] = (&lpamng->links[0].activated_by)[link_offset];
+                link_idx = link_idx + 1;
+                link_offset = link_offset + 0x14;
+            } while (link_idx < lpamng->link_count);
+        }
+        // TODO: Handle extra characters
+        ability_map->party_selected_node_idx[0] = custom_party_infos[0].current_node_idx;
+        ability_map->party_selected_node_idx[1] = custom_party_infos[1].current_node_idx;
+        ability_map->party_selected_node_idx[2] = custom_party_infos[2].current_node_idx;
+        ability_map->party_selected_node_idx[3] = custom_party_infos[3].current_node_idx;
+        ability_map->party_selected_node_idx[4] = custom_party_infos[4].current_node_idx;
+        ability_map->party_selected_node_idx[5] = custom_party_infos[5].current_node_idx;
+        ability_map->party_selected_node_idx[6] = custom_party_infos[6].current_node_idx;
+        for (int i = 0; i < num_characters - 7; i++) {
+            custom_party_selected_node_idx[i] = custom_party_infos[i + 7].current_node_idx;
+        }
+        ability_map->tilt_level = lpamng->tilt_level;
+        ability_map->zoom_level = lpamng->zoom_level;
+        return;
+    }
+
+    void h_FUN_008a8ef0(uint param_1) {
+        byte bVar1;
+        byte *pbVar2;
+        uint uVar3;
+        //undefined3 extraout_var;
+        int iVar4;
+        uint uVar5;
+        uint uVar6;
+        uint uVar7;
+        byte idx;
+        uint local_c;
+        int local_8;
+
+        uVar5 = param_1 & 0xffff0000;
+        *p_DAT_01841bf0 = 0;
+        *p_DAT_01841bf4 = 0;
+        pbVar2 = _MsGetSaveInParty(&local_8);
+        uVar7 = 0;
+        uVar6 = 0;
+        iVar4 = 0;
+        local_c = 0;
+        *p_DAT_01841bec = 0;
+        if (0 < local_8) {
+            uVar7 = 0;
+            do {
+                bVar1 = pbVar2[iVar4];
+                if (((bVar1 != 0xff)) && (uVar5 != 0x10000)) {
+                    p_DAT_01841bd4_PauseMenuPlayerList[uVar6] = bVar1;
+                    uVar3 = (uint)(1 << (pbVar2[iVar4] & 0x1f));
+                    uVar6 = uVar6 + 1;
+                    uVar7 = uVar7 | uVar3;
+                    *p_DAT_01841bec = *p_DAT_01841bec | uVar3;
+                }
+                iVar4 = iVar4 + 1;
+            } while (iVar4 < local_8);
+        }
+        *p_DAT_01841be4_PauseMenuFrontlineNum = uVar6;
+        pbVar2 = _MsGetSaveOutParty(&local_8);
+        iVar4 = 0;
+        if (0 < local_8) {
+            do {
+                bVar1 = pbVar2[iVar4];
+                if (((bVar1 != 0xff)) && (uVar5 != 0x10000)) {
+                    p_DAT_01841bd4_PauseMenuPlayerList[uVar6] = bVar1;
+                    uVar6 = uVar6 + 1;
+                    uVar7 = uVar7 | (uint)(1 << (pbVar2[iVar4] & 0x1f));
+                }
+                iVar4 = iVar4 + 1;
+            } while (iVar4 < local_8);
+        }
+        iVar4 = 0;
+        *p_UINT_01841bdc_PlayerListMax = uVar6;
+        *p_DAT_01841bf0 = uVar7;
+        do {
+            idx = (byte)iVar4;
+            bVar1 = _MsGetSavePlyJoined(idx);
+            //if (bVar1 &&
+            //   ((uVar5 != 0x10000 &&
+            //    (uVar3 = 1 << (idx & 0x1f), local_c = local_c | uVar3, (uVar7 & uVar3) == 0)))) {
+            if (bVar1 == 1 && (uVar5 != 0x10000)) {
+                uVar3 = (uint)(1 << (idx & 0x1f));
+                local_c = local_c | uVar3;
+                if ((uVar7 & uVar3) == 0) {
+                    p_DAT_01841bd4_PauseMenuPlayerList[uVar6] = idx;
+                    uVar6 = uVar6 + 1;
+                }
+            }
+            iVar4 = iVar4 + 1;
+        } while (iVar4 < 8);
+        *p_UINT_01841be0_PlayerListMax = uVar6;
+        *p_DAT_01841bf4 = local_c | uVar7;
+        *p_DAT_01841be8_PauseMenuSelIdx = 0;
+        return;
+    }
+    void h_FUN_008bddc0() {
+        //_FUN_008bddc0.orig_fptr();
+        //return;
+        byte uVar1;
+        int ply_chr_id;
+        int iVar2;
+        int iVar3;
+        uint uVar4;
+        int *puVar5;
+        int local_8;
+
+        iVar3 = 0;
+        *p_DAT_01869ed9 = 0;
+        ply_chr_id = 0;
+        do {
+            if (Globals.Battle.reward_data->in_battle[ply_chr_id] != false) {
+                if (Globals.Battle.reward_data->get_ap_temp[ply_chr_id] != 0) {
+                    *p_DAT_01869ed9 = 1;
+                }
+                iVar3 = iVar3 + 1;
+            }
+            ply_chr_id = ply_chr_id + 1;
+        } while (ply_chr_id < 8);
+        iVar2 = 0;
+        local_8 = 0;
+        uVar4 = 0;
+        puVar5 = p_DAT_01869ee4;
+        do {
+            if (Globals.Battle.reward_data->in_battle[(int)uVar4] != false) {
+                *(short*)((int)puVar5 + -2) = (short)((short)iVar2 * 6);
+                *(short*)puVar5 = 0;
+                *(short*)((int)puVar5 + 2) = (short)uVar4;
+                uVar1 = _FUN_008b9e60(uVar4);
+                *(byte*)(puVar5 + 1) = uVar1;
+                uVar1 = (byte)_FUN_008b9e70(uVar4);
+                *(byte*)((int)puVar5 + 5) = uVar1;
+                ply_chr_id = _FUN_008ba330(local_8, iVar3);
+                *(short*)(puVar5 + -1) = (short)ply_chr_id;
+                iVar2 = local_8 + 1;
+                *(byte*)((int)puVar5 + 6) = 0;
+                puVar5 = (int*)((int)puVar5 + 0xe);
+                local_8 = iVar2;
+            }
+            uVar4 = uVar4 + 1;
+        } while ((int)uVar4 < 8);
+        *p_DAT_01869ed8 = (byte)iVar3;
+        _FUN_008ba3c0();
+        return;
+    }
+
+    void h_FUN_00a505e0() {
+        byte uVar1;
+        int iVar2;
+        uint uVar3;
+        SphereGridNodeTypeInfo *pSVar4;
+        LpAbilityMapEngine *plVar5;
+        int iVar6;
+        int iVar7;
+        SphereGridNode *node;
+        LpAbilityMapEngine *plVar8;
+        double fVar9;
+        //float10 extraout_ST0;
+        uint local_190;
+        uint local_18c;
+        uint local_188;
+        uint local_184;
+        uint local_17c = 0;
+        int chr_id;
+        uint local_174 = 0;
+        uint local_170 = 0;
+        uint local_16c = 0;
+        Vec2s16 *local_164;
+        byte activated_by;
+        temp_FUN_00a4c8d0_struct local_150 = new();
+        Matrix4x4 local_d8 = new();
+        Matrix4x4 local_98 = new();
+        Matrix4x4 local_58 = new();
+
+        _FUN_00a505e0.orig_fptr();
+        return;
+
+        iVar6 = (int)lpamng->node_count;
+        node = &lpamng->nodes[0];
+        iVar2 = *(int*)&lpamng->field_0x11698;
+        local_150.field11_0x20 = &local_d8;
+        local_150.field20_0x44 = &local_58;
+        local_150.field14_0x2c = &local_98;
+        local_58.M14 = asmreg_0_zero->W;
+        local_58.M24 = asmreg_0_zero->W;
+        local_58.M44 = 1.0f;
+        local_58.M34 = asmreg_0_zero->W;
+        local_150.field13_0x28 = (int)&lpamng->field95_0x11520;
+        local_150.field12_0x24 = (int)&lpamng->field144_0x11560;
+        local_150.field10_0x1c = 0;
+        local_150.field3_0xa = 0;
+        local_150.field18_0x3c = 0;
+        local_150.field17_0x38 = 0;
+        local_150.field1_0x4 = (int)p_DAT_01740830_sphere_grid_layout_dat;
+        local_150.field5_0xc = 0;
+        local_150.field6_0x10 = 0;
+        local_150.field7_0x14 = 0;
+        local_150.field19_0x40 = 0;
+        local_58.M11 = asmreg_0_zero->X;
+        local_58.M12 = asmreg_0_zero->Y;
+        local_58.M13 = asmreg_0_zero->Z;
+        local_58.M21 = asmreg_0_zero->X;
+        local_58.M22 = asmreg_0_zero->Y;
+        local_58.M23 = asmreg_0_zero->Z;
+        local_58.M31 = asmreg_0_zero->X;
+        local_58.M32 = asmreg_0_zero->Y;
+        local_58.M33 = asmreg_0_zero->Z;
+        local_58.M41 = asmreg_0_zero->X;
+        local_58.M42 = asmreg_0_zero->Y;
+        local_58.M43 = asmreg_0_zero->Z;
+        if (iVar6 != 0) {
+            //local_16c = local_184;
+            //local_170 = local_188;
+            //local_17c = local_18c;
+            //local_174 = local_190;
+            do {
+                plVar5 = lpamng;
+                fVar9 = 6.0;
+                iVar6 = iVar6 + -1;
+                uVar1 = (byte)node->node_type;
+                if (uVar1 == 0xff) {
+                    iVar7 = 0;
+                    do {
+                        plVar5 = lpamng;
+                        _FUN_00a5ad30.hook_fptr(&local_98, node, 1.0f);
+                        _cdc_FFXVu0MulMatrix(&local_d8, &plVar5->field90_0x113e0, &local_98);
+                        local_58.M43 = -1.0f;
+                        local_150.rgba = 0;
+                        _FUN_00a68140.hook_fptr(DAT_023057ec, &local_150, (lpamng->node_count - iVar6) + -1, iVar7);
+                        iVar7 = iVar7 + 1;
+                    } while (iVar7 < num_characters);
+                }
+                else {
+                    local_164 = &lpamng->node_type_infos[uVar1].pos[0];
+                    if (local_164->x == 0x1000) {
+                        iVar7 = 0;
+                        pSVar4 = &lpamng->node_type_infos[0];
+                        do {
+                            plVar5 = lpamng;
+                            _FUN_00a5ad30.hook_fptr(&local_98, node, pSVar4[uVar1].field5_0x10);
+                            _cdc_FFXVu0MulMatrix(&local_d8, &plVar5->field90_0x113e0, &local_98);
+                            local_58.M43 = -1.0f;
+                            local_150.rgba = 0;
+                            _FUN_00a68140.hook_fptr(DAT_023057ec, &local_150, (lpamng->node_count - iVar6) + -1, iVar7);
+                            iVar7 = iVar7 + 1;
+                        } while (iVar7 < num_characters);
+                    }
+                    else {
+                        activated_by = (byte)(lpamng->active_indicators & node->activated_by);
+                        if (activated_by != 0) {
+                            //fVar9 = (eff_sin_t[(node->field14_0x26 + iVar2 * 0x800) >> 4 &
+                            //                       0xfff] * 0.15 * -96.0);
+                            //iVar7 = (int)fVar9;
+                            iVar7 = (int)(eff_sin_t[(int)(node->field14_0x26 + iVar2 * 0x800) >> 4 &
+                                                   0xfff] * 0.15 * -96.0);
+                            local_17c = (uint)(0x6cU - iVar7 & 0xff);
+                            //fVar9 = extraout_ST0;
+                            //fVar9 = iVar7; // Maybe?
+                            local_174 = local_17c;
+                            local_170 = local_17c;
+                            local_16c = local_17c;
+                        }
+                        //local_150.field2_0x8 = -0x7f9c;
+                        local_150.field2_0x8 = 0x8064;
+                        chr_id = 0;
+                        plVar8 = plVar5;
+                        while (true) {
+                            if ((activated_by & 1) == 0) {
+                                local_150.rgba = p_DAT_00c86644[chr_id]; // Inactive indicator colors
+                                local_150.field0_0x0 = 0x24;
+                            }
+                            else {
+                                uVar3 = (uint)p_DAT_00c8659c[chr_id]; // Active indicator colors
+                                local_150.rgba =
+                                     //CONCAT13(0x80, (((int3)((int)(((int)uVar3 >> 0x18 & 0xffU) * local_16c) >> 7) *
+                                     //                0x100 + (int3)((int)(((int)uVar3 >> 0x10 & 0xffU) * local_170) >>
+                                     //                              7)) * 0x100 +
+                                     //              (int3)((int)(((int)uVar3 >> 8 & 0xffU) * local_17c) >> 7)) * 0x100
+                                     //              + (int3)((int)((uVar3 & 0xff) * local_174) >> 7));
+                                     (0x80 << 0x18) | ((((((int)(((int)uVar3 >> 0x18 & 0xffU) * local_16c) >> 7)  * 0x100 + 
+                                                          ((int)(((int)uVar3 >> 0x10 & 0xffU) * local_170) >> 7)) * 0x100 +
+                                                          ((int)(((int)uVar3 >> 0x08 & 0xffU) * local_17c) >> 7)) * 0x100 + 
+                                                          ((int)(     (uVar3         & 0xff)  * local_174) >> 7))
+                                                          & 0x00FFFFFF);
+                                // Animating the color intensity(?)
+                                //local_150.rgba = (int)uVar3;
+                                local_150.field0_0x0 = 0x2c;
+                                fVar9 = 1.0;
+                            }
+                            local_58.M43 = (float)fVar9;
+                            //_logger.Debug($"node type:{uVar1}, size:{plVar5->node_type_infos[uVar1].width} x {plVar5->node_type_infos[uVar1].height}, 0x10:{plVar5->node_type_infos[uVar1].field5_0x10}");
+                            _FUN_00a5ad30.hook_fptr(&local_98, node, plVar5->node_type_infos[uVar1].field5_0x10);
+                            //_logger.Debug($"Pos: {node->pos} + {local_164->xy}");
+                            _FUN_00a5a360.hook_fptr(&local_98, node, local_164, 0.0008f);
+                            _cdc_FFXVu0MulMatrix(&local_d8, &plVar8->field90_0x113e0, &local_98);
+                            _FUN_00a68140.hook_fptr(DAT_023057ec, &local_150, (lpamng->node_count - iVar6) + -1, chr_id);
+                            chr_id = chr_id + 1;
+                            if (chr_id >= 7) {
+                                Vec2s16 tempVec2s16 = *local_164;
+                                tempVec2s16.y -= 5;
+                                local_164 = &tempVec2s16;
+                            } else {
+                                local_164 = local_164 + 1;
+                            }
+                            activated_by = (byte)(activated_by >> 1);
+                            if (num_characters-1 < chr_id) break;
+                            fVar9 = 6.0;
+                            plVar8 = lpamng;
+                        }
+                    }
+                }
+                node = node + 1;
+            } while (iVar6 != 0);
+        }
+        return;
+    }
+
+    void h_FUN_00a534c0() {
+        byte uVar1;
+        uint uVar2;
+        LpAbilityMapEngine *plVar3;
+        byte bVar4;
+        int iVar5;
+        int iVar6;
+        int *piVar7;
+        int iVar8;
+        SphereGridNode *node;
+        uint uVar9;
+        Vec2s16 *pVVar10;
+        uint *local_1c8;
+        temp_FUN_00a4c8d0_struct local_1c0 = new();
+        int[] _local_148 = new int[28];
+        Matrix4x4 local_d8 = new();
+        Matrix4x4 local_98 = new();
+        Matrix4x4 local_58 = new();
+        int iVar11;
+
+        _FUN_00a534c0.orig_fptr();
+        return;
+
+        fixed (int* local_148 = _local_148) {
+
+            if (-1 < (int)lpamng->field_0x116a8) {
+                _FUN_00a50ed0.hook_fptr((int)lpamng->field_0x116a8);
+            }
+            if (lpamng->field374_0x116b0 == -2) {
+                iVar11 = 2;
+            }
+            else {
+                if (lpamng->field374_0x116b0 != 2) goto LAB_00a534fb;
+                iVar11 = 3;
+            }
+            _FUN_00639280(iVar11);
+        LAB_00a534fb:
+            if (lpamng->field374_0x116b0 < 1) {
+                return;
+            }
+            iVar11 = (int)lpamng->node_count;
+            node = &lpamng->nodes[0];
+            iVar5 = (int)(eff_sin_t[(int)(*(int*)&lpamng->field_0x11698 * 0x800 +
+                                        (uint)lpamng->nodes[0].field14_0x26) >> 4 & 0xfff] * 0.15 *
+                         -96.0);
+            uVar9 = (uint)(0x6cU - iVar5 & 0xff);
+            local_1c8 = (uint*)p_DAT_00c8659c;
+            piVar7 = local_148 + 2;
+            int chr_id = 0;
+            do {
+                uVar2 = *local_1c8;
+                iVar6 = (int)(((int)uVar2 >> 0x18 & 0xffU) * uVar9) >> 7;
+                iVar5 = (int)(((int)uVar2 >> 0x10 & 0xffU) * uVar9) >> 7;
+                piVar7[1] = iVar6;
+                iVar8 = (int)(((int)uVar2 >> 8 & 0xffU) * uVar9) >> 7;
+                piVar7[-1] = iVar8;
+                *piVar7 = iVar5;
+                uVar2 = *local_1c8;
+                local_1c8 = local_1c8 + 1;
+                piVar7[-2] = ((iVar6 * 0x100 + iVar5) * 0x100 + iVar8) * 0x100 +
+                             ((int)((uVar2 & 0xff) * uVar9) >> 7);
+                piVar7 = piVar7 + 4;
+                chr_id += 1;
+            } while (chr_id < num_characters);
+            local_1c0.field11_0x20 = &local_d8;
+            local_1c0.field20_0x44 = &local_58;
+            local_1c0.field14_0x2c = &local_98;
+            local_58.M13 = (float)asmreg_0_zero->Z;
+            local_58.M23 = (float)asmreg_0_zero->Z;
+            local_58.M33 = (float)asmreg_0_zero->Z;
+            local_58.M43 = (float)asmreg_0_zero->Z;
+            local_58.M44 = 1.0f;
+            local_1c0.field10_0x1c = 0;
+            local_1c0.field3_0xa = 0;
+            local_1c0.field18_0x3c = 0;
+            local_1c0.field17_0x38 = 0;
+            local_1c0.field1_0x4 = (int)p_DAT_01740830_sphere_grid_layout_dat;
+            local_1c0.field5_0xc = 0;
+            local_1c0.field6_0x10 = 0;
+            local_1c0.field7_0x14 = 0;
+            local_1c0.field19_0x40 = 0;
+            local_1c0.field13_0x28 = 0;
+            local_1c0.field12_0x24 = 0;
+            local_58.M11 = (float)asmreg_0_zero->X;
+            local_58.M12 = (float)asmreg_0_zero->Y;
+            local_58.M14 = (float)asmreg_0_zero->W;
+            local_58.M21 = (float)asmreg_0_zero->X;
+            local_58.M22 = (float)asmreg_0_zero->Y;
+            local_58.M24 = (float)asmreg_0_zero->W;
+            local_58.M31 = (float)asmreg_0_zero->X;
+            local_58.M32 = (float)asmreg_0_zero->Y;
+            local_58.M34 = (float)asmreg_0_zero->W;
+            local_58.M41 = (float)asmreg_0_zero->X;
+            local_58.M42 = (float)asmreg_0_zero->Y;
+            plVar3 = lpamng;
+            while (iVar11 != 0) {
+                uVar1 = (byte)node->node_type;
+                iVar11 = iVar11 + -1;
+                //lpamng = plVar3;
+                if (uVar1 != 0xff) {
+                    pVVar10 = &plVar3->node_type_infos[uVar1].pos[0];
+                    if (pVVar10->x != 0x1000) {
+                        bVar4 = (byte)(plVar3->active_indicators & node->activated_by);
+                        //local_1c0.field2_0x8 = -0x7f9c;
+                        local_1c0.field2_0x8 = 0x8064;
+                        piVar7 = local_148;
+                        iVar5 = -1;
+                        do {
+                            if ((bVar4 & 1) != 0) {
+                                local_58.M43 = 1.0f;
+                                //local_1c0.rgba = CONCAT13(0x80, (int3) * piVar7);
+                                local_1c0.rgba = (0x80 << 0x18) | (*piVar7 & 0x00FFFFFF);
+                                local_1c0.field0_0x0 = 0x2c;
+                                _FUN_00a5ad30.hook_fptr(&local_98, node, plVar3->node_type_infos[uVar1].field5_0x10);
+                                _FUN_00a5a360.hook_fptr(&local_98, node, pVVar10, 0.0008f);
+                                _cdc_FFXVu0MulMatrix(&local_d8, &lpamng->field90_0x113e0, &local_98);
+                                _FUN_00a68140.hook_fptr(DAT_023057ec, &local_1c0, (lpamng->node_count - iVar11) + -1, iVar5);
+                            }
+                            piVar7 = piVar7 + 4;
+                            iVar5 = iVar5 + -1;
+                            bVar4 = (byte)(bVar4 >> 1);
+                            pVVar10 = pVVar10 + 1;
+                        } while (-(num_characters+1) < iVar5);
+                    }
+                }
+                node = node + 1;
+                plVar3 = lpamng;
+            }
+            //lpamng = plVar3; // ???
+            return;
+        }
+    }
+
+    void h_FUN_00a50ed0(int param_1) {
+        // TODO: Reimplement
+        _FUN_00a50ed0.orig_fptr(param_1);
+        return;
+    }
+
+    int h_FUN_00a68140(int param_1, temp_FUN_00a4c8d0_struct* param_2, int param_3, int param_4) {
+        int result = _FUN_00a68140.orig_fptr(param_1, param_2, param_3, param_4);
+        return result;
+    }
+
+    void h_FUN_00a5a360(Matrix4x4* param_1, SphereGridNode* node, Vec2s16* param_3, float param_4) {
+        _FUN_00a5a360.orig_fptr(param_1, node, param_3, param_4);
+    }
+
+    void h_FUN_00a5ad30(Matrix4x4* param_1, SphereGridNode* node, float param_3) {
+        _FUN_00a5ad30.orig_fptr(param_1, node, param_3);
+    }
+
+
+    void h_FUN_00a4b4b0() {
+        byte bVar1;
+        LpAbilityMapEngine *plVar2;
+        uint *pfVar3;
+        int iVar4;
+        byte *pbVar5;
+
+        pfVar3 = (uint*)_user_malloc(0x1ec);
+        plVar2 = lpamng;
+        bVar1 = lpamng->current_chr_id;
+        iVar4 = (int)lpamng->link_count;
+        pfVar3[0x7a] = 0x3000;
+        if (iVar4 != 0) {
+            pbVar5 = &plVar2->links[0].point_count;
+            do {
+                iVar4 = iVar4 + -1;
+                if ((pbVar5[-1] & '\x01' << (bVar1 & 0x1f)) == 0) {
+                    pfVar3[0x50] = pfVar3[0x58];
+                    pfVar3[0x51] = pfVar3[0x59];
+                    pfVar3[0x52] = pfVar3[0x5a];
+                    pfVar3[0x53] = pfVar3[0x5b];
+                    pfVar3[0x54] = pfVar3[0x5c];
+                    pfVar3[0x55] = pfVar3[0x5d];
+                    pfVar3[0x56] = pfVar3[0x5e];
+                    pfVar3[0x57] = pfVar3[0x5f];
+                    _FUN_00a51720(pfVar3, (float*)*(SphereGridLinkPoint**)(pbVar5 + 3), (int)*pbVar5);
+                }
+                else if ((SphereGridLink*)(pbVar5 + -0xd) == *(SphereGridLink**)&lpamng->field_0x115f8) {
+                    switch (lpamng->current_chr_id) {
+                        case 0:
+                            pfVar3[0x50] = 0x01000100;
+                            break;
+                        case 1:
+                            pfVar3[0x50] = 0x01000200;
+                            break;
+                        case 2:
+                            pfVar3[0x50] = 0x01000000;
+                            break;
+                        case 3:
+                            pfVar3[0x50] = 0x01000001;
+                            break;
+                        case 4:
+                            pfVar3[0x50] = 0x01000201;
+                            break;
+                        case 5:
+                            pfVar3[0x50] = 0x01000101;
+                            break;
+                        case 6:
+                            pfVar3[0x50] = 0x01000300;
+                            break;
+                        default:
+                            pfVar3[0x50] = 0x01000100; // Tidus color
+                            break;
+                    }
+                    _FUN_00a521a0(pfVar3, (float*)*(SphereGridLinkPoint**)(pbVar5 + 3), (int)*pbVar5);
+                }
+                else {
+                    switch (lpamng->current_chr_id) {
+                        case 0:
+                            pfVar3[0x50] = 0x100;
+                            break;
+                        case 1:
+                            pfVar3[0x50] = 0x200;
+                            break;
+                        case 2:
+                            pfVar3[0x50] = 0x0;
+                            break;
+                        case 3:
+                            pfVar3[0x50] = 0x1;
+                            break;
+                        case 4:
+                            pfVar3[0x50] = 0x201;
+                            break;
+                        case 5:
+                            pfVar3[0x50] = 0x101;
+                            break;
+                        case 6:
+                            pfVar3[0x50] = 0x300;
+                            break;
+                        default:
+                            pfVar3[0x50] = 0x100; // Tidus color
+                            break;
+                    }
+                    _FUN_00a521a0(pfVar3, (float*)*(SphereGridLinkPoint**)(pbVar5 + 3), (int)*pbVar5);
+                }
+                pbVar5 = pbVar5 + 0x14;
+            } while (iVar4 != 0);
+        }
+        _user_free((nint)pfVar3);
+        return;
+    }
+
+    // Initializes Sphere Grid
+    void h_FUN_00a53de0(SaveSphereGrid* save_sphere_grid) {
+        _FUN_00a53de0.orig_fptr(save_sphere_grid);
+        custom_party_selected_node_idx = new ushort[num_characters - 7];
+        for (int chr_id = 0; chr_id < num_characters-7; chr_id++) {
+            uint grid_type = Globals.save_data->config_grid_type switch {
+                0 => 0, // Original
+                1 => 1, // Standard
+                2 => 2, // Expert
+                _ => 2, // Defaults to Expert?
+            };
+            custom_party_selected_node_idx[chr_id] = custom_starting_selected_node_idx[chr_id][grid_type];
+
+            foreach (ushort node in custom_starting_activated_nodes[chr_id][grid_type]) {
+                save_sphere_grid->nodes[node].activated_by |= (byte)(1 << (chr_id+7));
+            }
+        }
+    }
+
+    void h_eiAbmParaGet() {
+        SaveSphereGrid *save_abmap;
+        uint chr_bit;
+        ExcelBlock_panel *panel;
+        int mp;
+        int node_idx;
+        int dummy_ref;
+        MsChrAbilityMap *ability_map;
+        uint local_50;
+        int strength;
+        int hp;
+        int defense;
+        int chr_id;
+        int magic;
+        int magic_defense;
+        int accuracy;
+        int agility;
+        int evasion;
+        int luck;
+        int new_strength;
+        int new_defense;
+        byte _chr_id;
+        ushort sphere_effect;
+
+        _MsInitChrAbilityMap();
+        chr_id = 0;
+        do {
+            mp = 0;
+            hp = 0;
+            strength = 0;
+            defense = 0;
+            magic = 0;
+            magic_defense = 0;
+            agility = 0;
+            luck = 0;
+            evasion = 0;
+            accuracy = 0;
+            ability_map = _MsGetChrAbilityMap((uint)chr_id);
+            save_abmap = _MsGetSaveAbilityMap();
+            node_idx = 0;
+            _chr_id = (byte)((byte)chr_id & 0x1f);
+            chr_bit = (uint)((1 << _chr_id) | (1U >> (0x20 - _chr_id)));
+            local_50 = chr_bit;
+            do {
+                if ((save_abmap->nodes[node_idx].activated_by & (byte)chr_bit) != 0) {
+                    panel = (ExcelBlock_panel*)
+                            _MsGetExcelData((int)save_abmap->nodes[node_idx].node_type, _panel_bin_ptr, &dummy_ref)
+                    ;
+                    sphere_effect = panel->sphere_effect;
+                    /* Strength */
+                    if ((sphere_effect & 1) != 0) {
+                        strength = strength + panel->amount;
+                    }
+                    /* Defense */
+                    if ((sphere_effect & 2) != 0) {
+                        defense = defense + panel->amount;
+                    }
+                    /* Magic */
+                    if ((sphere_effect & 4) != 0) {
+                        magic = magic + panel->amount;
+                    }
+                    /* Magic Defense */
+                    if ((sphere_effect & 8) != 0) {
+                        magic_defense = magic_defense + panel->amount;
+                    }
+                    /* Agility */
+                    if ((sphere_effect & 0x10) != 0) {
+                        agility = agility + panel->amount;
+                    }
+                    /* Luck */
+                    if ((sphere_effect & 0x20) != 0) {
+                        luck = luck + panel->amount;
+                    }
+                    /* Evasion */
+                    if ((sphere_effect & 0x40) != 0) {
+                        evasion = evasion + panel->amount;
+                    }
+                    /* Accuracy */
+                    if ((sphere_effect & 0x80) != 0) {
+                        accuracy = accuracy + panel->amount;
+                    }
+                    /* HP */
+                    if ((sphere_effect & 0x100) != 0) {
+                        hp = hp + panel->amount;
+                    }
+                    /* MP */
+                    if ((sphere_effect & 0x200) != 0) {
+                        mp = mp + panel->amount;
+                    }
+                    _MsSetChrAbilityMapCommand((uint)chr_id, (uint)panel->ability_id);
+                    chr_bit = local_50;
+                }
+                node_idx = node_idx + 1;
+            } while (node_idx < 1024);
+            new_strength = strength;
+            if (255 < strength) {
+                new_strength = 255;
+            }
+            new_defense = defense;
+            if (255 < defense) {
+                new_defense = 255;
+            }
+            if (255 < magic) {
+                magic = 255;
+            }
+            if (255 < magic_defense) {
+                magic_defense = 255;
+            }
+            if (255 < agility) {
+                agility = 255;
+            }
+            if (255 < luck) {
+                luck = 255;
+            }
+            if (255 < evasion) {
+                evasion = 255;
+            }
+            if (255 < accuracy) {
+                accuracy = 255;
+            }
+            ability_map->hp = hp;
+            ability_map->magic = (byte)magic;
+            ability_map->magic_defense = (byte)magic_defense;
+            ability_map->agility = (byte)agility;
+            ability_map->luck = (byte)luck;
+            ability_map->evasion = (byte)evasion;
+            ability_map->accuracy = (byte)accuracy;
+            chr_id = chr_id + 1;
+            ability_map->mp = mp;
+            ability_map->strength = (byte)new_strength;
+            ability_map->defense = (byte)new_defense;
+        } while (chr_id < num_characters);
+        _MsSetSaveParamAll();
+        return;
+    }
+
+    // TODO: Hook FUN_00a53510 (accesses some color array)
+
+    // TODO: Hook FUN_008efd90 to draw Seymour face instead of Rikku
+}

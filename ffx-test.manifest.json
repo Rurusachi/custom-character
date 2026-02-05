@@ -1,0 +1,10 @@
+{
+    "Id":"custom-character",
+    "Name":"Custom Character Mod",
+    "Desc":"",
+    "Authors": "Rurusachi",
+    "Version":"1.0.0-alpha",
+    "Link":"",
+    "Dependencies":[],
+    "LoadAfter":[]
+}
