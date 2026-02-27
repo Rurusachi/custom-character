@@ -3854,7 +3854,7 @@ public unsafe class CustomCharacterModule : FhModule {
         Vec2s16 *pVVar10;
         uint *local_1c8;
         temp_FUN_00a4c8d0_struct local_1c0 = new();
-        int[] _local_148 = new int[28];
+        int[] _local_148 = new int[4 * num_characters];
         Matrix4x4 local_d8 = new();
         Matrix4x4 local_98 = new();
         Matrix4x4 local_58 = new();
