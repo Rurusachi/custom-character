@@ -3669,6 +3669,7 @@ public unsafe class CustomCharacterModule : FhModule {
         return;
     }
 
+    // Initialize activation indicators
     void h_FUN_00a505e0() {
         byte uVar1;
         int iVar2;
@@ -3758,6 +3759,7 @@ public unsafe class CustomCharacterModule : FhModule {
                 else {
                     local_164 = &lpamng->node_type_infos[uVar1].pos[0];
                     if (local_164->x == 0x1000) {
+                        // Locks and empty nodes?
                         iVar7 = 0;
                         pSVar4 = &lpamng->node_type_infos[0];
                         do {
@@ -3789,6 +3791,7 @@ public unsafe class CustomCharacterModule : FhModule {
                         local_150.field2_0x8 = 0x8064;
                         chr_id = 0;
                         plVar8 = plVar5;
+                        local_164->x += 5;
                         while (true) {
                             if ((activated_by & 1) == 0) {
                                 local_150.rgba = p_DAT_00c86644[chr_id]; // Inactive indicator colors
@@ -3819,9 +3822,10 @@ public unsafe class CustomCharacterModule : FhModule {
                             _FUN_00a5a360.hook_fptr(&local_98, node, local_164, 0.0008f);
                             _cdc_FFXVu0MulMatrix(&local_d8, &plVar8->field90_0x113e0, &local_98);
                             _FUN_00a68140.hook_fptr(DAT_023057ec, &local_150, (lpamng->node_count - iVar6) + -1, chr_id);
+                            if (chr_id == 0) local_164->x -= 5; // Undo change
                             chr_id = chr_id + 1;
                             if (chr_id >= 7) {
-                                Vec2s16 tempVec2s16 = *local_164;
+                                Vec2s16 tempVec2s16 = lpamng->node_type_infos[uVar1].pos[0];
                                 tempVec2s16.y -= 5;
                                 local_164 = &tempVec2s16;
                             } else {
@@ -3840,6 +3844,7 @@ public unsafe class CustomCharacterModule : FhModule {
         return;
     }
 
+    // Update activation indicator color
     void h_FUN_00a534c0() {
         byte uVar1;
         uint uVar2;
@@ -3947,6 +3952,7 @@ public unsafe class CustomCharacterModule : FhModule {
                         local_1c0.field2_0x8 = 0x8064;
                         piVar7 = local_148;
                         iVar5 = -1;
+                        pVVar10->x += 5;
                         do {
                             if ((bVar4 & 1) != 0) {
                                 local_58.M43 = 1.0f;
@@ -3959,9 +3965,17 @@ public unsafe class CustomCharacterModule : FhModule {
                                 _FUN_00a68140.hook_fptr(DAT_023057ec, &local_1c0, (lpamng->node_count - iVar11) + -1, iVar5);
                             }
                             piVar7 = piVar7 + 4;
+                            if (iVar5 == -1) pVVar10->x -= 5; // Undo change
                             iVar5 = iVar5 + -1;
                             bVar4 = (byte)(bVar4 >> 1);
-                            pVVar10 = pVVar10 + 1;
+                            if (-iVar5 > 7) {
+                                Vec2s16 tempVec2s16 = plVar3->node_type_infos[uVar1].pos[0];
+                                tempVec2s16.x -= 5;
+                                pVVar10 = &tempVec2s16;
+                            }
+                            else {
+                                pVVar10 = pVVar10 + 1;
+                            }
                         } while (-(num_characters+1) < iVar5);
                     }
                 }
