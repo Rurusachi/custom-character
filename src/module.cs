@@ -3669,6 +3669,7 @@ public unsafe class CustomCharacterModule : FhModule {
         return;
     }
 
+    // TODO: Just render indicators "immediate mode" instead
     // Initialize activation indicators
     void h_FUN_00a505e0() {
         byte uVar1;
@@ -3912,10 +3913,10 @@ public unsafe class CustomCharacterModule : FhModule {
             local_1c0.field11_0x20 = &local_d8;
             local_1c0.field20_0x44 = &local_58;
             local_1c0.field14_0x2c = &local_98;
-            local_58.M13 = (float)asmreg_0_zero->Z;
-            local_58.M23 = (float)asmreg_0_zero->Z;
-            local_58.M33 = (float)asmreg_0_zero->Z;
-            local_58.M43 = (float)asmreg_0_zero->Z;
+            local_58.M13 = asmreg_0_zero->Z;
+            local_58.M23 = asmreg_0_zero->Z;
+            local_58.M33 = asmreg_0_zero->Z;
+            local_58.M43 = asmreg_0_zero->Z;
             local_58.M44 = 1.0f;
             local_1c0.field10_0x1c = 0;
             local_1c0.field3_0xa = 0;
@@ -3928,17 +3929,17 @@ public unsafe class CustomCharacterModule : FhModule {
             local_1c0.field19_0x40 = 0;
             local_1c0.field13_0x28 = 0;
             local_1c0.field12_0x24 = 0;
-            local_58.M11 = (float)asmreg_0_zero->X;
-            local_58.M12 = (float)asmreg_0_zero->Y;
-            local_58.M14 = (float)asmreg_0_zero->W;
-            local_58.M21 = (float)asmreg_0_zero->X;
-            local_58.M22 = (float)asmreg_0_zero->Y;
-            local_58.M24 = (float)asmreg_0_zero->W;
-            local_58.M31 = (float)asmreg_0_zero->X;
-            local_58.M32 = (float)asmreg_0_zero->Y;
-            local_58.M34 = (float)asmreg_0_zero->W;
-            local_58.M41 = (float)asmreg_0_zero->X;
-            local_58.M42 = (float)asmreg_0_zero->Y;
+            local_58.M11 = asmreg_0_zero->X;
+            local_58.M12 = asmreg_0_zero->Y;
+            local_58.M14 = asmreg_0_zero->W;
+            local_58.M21 = asmreg_0_zero->X;
+            local_58.M22 = asmreg_0_zero->Y;
+            local_58.M24 = asmreg_0_zero->W;
+            local_58.M31 = asmreg_0_zero->X;
+            local_58.M32 = asmreg_0_zero->Y;
+            local_58.M34 = asmreg_0_zero->W;
+            local_58.M41 = asmreg_0_zero->X;
+            local_58.M42 = asmreg_0_zero->Y;
             plVar3 = lpamng;
             while (iVar11 != 0) {
                 uVar1 = (byte)node->node_type;
