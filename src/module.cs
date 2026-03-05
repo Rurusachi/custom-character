@@ -1,6 +1,7 @@
 ﻿// SPDX-License-Identifier: MIT
 
 using Fahrenheit.Core.FFX;
+using Fahrenheit.Mods.CustomCharacter.GUI;
 using System;
 using System.Numerics;
 using System.Runtime.CompilerServices;
@@ -927,6 +928,11 @@ public unsafe class CustomCharacterModule : FhModule {
                _eiAbmParaGet.hook();
     }
 
+
+    public override void render_imgui() {
+        CustomCharacterGUI.render();
+    }
+
     public override void load_local_state(FileStream? local_state_file, FhLocalStateInfo local_state_info) {
         try {
             var loaded_state = JsonSerializer.Deserialize<CustomSphereGridState>(local_state_file);
@@ -972,18 +978,18 @@ public unsafe class CustomCharacterModule : FhModule {
         [FieldOffset(0x12)] public short          max_lines1;
         [FieldOffset(0x14)] public short          something2;
         [FieldOffset(0x16)] public short          max_lines2;
-        [FieldOffset(0x18)] public int            field6_0x18;
-        [FieldOffset(0x1c)] public short          field7_0x1c;
+        [FieldOffset(0x18)] public int            __0x18;
+        [FieldOffset(0x1c)] public short          __0x1C;
         [FieldOffset(0x1e)] public short          num_entries;
-        [FieldOffset(0x20)] public short          field9_0x20;
+        [FieldOffset(0x20)] public short          __0x20;
         [FieldOffset(0x22)] public short          num_columns;
-        [FieldOffset(0x24)] public byte           field11_0x24;
-        [FieldOffset(0x25)] public short          field12_0x25;
+        [FieldOffset(0x24)] public byte           __0x24;
+        [FieldOffset(0x25)] public short          __0x25;
 
         [FieldOffset(0x28)] public bool           is_full;
 
         [FieldOffset(0x2a)] public XYWHs16        pos3;
-        [FieldOffset(0x32)] public short          field_0x32;
+        [FieldOffset(0x32)] public short          __0x32;
         [FieldOffset(0x34)] public void*          func1;
         [FieldOffset(0x38)] public void*          func2;
         [FieldOffset(0x3c)] public void*          func3;
@@ -995,7 +1001,7 @@ public unsafe class CustomCharacterModule : FhModule {
             private SphereGridMenu _data;
         }
         public SphereGridMenuArray menus;
-        public int                 field1_0x2700;
+        public int                 __0x2700;
         public void*               func;
     }
 
@@ -1162,24 +1168,24 @@ public unsafe class CustomCharacterModule : FhModule {
         SphereGridMenuData *pSVar3;
 
         _FUN_00a58ff0(0x0);
-        if ((lpamng->field_0x115cd == 0) && (lpamng->field_0x115b0 == 0)) {
+        if ((lpamng->__0x115cd == 0) && (lpamng->__0x115b0 == 0)) {
             _FUN_00a58ec0.hook_fptr();
-            if (lpamng->field_0x115b0 == 0) {
-                if (lpamng->field_0x115c4 == 0) {
-                    lpamng->field_0x115c4 = 1;
+            if (lpamng->__0x115b0 == 0) {
+                if (lpamng->__0x115c4 == 0) {
+                    lpamng->__0x115c4 = 1;
                     _FUN_00a48f20(6);
                 }
                 uVar2 = lpamng->abmap_input[1];
                 if ((uVar2 & 0x20) != 0) {
                     _SndSepPlaySimple(0x80000001);
-                    lpamng->field_0x11666 = 0;
+                    lpamng->__0x11666 = 0;
                     _FUN_00a48c20(6);
                     _FUN_00a48c20(1);
                     _FUN_00a48c20(2);
                     _FUN_00a48c20(3);
                     _FUN_00a48c20(4);
                     _FUN_00a48c20(5);
-                    lpamng->field_0x115c8 = 0;
+                    lpamng->__0x115c8 = 0;
                     _FUN_00a48e40(custom_party_infos[lpamng->current_chr_id].current_node_idx, 0x3e800000);
                     return;
                 }
@@ -1191,14 +1197,14 @@ public unsafe class CustomCharacterModule : FhModule {
                     _FUN_00a48c20(3);
                     _FUN_00a48c20(4);
                     _FUN_00a48c20(5);
-                    lpamng->field_0x115c8 = 0;
+                    lpamng->__0x115c8 = 0;
                     pSVar3 = sphere_grid_menu_ptr;
                     *(byte*)((int)&sphere_grid_menu_ptr->menus[10].num_columns + 1) = 1;
                     //FUN_00a59860(0xb, FUN_00a56060);
                     _FUN_00a59860(0xb, FhUtil.ptr_at<nint>(0x656060));
-                    pbVar1 = &pSVar3->menus[0].field11_0x24;
+                    pbVar1 = &pSVar3->menus[0].__0x24;
                     *pbVar1 = (byte)(*pbVar1 | 0xc);
-                    *(short*)&pSVar3->menus[0].field6_0x18 = 0;
+                    *(short*)&pSVar3->menus[0].__0x18 = 0;
                     return;
                 }
                 if (((((sphere_grid_menu_ptr->menus[6].func1 == (void*)0x0) &&
@@ -1208,11 +1214,11 @@ public unsafe class CustomCharacterModule : FhModule {
                        (sphere_grid_menu_ptr->menus[4].func1 == (void*)0x0)))))) &&
                     (sphere_grid_menu_ptr->menus[5].func1 == (void*)0x0)) && ((uVar2 & 0x10) != 0)) {
                     _SndSepPlaySimple(0x80000001);
-                    lpamng->field_0x115c8 = (byte)(lpamng->field_0x115c8 + 1);
-                    if (5 < lpamng->field_0x115c8) {
-                        lpamng->field_0x115c8 = 0;
+                    lpamng->__0x115c8 = (byte)(lpamng->__0x115c8 + 1);
+                    if (5 < lpamng->__0x115c8) {
+                        lpamng->__0x115c8 = 0;
                     }
-                    switch (lpamng->field_0x115c8) {
+                    switch (lpamng->__0x115c8) {
                         case 0:
                             _FUN_00a48c20(5);
                             _FUN_00a48f20(6);
@@ -1268,14 +1274,14 @@ public unsafe class CustomCharacterModule : FhModule {
         uint uStack_8;
 
         iVar6 = 0;
-        uStack_8 = lpamng->field_0x11650;
+        uStack_8 = lpamng->__0x11650;
         pfVar5 = &custom_party_infos[0].pos_circle_radius;
-        fVar1 = lpamng->field_0x1162c;
-        fVar2 = lpamng->field_0x11628;
-        fVar3 = lpamng->field_0x11628;
+        fVar1 = lpamng->moving_halo_target_width;
+        fVar2 = lpamng->moving_halo_start_width;
+        fVar3 = lpamng->moving_halo_start_width;
         plVar4 = lpamng;
         do {
-            if ((0.0 < *pfVar5 != float.IsNaN(*pfVar5)) && (*(ushort*)(pfVar5 + 2) == plVar4->field295_0x1164e)) {
+            if ((0.0 < *pfVar5 != float.IsNaN(*pfVar5)) && (*(ushort*)(pfVar5 + 2) == plVar4->__0x1164e)) {
                 *pfVar5 = (fVar1 - fVar2) * (uStack_8 / 40.0f) + fVar3;
                 _FUN_00a58080.hook_fptr(iVar6);
                 plVar4 = lpamng;
@@ -1284,24 +1290,24 @@ public unsafe class CustomCharacterModule : FhModule {
             pfVar5 = pfVar5 + 0x14;
             if (iVar6 == num_characters) pfVar5 = (float*)((int)lpamng + 0x112b8 + 0x3c);
         } while (iVar6 < num_characters+1);
-        if ((plVar4->field_0x11650 < 0x14) && (0x13 < plVar4->field_0x11650 + 1)) {
+        if ((plVar4->__0x11650 < 0x14) && (0x13 < plVar4->__0x11650 + 1)) {
             _FUN_00a5bb70.hook_fptr();
             _eiAbmParaGet.hook_fptr();
-            lpamng->nodes[lpamng->field295_0x1164e].node_type = lpamng->field294_0x1164c;
-            lpamng->field_0x116a8 = lpamng->field295_0x1164e;
-            lpamng->field_0x116ac = 1;
+            *(short*)((int)&lpamng->nodes[lpamng->__0x1164e] + 6) = *(short*)(&lpamng->___0x1164c);
+            lpamng->should_update_node = lpamng->__0x1164e;
+            lpamng->should_update = 1;
             lpamng->link_points = SphereGridLinkPoint_ARRAY_01693160;
             _FUN_00a5a800();
             plVar4 = lpamng;
         }
-        plVar4->field_0x11650 += 1;
+        plVar4->__0x11650 += 1;
         if (_DAT_01a8607e == 0) {
             iVar6 = 0;
             pfVar5 = &custom_party_infos[0].pos_circle_radius;
             plVar4 = lpamng;
             do {
-                if ((0.0 < *pfVar5 != float.IsNaN(*pfVar5)) && (*(ushort*)(pfVar5 + 2) == plVar4->field295_0x1164e)) {
-                    *pfVar5 = plVar4->field_0x1162c;
+                if ((0.0 < *pfVar5 != float.IsNaN(*pfVar5)) && (*(ushort*)(pfVar5 + 2) == plVar4->__0x1164e)) {
+                    *pfVar5 = plVar4->moving_halo_target_width;
                     _FUN_00a58080.hook_fptr(iVar6);
                     plVar4 = lpamng;
                 }
@@ -1309,10 +1315,10 @@ public unsafe class CustomCharacterModule : FhModule {
                 pfVar5 = pfVar5 + 0x14;
                 if (iVar6 == num_characters) pfVar5 = (float*)((int)lpamng + 0x112b8 + 0x3c);
             } while (iVar6 < num_characters+1);
-            plVar4->field_0x115a8 = plVar4->field_0x115b0;
-            lpamng->field_0x115b0 = 0;
-            lpamng->field_0x115ac = lpamng->field_0x115b4;
-            lpamng->field_0x115b4 = 0;
+            plVar4->__0x115a8 = plVar4->__0x115b0;
+            lpamng->__0x115b0 = 0;
+            lpamng->__0x115ac = lpamng->__0x115b4;
+            lpamng->__0x115b4 = 0;
         }
         return;
     }
@@ -1325,30 +1331,30 @@ public unsafe class CustomCharacterModule : FhModule {
         Vector4 local_18;
 
         plVar2 = lpamng;
-        bVar1 = lpamng->_0x1164c;
+        bVar1 = lpamng->__0x1164c;
         if (bVar1 == 0) {
-            lpamng->_0x1164d += 1;
-            lpamng->field_0x115c6 = (byte)(-0x80 - (char)(((uint)lpamng->_0x1164d << 7) / 0x28));
-            if (0x7f < lpamng->field_0x115c6) {
-                lpamng->field_0x115c6 = 0x80;
+            lpamng->__0x1164d += 1;
+            lpamng->__0x115c6 = (byte)(-0x80 - (char)(((uint)lpamng->__0x1164d << 7) / 0x28));
+            if (0x7f < lpamng->__0x115c6) {
+                lpamng->__0x115c6 = 0x80;
             }
             if (_DAT_01a8607e == 0) {
-                custom_party_infos[lpamng->field_0x11638].pos_circle_radius = 0.0f;
-                lpamng->_0x1164c = 1;
-                lpamng->field_0x115c6 = 0;
+                custom_party_infos[lpamng->moving_chr_id].pos_circle_radius = 0.0f;
+                lpamng->__0x1164c = 1;
+                lpamng->__0x115c6 = 0;
             }
         }
         else {
             if (bVar1 == 1) {
-                local_18.X = lpamng->nodes[lpamng->field_0x11634].x;
-                local_18.Y = lpamng->nodes[lpamng->field_0x11634].y;
+                local_18.X = lpamng->nodes[lpamng->last_move_target_node_idx].x;
+                local_18.Y = lpamng->nodes[lpamng->last_move_target_node_idx].y;
                 local_18.Z = 0.0f;
                 local_18.W = 1.0f;
-                progress = lpamng->field_0x11620 + 0.083333336f;
-                lpamng->field_0x11620 = progress;
+                progress = lpamng->moving_progress + 0.083333336f;
+                lpamng->moving_progress = progress;
                 if (1.0 <= progress) {
-                    plVar2->_0x1164c = 2;
-                    lpamng->_0x1164d = 0;
+                    plVar2->__0x1164c = 2;
+                    lpamng->__0x1164d = 0;
                     _SndSepPlaySimple(0x80000070);
                     plVar2 = lpamng;
                     (lpamng->cam_desired_pos).X = local_18.X;
@@ -1357,30 +1363,30 @@ public unsafe class CustomCharacterModule : FhModule {
                     (plVar2->cam_desired_pos).W = local_18.W;
                     _pppCreateHeap(p_DAT_01a86034, p_DAT_016c1830, 0x7d000);
                     _FUN_00a5bad0(p_DAT_01a86060, 1, local_18.X, local_18.Y, 0, 0, 0, 0, 0.5f, 0.5f, 0.5f);
-                    custom_party_infos[lpamng->field_0x11638].current_node_idx = lpamng->field_0x11634;
-                    _FUN_00a5a990.hook_fptr(lpamng->field_0x11638);
-                    _FUN_00a58080.hook_fptr(lpamng->field_0x11638);
-                    lpamng->field_0x115c7 = 1;
+                    custom_party_infos[lpamng->moving_chr_id].current_node_idx = lpamng->last_move_target_node_idx;
+                    _FUN_00a5a990.hook_fptr(lpamng->moving_chr_id);
+                    _FUN_00a58080.hook_fptr(lpamng->moving_chr_id);
+                    lpamng->__0x115c7 = 1;
                     _FUN_00a5b030.hook_fptr();
                     return;
                 }
-                _FFXVu0InterVectorXYZ(&local_28, &local_18, &lpamng->cam_previous_desired_pos, progress);
+                _FFXVu0InterVectorXYZ(&local_28, &local_18, &lpamng->move_prev_node_pos, progress);
                 (lpamng->cam_desired_pos).X = local_28.X;
                 (lpamng->cam_desired_pos).Y = local_28.Y;
                 return;
             }
             if (bVar1 == 2) {
-                lpamng->_0x1164d += 1;
-                lpamng->field_0x115c6 = (byte)(((uint)lpamng->_0x1164d << 7) / 0x28);
-                if (0x7f < lpamng->field_0x115c6) {
-                    lpamng->field_0x115c6 = 0x80;
+                lpamng->__0x1164d += 1;
+                lpamng->__0x115c6 = (byte)(((uint)lpamng->__0x1164d << 7) / 0x28);
+                if (0x7f < lpamng->__0x115c6) {
+                    lpamng->__0x115c6 = 0x80;
                 }
                 if (_DAT_01a8607e == 0) {
-                    lpamng->field_0x115c6 = 0x80;
-                    lpamng->field_0x115a8 = lpamng->field_0x115b0;
-                    lpamng->field_0x115b0 = 0;
-                    lpamng->field_0x115ac = lpamng->field_0x115b4;
-                    lpamng->field_0x115b4 = 0;
+                    lpamng->__0x115c6 = 0x80;
+                    lpamng->__0x115a8 = lpamng->__0x115b0;
+                    lpamng->__0x115b0 = 0;
+                    lpamng->__0x115ac = lpamng->__0x115b4;
+                    lpamng->__0x115b4 = 0;
                     return;
                 }
             }
@@ -1397,41 +1403,41 @@ public unsafe class CustomCharacterModule : FhModule {
         _lpamng = lpamng;
         current_node = custom_party_infos[chr_id].current_node_idx;
         _SndSepPlaySimple(0x80000070);
-        lpamng->_0x1164c = 0;
-        lpamng->_0x1164d = 0;
+        lpamng->__0x1164c = 0;
+        lpamng->__0x1164d = 0;
         node_x = _lpamng->nodes[current_node].x;
         lpamng->cam_desired_pos.X = node_x;
-        lpamng->cam_previous_desired_pos.X = node_x;
+        lpamng->move_prev_node_pos.X = node_x;
         node_y = _lpamng->nodes[current_node].y;
         lpamng->cam_desired_pos.Y = node_y;
-        lpamng->cam_previous_desired_pos.Y = node_y;
-        lpamng->field_0x11620 = 0;
-        lpamng->field_0x11634 = node_idx;
-        lpamng->field_0x11638 = (byte)chr_id;
+        lpamng->move_prev_node_pos.Y = node_y;
+        lpamng->moving_progress = 0;
+        lpamng->last_move_target_node_idx = node_idx;
+        lpamng->moving_chr_id = (byte)chr_id;
         _pppCreateHeap(p_DAT_01a86034, p_DAT_016c1830, 0x7d000);
         _FUN_00a5bad0(p_DAT_01a86060, 2, _lpamng->nodes[current_node].x,
                      _lpamng->nodes[current_node].y, 0, 0, 0, 0, 0.5f, 0.5f, 0.5f);
-        if (lpamng->field_0x115b4 == 0) {
-            lpamng->field_0x115b4 = lpamng->field_0x115ac;
-            lpamng->field_0x115ac = (int)FhUtil.ptr_at<int>(0x64C430);
+        if (lpamng->__0x115b4 == 0) {
+            lpamng->__0x115b4 = lpamng->__0x115ac;
+            lpamng->__0x115ac = (int)FhUtil.ptr_at<int>(0x64C430);
         }
-        if (lpamng->field_0x115b0 == 0) {
-            lpamng->field_0x115b0 = lpamng->field_0x115a8;
-            lpamng->field_0x115a8 = (int)FhUtil.ptr_at<int>(__addr_FUN_00a47f00);
+        if (lpamng->__0x115b0 == 0) {
+            lpamng->__0x115b0 = lpamng->__0x115a8;
+            lpamng->__0x115a8 = (int)FhUtil.ptr_at<int>(__addr_FUN_00a47f00);
         }
         return;
     }
 
     void h_FUN_00a48c80(int chr_id, ushort node_idx) {
-        lpamng->field_0x11632 = custom_party_infos[chr_id].current_node_idx;
-        lpamng->field_0x11630 = lpamng->field_0x11632;
-        lpamng->field_0x11634 = node_idx;
-        lpamng->field_0x11620 = 1.0f;
-        lpamng->field272_0x11624 = 0.0f;
-        lpamng->field_0x11638 = (byte)chr_id;
-        if (lpamng->field_0x115b0 == 0) {
-            lpamng->field_0x115b0 = lpamng->field_0x115a8;
-            lpamng->field_0x115a8 = (int)FhUtil.ptr_at<int>(0x659990);
+        lpamng->next_move_target_node_idx = custom_party_infos[chr_id].current_node_idx;
+        lpamng->move_start_node_idx = lpamng->next_move_target_node_idx;
+        lpamng->last_move_target_node_idx = node_idx;
+        lpamng->moving_progress = 1.0f;
+        lpamng->moving_speed = 0.0f;
+        lpamng->moving_chr_id = (byte)chr_id;
+        if (lpamng->__0x115b0 == 0) {
+            lpamng->__0x115b0 = lpamng->__0x115a8;
+            lpamng->__0x115a8 = (int)FhUtil.ptr_at<int>(0x659990);
         }
         return;
     }
@@ -1525,10 +1531,10 @@ public unsafe class CustomCharacterModule : FhModule {
         (lpamng->zoom_vector).Y = fVar2;
         (lpamng->zoom_vector).X = fVar2;
         if (0.375 < fVar2) {
-            lpamng->field374_0x116b0 = 2;
+            lpamng->__0x116b0 = 2;
             return;
         }
-        lpamng->field374_0x116b0 = -2;
+        lpamng->__0x116b0 = -2;
         return;
     }
 
@@ -1603,22 +1609,22 @@ public unsafe class CustomCharacterModule : FhModule {
                                     asmreg_vf27->Y = chr_info->label_pos.Y;
                                     asmreg_vf27->Z = chr_info->label_pos.Z;
                                     asmreg_vf27->W = chr_info->label_pos.W;
-                                    asmreg_vf28->X = (lpamng->field90_0x113e0).M11;
-                                    asmreg_vf28->Y = (lpamng->field90_0x113e0).M12;
-                                    asmreg_vf28->Z = (lpamng->field90_0x113e0).M13;
-                                    asmreg_vf28->W = (lpamng->field90_0x113e0).M14;
-                                    asmreg_vf29->X = (lpamng->field90_0x113e0).M21;
-                                    asmreg_vf29->Y = (lpamng->field90_0x113e0).M22;
-                                    asmreg_vf29->Z = (lpamng->field90_0x113e0).M23;
-                                    asmreg_vf29->W = (lpamng->field90_0x113e0).M24;
-                                    asmreg_vf30->X = (lpamng->field90_0x113e0).M31;
-                                    asmreg_vf30->Y = (lpamng->field90_0x113e0).M32;
-                                    asmreg_vf30->Z = (lpamng->field90_0x113e0).M33;
-                                    asmreg_vf30->W = (lpamng->field90_0x113e0).M34;
-                                    asmreg_vf31->X = (lpamng->field90_0x113e0).M41;
-                                    asmreg_vf31->Y = (lpamng->field90_0x113e0).M42;
-                                    asmreg_vf31->Z = (lpamng->field90_0x113e0).M43;
-                                    asmreg_vf31->W = (lpamng->field90_0x113e0).M44;
+                                    asmreg_vf28->X = (lpamng->__0x113e0).M11;
+                                    asmreg_vf28->Y = (lpamng->__0x113e0).M12;
+                                    asmreg_vf28->Z = (lpamng->__0x113e0).M13;
+                                    asmreg_vf28->W = (lpamng->__0x113e0).M14;
+                                    asmreg_vf29->X = (lpamng->__0x113e0).M21;
+                                    asmreg_vf29->Y = (lpamng->__0x113e0).M22;
+                                    asmreg_vf29->Z = (lpamng->__0x113e0).M23;
+                                    asmreg_vf29->W = (lpamng->__0x113e0).M24;
+                                    asmreg_vf30->X = (lpamng->__0x113e0).M31;
+                                    asmreg_vf30->Y = (lpamng->__0x113e0).M32;
+                                    asmreg_vf30->Z = (lpamng->__0x113e0).M33;
+                                    asmreg_vf30->W = (lpamng->__0x113e0).M34;
+                                    asmreg_vf31->X = (lpamng->__0x113e0).M41;
+                                    asmreg_vf31->Y = (lpamng->__0x113e0).M42;
+                                    asmreg_vf31->Z = (lpamng->__0x113e0).M43;
+                                    asmreg_vf31->W = (lpamng->__0x113e0).M44;
                                     asmreg_ACC->X = asmreg_vf27->Z * asmreg_vf30->X +
                                                     asmreg_vf27->Y * asmreg_vf29->X + asmreg_vf27->X * asmreg_vf28->X;
                                     asmreg_ACC->Y = asmreg_vf30->Y * asmreg_vf27->Z +
@@ -1700,7 +1706,7 @@ public unsafe class CustomCharacterModule : FhModule {
                                         goto LAB_00a4c3cd;
                                     local_268 = *local_280 + -0x800;
                                     local_118[0] = (float)local_268;
-                                    bVar2 = (byte)(pSVar5->field26_0x4e & 3);
+                                    bVar2 = (byte)(pSVar5->__0x4e & 3);
                                     if ((bVar2 == 0) || (bVar2 == 2)) {
                                         local_118[1] = ((pSVar5->pos).X - local_118[0]) + (pSVar5->pos).Y;
                                     }
@@ -1711,19 +1717,19 @@ public unsafe class CustomCharacterModule : FhModule {
                                     _FUN_00642a80(local_128, local_118);
                                     iVar6 = local_128[0] + 0x100;
                                     iVar4 = local_128[1] + 0xd0;
-                                    if (pSVar5->field22_0x46 != 0) {
-                                        iVar6 = iVar6 + (pSVar5->field22_0x46 >> 4);
+                                    if (pSVar5->__0x46 != 0) {
+                                        iVar6 = iVar6 + (pSVar5->__0x46 >> 4);
                                     }
-                                    if (pSVar5->field23_0x48 != 0) {
-                                        iVar4 = iVar4 + (pSVar5->field23_0x48 >> 4);
+                                    if (pSVar5->__0x48 != 0) {
+                                        iVar4 = iVar4 + (pSVar5->__0x48 >> 4);
                                     }
                                     local_264 = (float)(uint)(local_274 != (float*)(uint)lpamng->current_chr_id ? 1 : 0);
-                                    local_268 = (pSVar5->field_0x38 + pSVar5->name_width);
+                                    local_268 = (pSVar5->__0x38 + pSVar5->name_width);
                                     local_27c = iVar6;
                                     local_278 = iVar4;
                                     //local_268 = local_268; // ???
                                     local_294 = 0x13;
-                                    switch (pSVar5->field26_0x4e & 3) {
+                                    switch (pSVar5->__0x4e & 3) {
                                         case 0:
                                             local_26c = 0.25f;
                                             break;
@@ -1840,7 +1846,7 @@ public unsafe class CustomCharacterModule : FhModule {
                                     }
                                     _graphicDrawUIAbmapElement(local_240, local_108, 5);
                                     _FUN_008b70e0((nint)pSVar5->chr_name, &local_28c, &local_294);
-                                    bVar2 = (byte)(pSVar5->field26_0x4e & 3);
+                                    bVar2 = (byte)(pSVar5->__0x4e & 3);
                                     if ((bVar2 == 1) || (bVar2 == 2)) {
                                         x = ((float)local_268 - BitConverter.SingleToInt32Bits(local_28c)) * 0.5f;
                                     }
@@ -1850,11 +1856,11 @@ public unsafe class CustomCharacterModule : FhModule {
                                     local_268 = BitConverter.SingleToInt32Bits(local_28c);
                                     local_268 = (int)(x);
                                     plVar1 = lpamng;
-                                    iVar4 = pSVar5->field25_0x4c + local_288 + local_278;
+                                    iVar4 = pSVar5->__0x4c + local_288 + local_278;
                                     iVar6 = (int)((lpamng->zoom_vector).Y * 100.0);
                                     *p_ppvCurPrimp = _FUN_008e8fb0(*p_ppvCurPrimp + 0x10, 0xffffffff, pSVar5->chr_name,
                                                                local_27c + local_268, iVar4, 0, 0, 0x80, 0x80, 0x80,
-                                                               plVar1->field_0x115b9, iVar6);
+                                                               plVar1->__0x115b9, iVar6);
                                     fVar9 = 0f;
                                 LAB_00a4c3cd:
                                     local_280 = local_280 + 4;
@@ -1876,27 +1882,27 @@ public unsafe class CustomCharacterModule : FhModule {
 
     [StructLayout(LayoutKind.Explicit, Pack = 4, Size = 0x48)]
     public struct temp_FUN_00a4c8d0_struct {
-        [FieldOffset(0x00)] public int        field0_0x0;
-        [FieldOffset(0x04)] public int        field1_0x4;
-        [FieldOffset(0x08)] public ushort     field2_0x8;
-        [FieldOffset(0x0a)] public byte       field3_0xa;
-        [FieldOffset(0x0b)] public byte       field4_0xb;
-        [FieldOffset(0x0c)] public int        field5_0xc;
-        [FieldOffset(0x10)] public int        field6_0x10;
-        [FieldOffset(0x14)] public int        field7_0x14;
+        [FieldOffset(0x00)] public int        __0x0;
+        [FieldOffset(0x04)] public int        __0x4;
+        [FieldOffset(0x08)] public ushort     __0x8;
+        [FieldOffset(0x0a)] public byte       __0xa;
+        [FieldOffset(0x0b)] public byte       __0xb;
+        [FieldOffset(0x0c)] public int        __0xc;
+        [FieldOffset(0x10)] public int        __0x10;
+        [FieldOffset(0x14)] public int        __0x14;
         [FieldOffset(0x18)] public int        rgba; // rgba ?
         [FieldOffset(0x1b)] public byte       a; // a ?
-        [FieldOffset(0x1c)] public int        field10_0x1c;
-        [FieldOffset(0x20)] public Matrix4x4* field11_0x20;
-        [FieldOffset(0x24)] public int        field12_0x24;
-        [FieldOffset(0x28)] public int        field13_0x28;
-        [FieldOffset(0x2c)] public Matrix4x4* field14_0x2c;
-        [FieldOffset(0x30)] public int        field15_0x30;
-        [FieldOffset(0x34)] public int        field16_0x34;
-        [FieldOffset(0x38)] public int        field17_0x38;
-        [FieldOffset(0x3c)] public int        field18_0x3c;
-        [FieldOffset(0x40)] public int        field19_0x40;
-        [FieldOffset(0x44)] public Matrix4x4* field20_0x44;
+        [FieldOffset(0x1c)] public int        __0x1c;
+        [FieldOffset(0x20)] public Matrix4x4* __0x20;
+        [FieldOffset(0x24)] public int        __0x24;
+        [FieldOffset(0x28)] public int        __0x28;
+        [FieldOffset(0x2c)] public Matrix4x4* __0x2c;
+        [FieldOffset(0x30)] public int        __0x30;
+        [FieldOffset(0x34)] public int        __0x34;
+        [FieldOffset(0x38)] public int        __0x38;
+        [FieldOffset(0x3c)] public int        __0x3c;
+        [FieldOffset(0x40)] public int        __0x40;
+        [FieldOffset(0x44)] public Matrix4x4* __0x44;
     }
 
     void h_FUN_00a4c8d0() {
@@ -1916,32 +1922,32 @@ public unsafe class CustomCharacterModule : FhModule {
 
         plVar3 = lpamng;
         iVar4 = DAT_023057fc;
-        local_150.field0_0x0 = 4;
+        local_150.__0x0 = 4;
         local_150.rgba = p_DAT_00c86580[lpamng->current_chr_id]; // Extend with custom color for Seymour
-        //local_150.field8_0x18 = *(p_DAT_00c86580 + (uint)lpamng->current_chr_id * 4);
-        local_150.a = (byte)(((long)lpamng->field_0x115c5 * 0x55555556) >> 0x20);
-        local_150.field2_0x8 = 0x48;
-        local_150.field11_0x20 = &local_d8;
-        local_150.field20_0x44 = &local_98;
+        //local_150.__0x18 = *(p_DAT_00c86580 + (uint)lpamng->current_chr_id * 4);
+        local_150.a = (byte)(((long)lpamng->__0x115c5 * 0x55555556) >> 0x20);
+        local_150.__0x8 = 0x48;
+        local_150.__0x20 = &local_d8;
+        local_150.__0x44 = &local_98;
         local_98.M43 = 4.0f;
         local_98.M13 = asmreg_0_zero->Z;
         local_98.M23 = asmreg_0_zero->Z;
         local_98.M33 = asmreg_0_zero->Z;
         local_58.M13 = asmreg_0_zero->Z;
         local_58.M23 = asmreg_0_zero->Z;
-        local_150.field10_0x1c = 0;
+        local_150.__0x1c = 0;
         local_98.M44 = 1.0f;
-        local_150.field3_0xa = 0;
-        local_150.field18_0x3c = 0;
-        local_150.field17_0x38 = 0;
-        local_150.field1_0x4 = (int)p_DAT_01740830_sphere_grid_layout_dat;
-        local_150.field5_0xc = 0;
-        local_150.field6_0x10 = 0;
-        local_150.field7_0x14 = 0;
-        local_150.field19_0x40 = 0;
-        local_150.field14_0x2c = (Matrix4x4*)0;
-        local_150.field13_0x28 = 0;
-        local_150.field12_0x24 = 0;
+        local_150.__0xa = 0;
+        local_150.__0x3c = 0;
+        local_150.__0x38 = 0;
+        local_150.__0x4 = (int)p_DAT_01740830_sphere_grid_layout_dat;
+        local_150.__0xc = 0;
+        local_150.__0x10 = 0;
+        local_150.__0x14 = 0;
+        local_150.__0x40 = 0;
+        local_150.__0x2c = (Matrix4x4*)0;
+        local_150.__0x28 = 0;
+        local_150.__0x24 = 0;
         local_98.M11 = asmreg_0_zero->X;
         local_98.M12 = asmreg_0_zero->Y;
         local_98.M14 = asmreg_0_zero->W;
@@ -1960,34 +1966,34 @@ public unsafe class CustomCharacterModule : FhModule {
         local_58.M31 = asmreg_0_zero->X;
         local_58.M32 = asmreg_0_zero->Y;
         local_58.M34 = asmreg_0_zero->W;
-        local_58.M11 = (float)((lpamng->field_0x115a4 * 3.0 + 125.0) * 0.0007812500116415322);
-        local_58.M41 = lpamng->field95_0x11520.X;
-        local_58.M42 = lpamng->field95_0x11520.Y;
+        local_58.M11 = (float)((lpamng->__0x115a4 * 3.0 + 125.0) * 0.0007812500116415322);
+        local_58.M41 = lpamng->__0x11520.X;
+        local_58.M42 = lpamng->__0x11520.Y;
         local_58.M43 = 0.0f;
         local_58.M44 = 1.0f;
         local_58.M22 = local_58.M11;
         local_58.M33 = local_58.M11;
-        _cdc_FFXVu0MulMatrix(&local_d8, &lpamng->field90_0x113e0, &local_58);
-        _FUN_00a657c0(iVar4, &local_150, 4, &lpamng->field_0x116a4);
-        sVar1 = lpamng->field_0x11698;
+        _cdc_FFXVu0MulMatrix(&local_d8, &lpamng->__0x113e0, &local_58);
+        _FUN_00a657c0(iVar4, &local_150, 4, &lpamng->__0x116a4);
+        sVar1 = lpamng->__0x11698;
         uVar2 = custom_party_infos[lpamng->current_chr_id].current_node_idx;
-        local_150.field2_0x8 = 0x48;
-        local_150.field11_0x20 = &local_d8;
-        local_150.field20_0x44 = &local_98;
+        local_150.__0x8 = 0x48;
+        local_150.__0x20 = &local_d8;
+        local_150.__0x44 = &local_98;
         local_98.M43 = 3.0f;
         local_98.M44 = 1.0f;
-        local_150.field10_0x1c = 0;
-        local_150.field3_0xa = 0;
-        local_150.field18_0x3c = 0;
-        local_150.field17_0x38 = 0;
-        local_150.field1_0x4 = (int)p_DAT_01740830_sphere_grid_layout_dat;
-        local_150.field5_0xc = 0;
-        local_150.field6_0x10 = 0;
-        local_150.field7_0x14 = 0;
-        local_150.field19_0x40 = 0;
-        local_150.field14_0x2c = (Matrix4x4*)0;
-        local_150.field13_0x28 = 0;
-        local_150.field12_0x24 = 0;
+        local_150.__0x1c = 0;
+        local_150.__0xa = 0;
+        local_150.__0x3c = 0;
+        local_150.__0x38 = 0;
+        local_150.__0x4 = (int)p_DAT_01740830_sphere_grid_layout_dat;
+        local_150.__0xc = 0;
+        local_150.__0x10 = 0;
+        local_150.__0x14 = 0;
+        local_150.__0x40 = 0;
+        local_150.__0x2c = (Matrix4x4*)0;
+        local_150.__0x28 = 0;
+        local_150.__0x24 = 0;
         local_98.M11 = asmreg_0_zero->X;
         local_98.M12 = asmreg_0_zero->Y;
         local_98.M13 = asmreg_0_zero->Z;
@@ -2019,7 +2025,7 @@ public unsafe class CustomCharacterModule : FhModule {
         local_58.M33 = asmreg_0_zero->Z;
         local_58.M34 = asmreg_0_zero->W;
         local_58.M42 = asmreg_0_zero->Y;
-        local_150.field0_0x0 = 0x24;
+        local_150.__0x0 = 0x24;
         //pfVar6 = &custom_party_infos[0].pos_circle_radius;
         SphereGridChrInfo* chr_info = &custom_party_infos[0];
         do {
@@ -2036,10 +2042,10 @@ public unsafe class CustomCharacterModule : FhModule {
                                                  0xfff] + 1.0f) * 16.0f) & 0xFF);
                 local_150.rgba = (p_DAT_00c86660)[uVar5];
                 local_150.a = (byte)((char)uStack_154 + 0x60U);
-                var select_cursor_alpha = lpamng->select_cursor_alpha;
-                if (lpamng->select_cursor_alpha < 1.0) {
+                var halo_alpha_alpha = lpamng->halo_alpha_alpha;
+                if (lpamng->halo_alpha_alpha < 1.0) {
                     uStack_154 = (byte)((char)uStack_154 + 0x60U);
-                    iVar4 = (int)(lpamng->select_cursor_alpha * (float)uStack_154);
+                    iVar4 = (int)(lpamng->halo_alpha_alpha * (float)uStack_154);
                     local_150.a = (byte)iVar4;
                     //fVar7 = extraout_ST0;
                 }
@@ -2051,8 +2057,8 @@ public unsafe class CustomCharacterModule : FhModule {
                 local_58.M42 = chr_info->pos.Y;
                 local_58.M22 = local_58.M11;
                 local_58.M33 = local_58.M11;
-                _cdc_FFXVu0MulMatrix(&local_d8, &lpamng->field90_0x113e0, &local_58);
-                _FUN_00a657c0(DAT_023057f8, &local_150, 4, &lpamng->field_0x116a4);
+                _cdc_FFXVu0MulMatrix(&local_d8, &lpamng->__0x113e0, &local_58);
+                _FUN_00a657c0(DAT_023057f8, &local_150, 4, &lpamng->__0x116a4);
             }
             uVar5 = uVar5 + 1;
             //pfVar6 = pfVar6 + 0x14;
@@ -2094,11 +2100,11 @@ public unsafe class CustomCharacterModule : FhModule {
         _FUN_00a45570();
         _TOMenuTransFacePlyTex();
         chr_id = 0;
-        lpamng->active_indicators = 0;
+        lpamng->available_indicators = 0;
         do {
             joined = _MsGetSavePlyJoined((byte)chr_id);
             if (joined == 1) {
-                lpamng->active_indicators = (byte)(lpamng->active_indicators | joined << ((byte)chr_id & 0x1f));
+                lpamng->available_indicators = (byte)(lpamng->available_indicators | joined << ((byte)chr_id & 0x1f));
                 _FUN_00a57f80.hook_fptr(chr_id, 0, 0x40000000, 0x80404040, 0x80404040, 0x80808080);
             }
             chr_id = chr_id + 1;
@@ -2151,26 +2157,26 @@ public unsafe class CustomCharacterModule : FhModule {
             chr_id_00 = chr_id_00 + 1;
         //} while (iVar11 < 0x230);
         } while (chr_id_00 < num_characters);
-        plVar10->field_0x115c7 = 1;
+        plVar10->__0x115c7 = 1;
         plVar10 = lpamng;
         uVar3 = custom_party_infos[lpamng->current_chr_id].current_node_idx;
         lpamng->selected_node_idx = uVar3;
-        (plVar10->field11_0x112b8).X = plVar10->nodes[uVar3].x;
-        (plVar10->field11_0x112b8).Y = plVar10->nodes[uVar3].y;
-        (plVar10->field11_0x112b8).Z = 0.0f;
-        (plVar10->field11_0x112b8).W = 1.0f;
+        (plVar10->__0x112b8).X = plVar10->nodes[uVar3].x;
+        (plVar10->__0x112b8).Y = plVar10->nodes[uVar3].y;
+        (plVar10->__0x112b8).Z = 0.0f;
+        (plVar10->__0x112b8).W = 1.0f;
         sVar2 = lpamng->node_type_infos[(int)lpamng->nodes[uVar3].node_type].width;
-        plVar10->field_0x11306 = 0;
-        plVar10->field_0x112d8 = 0x80808080;
-        plVar10->field_0x112dc = 0x80808080;
-        plVar10->field_0x112f4 = (sVar2 >> 1) + 3.0f;
-        plVar10->field_0x112e0 = 0x80ffffff;
-        plVar10->field_0x112f8 = 0x40000000;
+        plVar10->__0x11306 = 0;
+        plVar10->__0x112d8 = 0x80808080;
+        plVar10->__0x112dc = 0x80808080;
+        plVar10->current_halo_width = (sVar2 >> 1) + 3.0f;
+        plVar10->__0x112e0 = 0x80ffffff;
+        plVar10->__0x112f8 = 0x40000000;
         plVar10 = lpamng;
-        (lpamng->cam_desired_pos).X = (lpamng->field11_0x112b8).X;
-        (plVar10->cam_desired_pos).Y = (plVar10->field11_0x112b8).Y;
-        (plVar10->cam_desired_pos).Z = (plVar10->field11_0x112b8).Z;
-        (plVar10->cam_desired_pos).W = (plVar10->field11_0x112b8).W;
+        (lpamng->cam_desired_pos).X = (lpamng->__0x112b8).X;
+        (plVar10->cam_desired_pos).Y = (plVar10->__0x112b8).Y;
+        (plVar10->cam_desired_pos).Z = (plVar10->__0x112b8).Z;
+        (plVar10->cam_desired_pos).W = (plVar10->__0x112b8).W;
         lpamng->link_points = SphereGridLinkPoint_ARRAY_01693160;
         _FUN_00a5a800();
         _FUN_00a57120();
@@ -2190,13 +2196,13 @@ public unsafe class CustomCharacterModule : FhModule {
         menuData->menus[0].something1 = 0x1a;
         menuData->menus[0].max_lines1 = 1;
         menuData->menus[0].num_entries = 0;
-        menuData->menus[0].field9_0x20 = 0xf;
+        menuData->menus[0].__0x20 = 0xf;
         menuData->menus[0].num_columns = 0x101;
         menuData->menus[0].func2 = FhUtil.ptr_at<nint>(0x64F930); // FUN_00a4f930
         menuData->menus[0].func3 = FhUtil.ptr_at<nint>(0x6570A0); // FUN_00a570a0
-        menuData->menus[0].field6_0x18 = 0;
-        menuData->menus[0].field12_0x25 = 0;
-        menuData->menus[0].field11_0x24 = 0;
+        menuData->menus[0].__0x18 = 0;
+        menuData->menus[0].__0x25 = 0;
+        menuData->menus[0].__0x24 = 0;
         menuData->menus[0].is_full = false;
         menuData->menus[0].func1 = (void*)0;
         *(uint*)&menuData->menus[7].pos2 = 0x00cd0030;
@@ -2214,17 +2220,17 @@ public unsafe class CustomCharacterModule : FhModule {
         menuData->menus[7].func3 = FhUtil.ptr_at<nint>(0x6570A0); // FUN_00a570a0
         if (*p_DAT_01a85f74 == 0) {
             menuData->menus[7].num_entries = 0;
-            menuData->menus[7].field9_0x20 = 10;
+            menuData->menus[7].__0x20 = 10;
         }
         else {
             menuData->menus[7].num_entries = 0;
-            menuData->menus[7].field9_0x20 = 0x12;
+            menuData->menus[7].__0x20 = 0x12;
         }
         menuData->menus[7].func1 = (void*)0;
         menuData->menus[7].is_full = false;
-        menuData->menus[7].field11_0x24 = 0;
-        menuData->menus[7].field12_0x25 = 0;
-        menuData->menus[7].field6_0x18 = 0;
+        menuData->menus[7].__0x24 = 0;
+        menuData->menus[7].__0x25 = 0;
+        menuData->menus[7].__0x18 = 0;
         uVar8 = _MsGetSaveConfigHiragana();
         pbVar9 = _MsMenuGetText(MenuTextFile.mmain_txt, 0x1f, uVar8 & 1);
         menuData = sphere_grid_menu_ptr;
@@ -2263,13 +2269,13 @@ public unsafe class CustomCharacterModule : FhModule {
         *(uint*)&menuData->menus[8].pos2 = 0x00cd0030;
         *(uint*)&menuData->menus[8].pos1 = 0x00cd0030;
         menuData->menus[8].num_entries = 0;
-        menuData->menus[8].field9_0x20 = 8;
+        menuData->menus[8].__0x20 = 8;
         menuData->menus[8].num_columns = 1;
         menuData->menus[8].func2 = FhUtil.ptr_at<nint>(0x64F630); // FUN_00a4f630
         menuData->menus[8].func3 = FhUtil.ptr_at<nint>(0x657040); // FUN_00a57040
-        menuData->menus[8].field6_0x18 = 0;
-        menuData->menus[8].field12_0x25 = 0;
-        menuData->menus[8].field11_0x24 = 0;
+        menuData->menus[8].__0x18 = 0;
+        menuData->menus[8].__0x25 = 0;
+        menuData->menus[8].__0x24 = 0;
         menuData->menus[8].is_full = false;
         menuData->menus[8].func1 = (void*)0;
         if (*p_DAT_01a85f74 == 0) {
@@ -2298,12 +2304,12 @@ public unsafe class CustomCharacterModule : FhModule {
         *(uint*)&sphere_grid_menu_ptr->menus[6].pos2 = 0x01640030;
         *(uint*)&menuData->menus[6].pos1 = 0x01640030;
         menuData->menus[6].num_entries = 0;
-        menuData->menus[6].field9_0x20 = 0x14;
+        menuData->menus[6].__0x20 = 0x14;
         menuData->menus[6].num_columns = 1;
         menuData->menus[6].func2 = FhUtil.ptr_at<nint>(0x64F9E0); // FUN_00a4f9e0;
-        menuData->menus[6].field6_0x18 = 0;
-        menuData->menus[6].field12_0x25 = 0;
-        menuData->menus[6].field11_0x24 = 0;
+        menuData->menus[6].__0x18 = 0;
+        menuData->menus[6].__0x25 = 0;
+        menuData->menus[6].__0x24 = 0;
         menuData->menus[6].is_full = false;
         menuData->menus[6].func3 = (void*)0x0;
         menuData->menus[6].func1 = (void*)0;
@@ -2346,12 +2352,12 @@ public unsafe class CustomCharacterModule : FhModule {
             menuData = sphere_grid_menu_ptr;
         }
         menuData->menus[1].num_entries = 0;
-        menuData->menus[1].field9_0x20 = 0x20;
+        menuData->menus[1].__0x20 = 0x20;
         menuData->menus[1].num_columns = 2;
         menuData->menus[1].func2 = FhUtil.ptr_at<nint>(0x64FA30); // FUN_00a4fa30
-        menuData->menus[1].field6_0x18 = 0;
-        menuData->menus[1].field12_0x25 = 0;
-        menuData->menus[1].field11_0x24 = 0;
+        menuData->menus[1].__0x18 = 0;
+        menuData->menus[1].__0x25 = 0;
+        menuData->menus[1].__0x24 = 0;
         menuData->menus[1].is_full = false;
         menuData->menus[1].func3 = (void*)0x0;
         menuData->menus[1].func1 = (void*)0;
@@ -2551,12 +2557,12 @@ public unsafe class CustomCharacterModule : FhModule {
             menuData = sphere_grid_menu_ptr;
         }
         menuData->menus[3].num_entries = 0;
-        menuData->menus[3].field9_0x20 = 0x20;
+        menuData->menus[3].__0x20 = 0x20;
         menuData->menus[3].num_columns = 3;
         menuData->menus[3].func2 = FhUtil.ptr_at<nint>(0x64F250); // FUN_00a4f250
-        menuData->menus[3].field6_0x18 = 0;
-        menuData->menus[3].field12_0x25 = 0;
-        menuData->menus[3].field11_0x24 = 0;
+        menuData->menus[3].__0x18 = 0;
+        menuData->menus[3].__0x25 = 0;
+        menuData->menus[3].__0x24 = 0;
         menuData->menus[3].is_full = false;
         menuData->menus[3].func3 = (void*)0x0;
         menuData->menus[3].func1 = (void*)0;
@@ -2585,11 +2591,11 @@ public unsafe class CustomCharacterModule : FhModule {
         _FUN_00a459e0(3, 0x40);
         menuData = sphere_grid_menu_ptr;
         menuData->menus[2].num_entries = 0;
-        menuData->menus[2].field9_0x20 = 0x20;
+        menuData->menus[2].__0x20 = 0x20;
         menuData->menus[2].func2 = FhUtil.ptr_at<nint>(0x64F9A0); // FUN_00a4f9a0
-        menuData->menus[2].field6_0x18 = 0;
-        menuData->menus[2].field12_0x25 = 0;
-        menuData->menus[2].field11_0x24 = 0;
+        menuData->menus[2].__0x18 = 0;
+        menuData->menus[2].__0x25 = 0;
+        menuData->menus[2].__0x24 = 0;
         menuData->menus[2].is_full = false;
         menuData->menus[2].func3 = (void*)0x0;
         menuData->menus[2].func1 = (void*)0;
@@ -2622,12 +2628,12 @@ public unsafe class CustomCharacterModule : FhModule {
         _FUN_00a459e0(2, 0x41);
         menuData = sphere_grid_menu_ptr;
         menuData->menus[4].num_entries = 0;
-        menuData->menus[4].field9_0x20 = 0x20;
+        menuData->menus[4].__0x20 = 0x20;
         menuData->menus[4].num_columns = 4;
         menuData->menus[4].func2 = FhUtil.ptr_at<nint>(0x64F250); // FUN_00a4f250;
-        menuData->menus[4].field6_0x18 = 0;
-        menuData->menus[4].field12_0x25 = 0;
-        menuData->menus[4].field11_0x24 = 0;
+        menuData->menus[4].__0x18 = 0;
+        menuData->menus[4].__0x25 = 0;
+        menuData->menus[4].__0x24 = 0;
         menuData->menus[4].is_full = false;
         menuData->menus[4].func3 = (void*)0x0;
         menuData->menus[4].func1 = (void*)0;
@@ -2658,12 +2664,12 @@ public unsafe class CustomCharacterModule : FhModule {
         _FUN_00a459e0(4, 0x45);
         menuData = sphere_grid_menu_ptr;
         menuData->menus[5].num_entries = 0;
-        menuData->menus[5].field9_0x20 = 0x20;
+        menuData->menus[5].__0x20 = 0x20;
         menuData->menus[5].num_columns = 4;
         menuData->menus[5].func2 = FhUtil.ptr_at<nint>(0x64F250); // FUN_00a4f250;
-        menuData->menus[5].field6_0x18 = 0;
-        menuData->menus[5].field12_0x25 = 0;
-        menuData->menus[5].field11_0x24 = 0;
+        menuData->menus[5].__0x18 = 0;
+        menuData->menus[5].__0x25 = 0;
+        menuData->menus[5].__0x24 = 0;
         menuData->menus[5].is_full = false;
         menuData->menus[5].func3 = (void*)0x0;
         menuData->menus[5].func1 = (void*)0;
@@ -2696,12 +2702,12 @@ public unsafe class CustomCharacterModule : FhModule {
         *(uint*)&sphere_grid_menu_ptr->menus[9].pos2 = 0x00cd0030;
         *(uint*)&menuData->menus[9].pos1 = 0x00cd0030;
         menuData->menus[9].num_entries = 0;
-        menuData->menus[9].field9_0x20 = 10;
+        menuData->menus[9].__0x20 = 10;
         menuData->menus[9].num_columns = 1;
         menuData->menus[9].func2 = FhUtil.ptr_at<nint>(0x64FB70); // FUN_00a4fb70
-        menuData->menus[9].field6_0x18 = 0;
-        menuData->menus[9].field12_0x25 = 0;
-        menuData->menus[9].field11_0x24 = 0;
+        menuData->menus[9].__0x18 = 0;
+        menuData->menus[9].__0x25 = 0;
+        menuData->menus[9].__0x24 = 0;
         menuData->menus[9].is_full = false;
         menuData->menus[9].func3 = (void*)0x0;
         menuData->menus[9].func1 = (void*)0;
@@ -2746,12 +2752,12 @@ public unsafe class CustomCharacterModule : FhModule {
         *(uint*)&menuData->menus[10].pos2 = 0x00cd0030;
         *(uint*)&menuData->menus[10].pos1 = 0x00cd0030;
         menuData->menus[10].num_entries = 0;
-        menuData->menus[10].field9_0x20 = 10;
+        menuData->menus[10].__0x20 = 10;
         menuData->menus[10].num_columns = 1;
         menuData->menus[10].func2 = FhUtil.ptr_at<nint>(0x64FB70); // FUN_00a4fb70
-        menuData->menus[10].field6_0x18 = 0;
-        menuData->menus[10].field12_0x25 = 0;
-        menuData->menus[10].field11_0x24 = 0;
+        menuData->menus[10].__0x18 = 0;
+        menuData->menus[10].__0x25 = 0;
+        menuData->menus[10].__0x24 = 0;
         menuData->menus[10].is_full = false;
         menuData->menus[10].func3 = (void*)0x0;
         menuData->menus[10].func1 = (void*)0;
@@ -2803,11 +2809,11 @@ public unsafe class CustomCharacterModule : FhModule {
         menuData->menus[0xb].something1 = 5;
         menuData->menus[0xb].max_lines1 = 2;
         menuData->menus[0xb].num_entries = 0;
-        menuData->menus[0xb].field9_0x20 = 0xf;
-        menuData->menus[0xb].field6_0x18 = 0;
+        menuData->menus[0xb].__0x20 = 0xf;
+        menuData->menus[0xb].__0x18 = 0;
         menuData->menus[0xb].num_columns = 1;
-        menuData->menus[0xb].field12_0x25 = 0;
-        menuData->menus[0xb].field11_0x24 = 0;
+        menuData->menus[0xb].__0x25 = 0;
+        menuData->menus[0xb].__0x24 = 0;
         menuData->menus[0xb].is_full = false;
         menuData->menus[0xb].func2 = FhUtil.ptr_at<nint>(0x64F930); // FUN_00a4f930;
         menuData->menus[0xb].func3 = (void*)0x0;
@@ -2844,7 +2850,7 @@ public unsafe class CustomCharacterModule : FhModule {
             //dbgPrintf("addMenuPrim error!!!  menu->mprimn >= MAXMENUPRIM\n", 0x40);
             //debug_exit_trace(0);
         }
-        _graphicAbmapCreate(*(void**)&lpamng->field_0x116a4);
+        _graphicAbmapCreate(*(void**)&lpamng->__0x116a4);
         _graphicDeActivateLoadingScreen();
         _graphicSetFlipVsnc(2);
         *p_DAT_01a860ec = (int)_user_malloc(0x200);
@@ -2861,7 +2867,7 @@ public unsafe class CustomCharacterModule : FhModule {
             bVar2 = *p_DAT_01a85f74 == 0;
             *(byte*)((int)&sphere_grid_menu_ptr->menus[8].num_columns + 1) = 1;
             *(int*)&pSVar1->menus[8].pos3 = 0x01640030;
-            pSVar1->menus[8].field_0x32 = 0;
+            pSVar1->menus[8].__0x32 = 0;
             pSVar1->menus[8].func1 = FhUtil.ptr_at<nint>(0x65A080); // FUN_00a5a080
             if (bVar2) {
                 pSVar1->menus[8].pos3.w = 0xb0;
@@ -2891,7 +2897,7 @@ public unsafe class CustomCharacterModule : FhModule {
         plVar3 = lpamng;
         if (param_3 == 0) {
             _SndSepPlaySimple(0x80000052);
-            _FUN_00786fb0(lpamng->current_chr_id, lpamng->field_0x1161c);
+            _FUN_00786fb0(lpamng->current_chr_id, lpamng->slv_queued);
         }
         else if (param_3 == 1) {
             iVar4 = (int)lpamng->link_count;
@@ -2902,27 +2908,27 @@ public unsafe class CustomCharacterModule : FhModule {
                     iVar4 = iVar4 + -1;
                     if ((pbVar5[2] & 8) != 0) {
                         *pbVar5 = (byte)(*pbVar5 & ~(1 << (lpamng->current_chr_id & 0x1f)));
-                        lpamng->field_0x116ac = 1;
+                        lpamng->should_update = 1;
                     }
                     pbVar5 = pbVar5 + 0x14;
                 } while (iVar4 != 0);
             }
             plVar3 = lpamng;
-            bVar1 = lpamng->field_0x11638;
-            custom_party_infos[bVar1].current_node_idx = lpamng->field_0x11630;
-            _FUN_00a5a990.hook_fptr(lpamng->field_0x11638);
-            _FUN_00a58080.hook_fptr(lpamng->field_0x11638);
-            lpamng->field_0x115c7 = 1;
+            bVar1 = lpamng->moving_chr_id;
+            custom_party_infos[bVar1].current_node_idx = lpamng->move_start_node_idx;
+            _FUN_00a5a990.hook_fptr(lpamng->moving_chr_id);
+            _FUN_00a58080.hook_fptr(lpamng->moving_chr_id);
+            lpamng->__0x115c7 = 1;
             _FUN_00a5b030.hook_fptr();
             _FUN_00a48d70(custom_party_infos[bVar1].current_node_idx, 0.5f);
-            if (lpamng->field_0x115b0 == 0) {
-                lpamng->field_0x115b0 = lpamng->field_0x115a8;
-                lpamng->field_0x115a8 = (int)FhUtil.ptr_at<nint>(0x659E80); // FUN_00a59e80;
+            if (lpamng->__0x115b0 == 0) {
+                lpamng->__0x115b0 = lpamng->__0x115a8;
+                lpamng->__0x115a8 = (int)FhUtil.ptr_at<nint>(0x659E80); // FUN_00a59e80;
             }
         }
         iVar4 = lpamng->link_count;
         if (iVar4 != 0) {
-            pbVar5 = &lpamng->links[0].field_0xe;
+            pbVar5 = &lpamng->links[0].__0xe;
             do {
                 *pbVar5 = (byte)(*pbVar5 & 0xf0);
                 pbVar5 = pbVar5 + 0x14;
@@ -2937,7 +2943,7 @@ public unsafe class CustomCharacterModule : FhModule {
         pSVar2->menus[7].pos2.h = pSVar2->menus[7].pos1.h;
         pSVar2->menus[7].something2 = pSVar2->menus[7].something1;
         pSVar2->menus[7].max_lines2 = pSVar2->menus[7].max_lines1;
-        lpamng->field_0x1161c = 0;
+        lpamng->slv_queued = 0;
         return;
     }
 
@@ -2981,9 +2987,9 @@ public unsafe class CustomCharacterModule : FhModule {
         chr_info->a = param_4;
         chr_info->b = param_5;
         chr_info->pos_circle_radius = (node_size >> 1) + 3.0f;
-        chr_info->field26_0x4e = 0;
+        chr_info->__0x4e = 0;
         chr_info->c = param_6;
-        chr_info->field_0x40 = param_3;
+        chr_info->__0x40 = param_3;
         if ((int)chr_id < num_characters) {
             chr_name = _TOGetSaveChrName(chr_id);
             chr_info->chr_name = chr_name;
@@ -2996,7 +3002,7 @@ public unsafe class CustomCharacterModule : FhModule {
             }
             name_width_int = (int)x;
             chr_info->name_width = (short)name_width_int;
-            chr_info->field7_0x32 = 0x10;
+            chr_info->__0x32 = 0x10;
         }
         return;
     }
@@ -3015,7 +3021,7 @@ public unsafe class CustomCharacterModule : FhModule {
         } else {
             chr_info = &custom_party_infos[chr_id];
         }
-        uVar1 = (ushort)(chr_info->field26_0x4e * 0x4000 + 0x2000);
+        uVar1 = (ushort)(chr_info->__0x4e * 0x4000 + 0x2000);
         _FUN_00a47c60(chr_info);
         (chr_info->label_pos).X =
              eff_sin_t[(int)(uVar1 + 0x4000) >> 4 & 0xfff] * chr_info->pos_circle_radius +
@@ -3025,41 +3031,41 @@ public unsafe class CustomCharacterModule : FhModule {
         (chr_info->label_pos).W = 1.0f;
         uVar2 = DAT_02305814;
         uVar3 = DAT_02305818;
-        if ((chr_info->field26_0x4e & 4) == 0) {
+        if ((chr_info->__0x4e & 4) == 0) {
             uVar2 = DAT_0230581c;
             uVar3 = DAT_02305820;
         }
         pos_y = (short)uVar2;
         pos_x = (short)uVar3;
         /* Different label rendering positions */
-        switch (chr_info->field26_0x4e & 3) {
+        switch (chr_info->__0x4e & 3) {
             case 0:
                 /* Topright */
-                chr_info->field23_0x48 = (short)-pos_y;
-                chr_info->field22_0x46 = pos_x;
-                chr_info->field24_0x4a = DAT_02305810;
-                chr_info->field25_0x4c = DAT_02305808;
+                chr_info->__0x48 = (short)-pos_y;
+                chr_info->__0x46 = pos_x;
+                chr_info->__0x4a = DAT_02305810;
+                chr_info->__0x4c = DAT_02305808;
                 return;
             case 1:
                 /* Topleft */
-                chr_info->field23_0x48 = (short)-pos_y;
-                chr_info->field22_0x46 = (short)-pos_x;
-                chr_info->field24_0x4a = (short)-((short)DAT_02305830 + (short)DAT_0230580c);
-                chr_info->field25_0x4c = DAT_02305808;
+                chr_info->__0x48 = (short)-pos_y;
+                chr_info->__0x46 = (short)-pos_x;
+                chr_info->__0x4a = (short)-((short)DAT_02305830 + (short)DAT_0230580c);
+                chr_info->__0x4c = DAT_02305808;
                 return;
             case 2:
                 /* Bottomleft */
-                chr_info->field23_0x48 = pos_y;
-                chr_info->field22_0x46 = (short)-pos_x;
-                chr_info->field24_0x4a = (short)-((short)DAT_02305830 + (short)DAT_0230580c);
-                chr_info->field25_0x4c = DAT_02305804;
+                chr_info->__0x48 = pos_y;
+                chr_info->__0x46 = (short)-pos_x;
+                chr_info->__0x4a = (short)-((short)DAT_02305830 + (short)DAT_0230580c);
+                chr_info->__0x4c = DAT_02305804;
                 return;
             case 3:
                 /* Bottomright */
-                chr_info->field22_0x46 = pos_x;
-                chr_info->field23_0x48 = pos_y;
-                chr_info->field24_0x4a = DAT_02305810;
-                chr_info->field25_0x4c = DAT_02305804;
+                chr_info->__0x46 = pos_x;
+                chr_info->__0x48 = pos_y;
+                chr_info->__0x4a = DAT_02305810;
+                chr_info->__0x4c = DAT_02305804;
                 return;
         }
         return;
@@ -3068,34 +3074,34 @@ public unsafe class CustomCharacterModule : FhModule {
     void h_FUN_00a58ec0() {
         byte bVar1;
 
-        if (lpamng->field_0x115b0 != 0) {
+        if (lpamng->__0x115b0 != 0) {
             return;
         }
         if ((lpamng->abmap_input[3] & 4) == 0) {
             if ((lpamng->abmap_input[3] & 8) == 0) goto LAB_00a58fdb;
-            lpamng->field_0x115be = 2;
+            lpamng->__0x115be = 2;
             _FUN_008aaec0();
         }
         else {
             _FUN_008aaf50();
-            lpamng->field_0x115be = 1;
+            lpamng->__0x115be = 1;
         }
-        lpamng->field_0x115bf = 0;
-        lpamng->field_0x115bd = lpamng->current_chr_id;
+        lpamng->__0x115bf = 0;
+        lpamng->__0x115bd = lpamng->current_chr_id;
         bVar1 = _TkMenuGetCurrentPlayer();
         lpamng->current_chr_id = bVar1;
-        if (lpamng->field_0x115bd == lpamng->current_chr_id) {
-            lpamng->field_0x115be = 0;
+        if (lpamng->__0x115bd == lpamng->current_chr_id) {
+            lpamng->__0x115be = 0;
         }
         else {
-            lpamng->field_0x116ac = 1;
-            lpamng->field_0x116a8 = 0xffffffff;
+            lpamng->should_update = 1;
+            lpamng->should_update_node = 0xffffffff;
             _SndSepPlaySimple(0x80000004);
         }
         _FUN_00a48d70(custom_party_infos[lpamng->current_chr_id].current_node_idx, 0.25f);
-        if (lpamng->field_0x115b0 == 0) {
-            lpamng->field_0x115b0 = lpamng->field_0x115a8;
-            lpamng->field_0x115a8 = (int)FhUtil.ptr_at<nint>(0x659E80); // FUN_00a59e80;
+        if (lpamng->__0x115b0 == 0) {
+            lpamng->__0x115b0 = lpamng->__0x115a8;
+            lpamng->__0x115a8 = (int)FhUtil.ptr_at<nint>(0x659E80); // FUN_00a59e80;
         }
         _FUN_00a47210();
         _FUN_00a5aca0();
@@ -3126,8 +3132,8 @@ public unsafe class CustomCharacterModule : FhModule {
         }
         pSVar2 = sphere_grid_menu_ptr;
         *(short*)((int)&sphere_grid_menu_ptr->menus[8].num_columns + 1) = 0x301;
-        *(byte*)&pSVar2->menus[8].field12_0x25 = 1;
-        *(short*)&pSVar2->field1_0x2700 = 8;
+        *(byte*)&pSVar2->menus[8].__0x25 = 1;
+        *(short*)&pSVar2->__0x2700 = 8;
         pSVar2->func = FhUtil.ptr_at<nint>(__addr_FUN_00a560d0); // FUN_00a560d0;
         return;
     }
@@ -3150,70 +3156,70 @@ public unsafe class CustomCharacterModule : FhModule {
         Vector4 local_18 = new();
 
         plVar4 = lpamng;
-        puVar1 = &lpamng->field_0x11638;
-        lpamng->field_0x11620 = lpamng->field272_0x11624 + lpamng->field_0x11620;
+        puVar1 = &lpamng->moving_chr_id;
+        lpamng->moving_progress = lpamng->moving_speed + lpamng->moving_progress;
         pSVar7 = &custom_party_infos[*puVar1];
-        if (lpamng->field_0x116ac == 0) {
-            lpamng->field_0x116ac = 1;
+        if (lpamng->should_update == 0) {
+            lpamng->should_update = 1;
         }
-        local_18.X = (float)lpamng->nodes[lpamng->field_0x11632].x;
-        //local_44 = (ushort*)(int)lpamng->nodes[lpamng->field_0x11632].y;
+        local_18.X = (float)lpamng->nodes[lpamng->next_move_target_node_idx].x;
+        //local_44 = (ushort*)(int)lpamng->nodes[lpamng->next_move_target_node_idx].y;
         //local_18.Y = (float)(int)local_44;
-        local_18.Y = (float)lpamng->nodes[lpamng->field_0x11632].y;
-        fVar2 = lpamng->field_0x11620;
+        local_18.Y = (float)lpamng->nodes[lpamng->next_move_target_node_idx].y;
+        fVar2 = lpamng->moving_progress;
         if (!float.IsNaN(fVar2) && 1.0f < fVar2 != (fVar2 == 1.0f)) {
             do {
                 local_18.W = 1.0f;
                 local_18.Z = 0.0f;
-                lpamng->field_0x115f8 = 0;
+                lpamng->next_move_link = 0;
                 plVar4 = lpamng;
-                if (lpamng->field_0x11632 == lpamng->field_0x11634) {
+                if (lpamng->next_move_target_node_idx == lpamng->last_move_target_node_idx) {
                 //LAB_00a59d91:
                     (pSVar7->pos).X = local_18.X;
                     (pSVar7->pos).Y = local_18.Y;
                     (pSVar7->pos).Z = local_18.Z;
                     (pSVar7->pos).W = local_18.W;
-                    lpamng->field_0x115c7 = 1;
-                    lpamng->field_0x115a8 = lpamng->field_0x115b0;
-                    lpamng->field_0x115b0 = 0;
+                    lpamng->__0x115c7 = 1;
+                    lpamng->__0x115a8 = lpamng->__0x115b0;
+                    lpamng->__0x115b0 = 0;
                     return;
                 }
-                uVar5 = _FUN_00a56e00(lpamng->field_0x11632, lpamng->field_0x11634,
+                uVar5 = _FUN_00a56e00(lpamng->next_move_target_node_idx, lpamng->last_move_target_node_idx,
                                      &local_44);
-                plVar4->field_0x11632 = (ushort)uVar5;
-                //if (*(short*)&lpamng->field_0x11632 == -1) goto LAB_00a59d91;
-                if (*(short*)&lpamng->field_0x11632 == -1) {
+                plVar4->next_move_target_node_idx = (ushort)uVar5;
+                //if (*(short*)&lpamng->next_move_target_node_idx == -1) goto LAB_00a59d91;
+                if (*(short*)&lpamng->next_move_target_node_idx == -1) {
                     (pSVar7->pos).X = local_18.X;
                     (pSVar7->pos).Y = local_18.Y;
                     (pSVar7->pos).Z = local_18.Z;
                     (pSVar7->pos).W = local_18.W;
-                    lpamng->field_0x115c7 = 1;
-                    lpamng->field_0x115a8 = lpamng->field_0x115b0;
-                    lpamng->field_0x115b0 = 0;
+                    lpamng->__0x115c7 = 1;
+                    lpamng->__0x115a8 = lpamng->__0x115b0;
+                    lpamng->__0x115b0 = 0;
                     return;
                 }
-                lpamng->field_0x11636 = local_44[2];
-                if ((byte)((byte)local_44[6] & (byte)(1 << (lpamng->field_0x11638 & 0x1f))) == 0) {
-                    *(byte*)(local_44 + 6) = (byte)(1 << (lpamng->field_0x11638 & 0x1f) | (byte)local_44[6]);
+                lpamng->next_move_link_anchor_idx = local_44[2];
+                if ((byte)((byte)local_44[6] & (byte)(1 << (lpamng->moving_chr_id & 0x1f))) == 0) {
+                    *(byte*)(local_44 + 6) = (byte)(1 << (lpamng->moving_chr_id & 0x1f) | (byte)local_44[6]);
                     *(byte*)(local_44 + 7) = (byte)((byte)local_44[7] | 8);
-                    *(ushort**)&lpamng->field_0x115f8 = local_44;
+                    *(ushort**)&lpamng->next_move_link = local_44;
                 }
-                pSVar7->current_node_idx = *(ushort*)&lpamng->field_0x11632;
+                pSVar7->current_node_idx = *(ushort*)&lpamng->next_move_target_node_idx;
                 plVar4 = lpamng;
-                (lpamng->cam_previous_desired_pos).X = (pSVar7->pos).X;
-                (plVar4->cam_previous_desired_pos).Y = (pSVar7->pos).Y;
-                (plVar4->cam_previous_desired_pos).Z = (pSVar7->pos).Z;
-                (plVar4->cam_previous_desired_pos).W = (pSVar7->pos).W;
-                local_18.X = (float)lpamng->nodes[lpamng->field_0x11632].x;
-                //iVar6 = (int)lpamng->nodes[*(ushort*)&lpamng->field_0x11632].y;
+                (lpamng->move_prev_node_pos).X = (pSVar7->pos).X;
+                (plVar4->move_prev_node_pos).Y = (pSVar7->pos).Y;
+                (plVar4->move_prev_node_pos).Z = (pSVar7->pos).Z;
+                (plVar4->move_prev_node_pos).W = (pSVar7->pos).W;
+                local_18.X = (float)lpamng->nodes[lpamng->next_move_target_node_idx].x;
+                //iVar6 = (int)lpamng->nodes[*(ushort*)&lpamng->next_move_target_node_idx].y;
                 //_local_40 = CONCAT44(iVar6, local_40);
                 //local_18.y = (float)iVar6;
-                local_18.Y = (float)lpamng->nodes[lpamng->field_0x11632].y;
-                asmreg_vf9->X = (lpamng->cam_previous_desired_pos).X;
-                asmreg_vf9->Y = (lpamng->cam_previous_desired_pos).Y;
+                local_18.Y = (float)lpamng->nodes[lpamng->next_move_target_node_idx].y;
+                asmreg_vf9->X = (lpamng->move_prev_node_pos).X;
+                asmreg_vf9->Y = (lpamng->move_prev_node_pos).Y;
                 asmreg_vf10->X = local_18.X - asmreg_vf9->X;
-                asmreg_vf9->Z = (lpamng->cam_previous_desired_pos).Z;
-                asmreg_vf9->W = (lpamng->cam_previous_desired_pos).W;
+                asmreg_vf9->Z = (lpamng->move_prev_node_pos).Z;
+                asmreg_vf9->W = (lpamng->move_prev_node_pos).W;
                 asmreg_vf10->Y = local_18.Y - asmreg_vf9->Y;
                 asmreg_vf10->W = local_18.W;
                 asmreg_vf10->Z = local_18.Z - asmreg_vf9->Z;
@@ -3236,28 +3242,28 @@ public unsafe class CustomCharacterModule : FhModule {
                 else {
                     fVar2 = 8.0f / asmreg_vf10->X;
                 }
-                lpamng->field272_0x11624 = fVar2;
+                lpamng->moving_speed = fVar2;
                 plVar4 = lpamng;
-                lpamng->field_0x11620 = lpamng->field_0x11620 - 1.0f;
-                lpamng->field_0x11628 = pSVar7->pos_circle_radius;
+                lpamng->moving_progress = lpamng->moving_progress - 1.0f;
+                lpamng->moving_halo_start_width = pSVar7->pos_circle_radius;
                 iVar6 = (int)(lpamng->node_type_infos[(int)lpamng->nodes[pSVar7->current_node_idx].node_type].width
                              >> 1);
-                lpamng->field_0x1162c = (float)iVar6 + 3.0f;
+                lpamng->moving_halo_target_width = (float)iVar6 + 3.0f;
                 //local_40 = SUB84((double)iVar6, 0);
-                local_18.X = (float)(int)lpamng->nodes[lpamng->field_0x11632].x;
-                iVar6 = (int)lpamng->nodes[lpamng->field_0x11632].y;
+                local_18.X = (float)(int)lpamng->nodes[lpamng->next_move_target_node_idx].x;
+                iVar6 = (int)lpamng->nodes[lpamng->next_move_target_node_idx].y;
                 //_local_40 = CONCAT44(iVar6, local_40);
                 local_18.Y = (float)iVar6;
-                fVar2 = plVar4->field_0x11620;
+                fVar2 = plVar4->moving_progress;
             } while (!float.IsNaN(fVar2) && 1.0f < fVar2 != (fVar2 == 1.0f));
         }
         local_18.W = 1.0f;
         local_18.Z = 0.0f;
-        uVar3 = lpamng->field_0x11636;
+        uVar3 = lpamng->next_move_link_anchor_idx;
         if (uVar3 == 0xffff) {
             _FFXVu0InterVectorXYZ
-                      (&local_28, &local_18, &lpamng->cam_previous_desired_pos,
-                       lpamng->field_0x11620);
+                      (&local_28, &local_18, &lpamng->move_prev_node_pos,
+                       lpamng->moving_progress);
             (pSVar7->pos).X = local_28.X;
             (pSVar7->pos).Y = local_28.Y;
         }
@@ -3266,13 +3272,13 @@ public unsafe class CustomCharacterModule : FhModule {
             local_58.Y = (float)lpamng->nodes[uVar3].y;
             local_58.Z = 0.0f;
             local_58.W = 1.0f;
-            _FUN_00a563b0(&pSVar7->pos, &lpamng->cam_previous_desired_pos, &local_18, &local_58,
-                         lpamng->field_0x11620);
+            _FUN_00a563b0(&pSVar7->pos, &lpamng->move_prev_node_pos, &local_18, &local_58,
+                         lpamng->moving_progress);
         }
         pSVar7->pos_circle_radius =
-             (lpamng->field_0x1162c - lpamng->field_0x11628) *
-             lpamng->field_0x11620 + lpamng->field_0x11628;
-        lpamng->field_0x115c7 = 1;
+             (lpamng->moving_halo_target_width - lpamng->moving_halo_start_width) *
+             lpamng->moving_progress + lpamng->moving_halo_start_width;
+        lpamng->__0x115c7 = 1;
         _FUN_00a5b030.hook_fptr();
         return;
     }
@@ -3295,7 +3301,7 @@ public unsafe class CustomCharacterModule : FhModule {
             chr_id = 0;
         iVar5 = 0;
         do {
-            (&custom_party_infos[0].field26_0x4e)[iVar5] = 0;
+            (&custom_party_infos[0].__0x4e)[iVar5] = 0;
             _FUN_00a58080.hook_fptr(chr_id);
             iVar5 = iVar5 + 0x50;
             chr_id = chr_id + 1;
@@ -3318,10 +3324,10 @@ public unsafe class CustomCharacterModule : FhModule {
                         iVar5 = iVar5 + 1;
                         pfVar6 = pfVar6 + 1;
                     }
-                    pSVar3->field26_0x4e = (byte)(pSVar3->field26_0x4e + 1);
+                    pSVar3->__0x4e = (byte)(pSVar3->__0x4e + 1);
                     _FUN_00a58080.hook_fptr((int)uVar2);
                     _FUN_00a482d0(pSVar3, pfVar4);
-                } while (pSVar3->field26_0x4e < num_characters);
+                } while (pSVar3->__0x4e < num_characters);
             LAB_00a5a56c:
                 local_7c = local_7c + 1;
                 pfVar4 = pfVar4 + 1;
@@ -3343,10 +3349,10 @@ public unsafe class CustomCharacterModule : FhModule {
                         iVar5 = iVar5 + 1;
                         pfVar6 = pfVar6 + 1;
                     }
-                    pSVar3->field26_0x4e = (byte)(pSVar3->field26_0x4e + 1);
+                    pSVar3->__0x4e = (byte)(pSVar3->__0x4e + 1);
                     _FUN_00a58080.hook_fptr((int)uVar2);
                     _FUN_00a482d0(pSVar3, pfVar4);
-                } while (pSVar3->field26_0x4e < num_characters);
+                } while (pSVar3->__0x4e < num_characters);
             LAB_00a5a606:
                 local_80 = local_80 + 1;
                 pfVar4 = pfVar4 + 1;
@@ -3383,20 +3389,20 @@ public unsafe class CustomCharacterModule : FhModule {
 
         _lpamng = lpamng;
         chr_id = lpamng->current_chr_id;
-        lpamng->field193_0x115a0 = 256.0f;
+        lpamng->__0x115a0 = 256.0f;
         __lpamng = lpamng;
-        (lpamng->field95_0x11520).X = custom_party_infos[chr_id].pos.X;
-        (__lpamng->field95_0x11520).Y = custom_party_infos[chr_id].pos.Y;
-        (__lpamng->field95_0x11520).Z = custom_party_infos[chr_id].pos.Z;
-        (__lpamng->field95_0x11520).W = custom_party_infos[chr_id].pos.W;
-        (lpamng->field95_0x11520).Z = custom_party_infos[chr_id].pos.Z - 32.0f;
+        (lpamng->__0x11520).X = custom_party_infos[chr_id].pos.X;
+        (__lpamng->__0x11520).Y = custom_party_infos[chr_id].pos.Y;
+        (__lpamng->__0x11520).Z = custom_party_infos[chr_id].pos.Z;
+        (__lpamng->__0x11520).W = custom_party_infos[chr_id].pos.W;
+        (lpamng->__0x11520).Z = custom_party_infos[chr_id].pos.Z - 32.0f;
         _lpamng = lpamng;
         chr_id = lpamng->current_chr_id;
-        (lpamng->field144_0x11560).X = Vector4f_ARRAY_00c86010[chr_id].X;
-        (_lpamng->field144_0x11560).Y = Vector4f_ARRAY_00c86010[chr_id].Y;
-        (_lpamng->field144_0x11560).Z = Vector4f_ARRAY_00c86010[chr_id].Z;
-        (_lpamng->field144_0x11560).W = Vector4f_ARRAY_00c86010[chr_id].W;
-        (lpamng->field95_0x11520).W = lpamng->field193_0x115a0 + lpamng->field193_0x115a0;
+        (lpamng->__0x11560).X = Vector4f_ARRAY_00c86010[chr_id].X;
+        (_lpamng->__0x11560).Y = Vector4f_ARRAY_00c86010[chr_id].Y;
+        (_lpamng->__0x11560).Z = Vector4f_ARRAY_00c86010[chr_id].Z;
+        (_lpamng->__0x11560).W = Vector4f_ARRAY_00c86010[chr_id].W;
+        (lpamng->__0x11520).W = lpamng->__0x115a0 + lpamng->__0x115a0;
         _FUN_00a47440();
         return;
     }
@@ -3410,8 +3416,8 @@ public unsafe class CustomCharacterModule : FhModule {
         byte bVar6;
 
         uVar1 = custom_party_infos[lpamng->current_chr_id].current_node_idx;
-        lpamng->field_0x115a8 = (int)FhUtil.ptr_at<nint>(0x644EF0); // FUN_00a44ef0
-        lpamng->field_0x115ac = (int)FhUtil.ptr_at<nint>(0x645440); // FUN_00a45440
+        lpamng->__0x115a8 = (int)FhUtil.ptr_at<nint>(0x644EF0); // FUN_00a44ef0
+        lpamng->__0x115ac = (int)FhUtil.ptr_at<nint>(0x645440); // FUN_00a45440
         bVar6 = lpamng->current_chr_id;
         uVar2 = _FUN_007854a0(bVar6);
         _FUN_00a474d0(uVar1, uVar2, bVar6);
@@ -3439,17 +3445,17 @@ public unsafe class CustomCharacterModule : FhModule {
                 pbVar3 = pbVar3 + 0x28;
             } while (iVar5 != 0);
         }
-        lpamng->field_0x116a0 = 0;
-        lpamng->field_0x1169c = 0;
-        lpamng->field_0x1161c = 0;
+        lpamng->__0x116a0 = 0;
+        lpamng->__0x1169c = 0;
+        lpamng->slv_queued = 0;
         _FUN_00a48d70(uVar1, 0.25f);
-        if (lpamng->field_0x115b0 != 0) {
-            lpamng->field_0x115c3 = 1;
+        if (lpamng->__0x115b0 != 0) {
+            lpamng->__0x115c3 = 1;
             return;
         }
-        lpamng->field_0x115b0 = lpamng->field_0x115a8;
-        lpamng->field_0x115a8 = (int)FhUtil.ptr_at<nint>(0x659E80); // FUN_00a59e80;
-        lpamng->field_0x115c3 = 1;
+        lpamng->__0x115b0 = lpamng->__0x115a8;
+        lpamng->__0x115a8 = (int)FhUtil.ptr_at<nint>(0x659E80); // FUN_00a59e80;
+        lpamng->__0x115c3 = 1;
         return;
     }
 
@@ -3473,26 +3479,26 @@ public unsafe class CustomCharacterModule : FhModule {
             } while (iVar3 != 0);
         }
         _FUN_00a5b400((int)chr_id, node_idx, item_id, 3);
-        lpamng->field_0x116a0 = 0;
-        lpamng->field_0x1169c = 0;
-        lpamng->field_0x115a8 = (int)FhUtil.ptr_at<nint>(0x6452D0); // abmCalcSpheUseCurMove
-        lpamng->field_0x115ac = (int)FhUtil.ptr_at<nint>(0x645500); // FUN_00a45500
+        lpamng->__0x116a0 = 0;
+        lpamng->__0x1169c = 0;
+        lpamng->__0x115a8 = (int)FhUtil.ptr_at<nint>(0x6452D0); // abmCalcSpheUseCurMove
+        lpamng->__0x115ac = (int)FhUtil.ptr_at<nint>(0x645500); // FUN_00a45500
         psVar2 = _FUN_00a56a40(&local_8, &custom_party_infos[lpamng->current_chr_id].pos,
                               //abmCalcChrMoveCurMoveCheck);
                               FhUtil.ptr_at<nint>(0x645000));
         node_to_select = (uint)(((int)psVar2 + (-0x808 - (int)lpamng)) / 0x28);
         if ((psVar2 != (SphereGridNode*)0x0) && (node_to_select != lpamng->selected_node_idx)) {
             _FUN_00a48d70((int)node_to_select, 0.5f);
-            if (lpamng->field_0x115b0 == 0) {
-                lpamng->field_0x115b0 = lpamng->field_0x115a8;
-                lpamng->field_0x115a8 = (int)FhUtil.ptr_at<nint>(0x659E80); // FUN_00a59e80;
-                lpamng->field_0x115c3 = 1;
+            if (lpamng->__0x115b0 == 0) {
+                lpamng->__0x115b0 = lpamng->__0x115a8;
+                lpamng->__0x115a8 = (int)FhUtil.ptr_at<nint>(0x659E80); // FUN_00a59e80;
+                lpamng->__0x115c3 = 1;
                 return;
             }
-            lpamng->field_0x115c3 = 1;
+            lpamng->__0x115c3 = 1;
             return;
         }
-        lpamng->field_0x115c3 = 1;
+        lpamng->__0x115c3 = 1;
         return;
     }
 
@@ -3699,30 +3705,32 @@ public unsafe class CustomCharacterModule : FhModule {
         Matrix4x4 local_98 = new();
         Matrix4x4 local_58 = new();
 
-        _FUN_00a505e0.orig_fptr();
-        return;
+        if (!CustomCharacterGUI.override_FUN_00a505e0) {
+            _FUN_00a505e0.orig_fptr();
+            return;
+        }
 
         iVar6 = (int)lpamng->node_count;
         node = &lpamng->nodes[0];
-        iVar2 = *(int*)&lpamng->field_0x11698;
-        local_150.field11_0x20 = &local_d8;
-        local_150.field20_0x44 = &local_58;
-        local_150.field14_0x2c = &local_98;
+        iVar2 = *(int*)&lpamng->__0x11698;
+        local_150.__0x20 = &local_d8;
+        local_150.__0x44 = &local_58;
+        local_150.__0x2c = &local_98;
         local_58.M14 = asmreg_0_zero->W;
         local_58.M24 = asmreg_0_zero->W;
         local_58.M44 = 1.0f;
         local_58.M34 = asmreg_0_zero->W;
-        local_150.field13_0x28 = (int)&lpamng->field95_0x11520;
-        local_150.field12_0x24 = (int)&lpamng->field144_0x11560;
-        local_150.field10_0x1c = 0;
-        local_150.field3_0xa = 0;
-        local_150.field18_0x3c = 0;
-        local_150.field17_0x38 = 0;
-        local_150.field1_0x4 = (int)p_DAT_01740830_sphere_grid_layout_dat;
-        local_150.field5_0xc = 0;
-        local_150.field6_0x10 = 0;
-        local_150.field7_0x14 = 0;
-        local_150.field19_0x40 = 0;
+        local_150.__0x28 = (int)&lpamng->__0x11520;
+        local_150.__0x24 = (int)&lpamng->__0x11560;
+        local_150.__0x1c = 0;
+        local_150.__0xa = 0;
+        local_150.__0x3c = 0;
+        local_150.__0x38 = 0;
+        local_150.__0x4 = (int)p_DAT_01740830_sphere_grid_layout_dat;
+        local_150.__0xc = 0;
+        local_150.__0x10 = 0;
+        local_150.__0x14 = 0;
+        local_150.__0x40 = 0;
         local_58.M11 = asmreg_0_zero->X;
         local_58.M12 = asmreg_0_zero->Y;
         local_58.M13 = asmreg_0_zero->Z;
@@ -3750,7 +3758,7 @@ public unsafe class CustomCharacterModule : FhModule {
                     do {
                         plVar5 = lpamng;
                         _FUN_00a5ad30.hook_fptr(&local_98, node, 1.0f);
-                        _cdc_FFXVu0MulMatrix(&local_d8, &plVar5->field90_0x113e0, &local_98);
+                        _cdc_FFXVu0MulMatrix(&local_d8, &plVar5->__0x113e0, &local_98);
                         local_58.M43 = -1.0f;
                         local_150.rgba = 0;
                         _FUN_00a68140.hook_fptr(DAT_023057ec, &local_150, (lpamng->node_count - iVar6) + -1, iVar7);
@@ -3765,8 +3773,8 @@ public unsafe class CustomCharacterModule : FhModule {
                         pSVar4 = &lpamng->node_type_infos[0];
                         do {
                             plVar5 = lpamng;
-                            _FUN_00a5ad30.hook_fptr(&local_98, node, pSVar4[uVar1].field5_0x10);
-                            _cdc_FFXVu0MulMatrix(&local_d8, &plVar5->field90_0x113e0, &local_98);
+                            _FUN_00a5ad30.hook_fptr(&local_98, node, pSVar4[uVar1].__0x10);
+                            _cdc_FFXVu0MulMatrix(&local_d8, &plVar5->__0x113e0, &local_98);
                             local_58.M43 = -1.0f;
                             local_150.rgba = 0;
                             _FUN_00a68140.hook_fptr(DAT_023057ec, &local_150, (lpamng->node_count - iVar6) + -1, iVar7);
@@ -3774,12 +3782,12 @@ public unsafe class CustomCharacterModule : FhModule {
                         } while (iVar7 < num_characters);
                     }
                     else {
-                        activated_by = (byte)(lpamng->active_indicators & node->activated_by);
+                        activated_by = (byte)(lpamng->available_indicators & node->activated_by);
                         if (activated_by != 0) {
-                            //fVar9 = (eff_sin_t[(node->field14_0x26 + iVar2 * 0x800) >> 4 &
+                            //fVar9 = (eff_sin_t[(node->__0x26 + iVar2 * 0x800) >> 4 &
                             //                       0xfff] * 0.15 * -96.0);
                             //iVar7 = (int)fVar9;
-                            iVar7 = (int)(eff_sin_t[(int)(node->field14_0x26 + iVar2 * 0x800) >> 4 &
+                            iVar7 = (int)(eff_sin_t[(int)(node->__0x26 + iVar2 * 0x800) >> 4 &
                                                    0xfff] * 0.15 * -96.0);
                             local_17c = (uint)(0x6cU - iVar7 & 0xff);
                             //fVar9 = extraout_ST0;
@@ -3788,15 +3796,15 @@ public unsafe class CustomCharacterModule : FhModule {
                             local_170 = local_17c;
                             local_16c = local_17c;
                         }
-                        //local_150.field2_0x8 = -0x7f9c;
-                        local_150.field2_0x8 = 0x8064;
+                        //local_150.__0x8 = -0x7f9c;
+                        local_150.__0x8 = 0x8064;
                         chr_id = 0;
                         plVar8 = plVar5;
                         local_164->x += 5;
                         while (true) {
                             if ((activated_by & 1) == 0) {
                                 local_150.rgba = p_DAT_00c86644[chr_id]; // Inactive indicator colors
-                                local_150.field0_0x0 = 0x24;
+                                local_150.__0x0 = 0x24;
                             }
                             else {
                                 uVar3 = (uint)p_DAT_00c8659c[chr_id]; // Active indicator colors
@@ -3813,15 +3821,15 @@ public unsafe class CustomCharacterModule : FhModule {
                                                           & 0x00FFFFFF);
                                 // Animating the color intensity(?)
                                 //local_150.rgba = (int)uVar3;
-                                local_150.field0_0x0 = 0x2c;
+                                local_150.__0x0 = 0x2c;
                                 fVar9 = 1.0;
                             }
                             local_58.M43 = (float)fVar9;
-                            //_logger.Debug($"node type:{uVar1}, size:{plVar5->node_type_infos[uVar1].width} x {plVar5->node_type_infos[uVar1].height}, 0x10:{plVar5->node_type_infos[uVar1].field5_0x10}");
-                            _FUN_00a5ad30.hook_fptr(&local_98, node, plVar5->node_type_infos[uVar1].field5_0x10);
+                            //_logger.Debug($"node type:{uVar1}, size:{plVar5->node_type_infos[uVar1].width} x {plVar5->node_type_infos[uVar1].height}, 0x10:{plVar5->node_type_infos[uVar1].__0x10}");
+                            _FUN_00a5ad30.hook_fptr(&local_98, node, plVar5->node_type_infos[uVar1].__0x10);
                             //_logger.Debug($"Pos: {node->pos} + {local_164->xy}");
                             _FUN_00a5a360.hook_fptr(&local_98, node, local_164, 0.0008f);
-                            _cdc_FFXVu0MulMatrix(&local_d8, &plVar8->field90_0x113e0, &local_98);
+                            _cdc_FFXVu0MulMatrix(&local_d8, &plVar8->__0x113e0, &local_98);
                             _FUN_00a68140.hook_fptr(DAT_023057ec, &local_150, (lpamng->node_count - iVar6) + -1, chr_id);
                             if (chr_id == 0) local_164->x -= 5; // Undo change
                             chr_id = chr_id + 1;
@@ -3866,30 +3874,32 @@ public unsafe class CustomCharacterModule : FhModule {
         Matrix4x4 local_58 = new();
         int iVar11;
 
-        _FUN_00a534c0.orig_fptr();
-        return;
+        if (!CustomCharacterGUI.override_FUN_00a534c0) {
+            _FUN_00a534c0.orig_fptr();
+            return;
+        }
 
         fixed (int* local_148 = _local_148) {
 
-            if (-1 < (int)lpamng->field_0x116a8) {
-                _FUN_00a50ed0.hook_fptr((int)lpamng->field_0x116a8);
+            if (-1 < (int)lpamng->should_update_node) {
+                _FUN_00a50ed0.hook_fptr((int)lpamng->should_update_node);
             }
-            if (lpamng->field374_0x116b0 == -2) {
+            if (lpamng->__0x116b0 == -2) {
                 iVar11 = 2;
             }
             else {
-                if (lpamng->field374_0x116b0 != 2) goto LAB_00a534fb;
+                if (lpamng->__0x116b0 != 2) goto LAB_00a534fb;
                 iVar11 = 3;
             }
             _FUN_00639280(iVar11);
         LAB_00a534fb:
-            if (lpamng->field374_0x116b0 < 1) {
+            if (lpamng->__0x116b0 < 1) {
                 return;
             }
             iVar11 = (int)lpamng->node_count;
             node = &lpamng->nodes[0];
-            iVar5 = (int)(eff_sin_t[(int)(*(int*)&lpamng->field_0x11698 * 0x800 +
-                                        (uint)lpamng->nodes[0].field14_0x26) >> 4 & 0xfff] * 0.15 *
+            iVar5 = (int)(eff_sin_t[(int)(*(int*)&lpamng->__0x11698 * 0x800 +
+                                        (uint)lpamng->nodes[0].__0x26) >> 4 & 0xfff] * 0.15 *
                          -96.0);
             uVar9 = (uint)(0x6cU - iVar5 & 0xff);
             local_1c8 = (uint*)p_DAT_00c8659c;
@@ -3910,25 +3920,25 @@ public unsafe class CustomCharacterModule : FhModule {
                 piVar7 = piVar7 + 4;
                 chr_id += 1;
             } while (chr_id < num_characters);
-            local_1c0.field11_0x20 = &local_d8;
-            local_1c0.field20_0x44 = &local_58;
-            local_1c0.field14_0x2c = &local_98;
+            local_1c0.__0x20 = &local_d8;
+            local_1c0.__0x44 = &local_58;
+            local_1c0.__0x2c = &local_98;
             local_58.M13 = asmreg_0_zero->Z;
             local_58.M23 = asmreg_0_zero->Z;
             local_58.M33 = asmreg_0_zero->Z;
             local_58.M43 = asmreg_0_zero->Z;
             local_58.M44 = 1.0f;
-            local_1c0.field10_0x1c = 0;
-            local_1c0.field3_0xa = 0;
-            local_1c0.field18_0x3c = 0;
-            local_1c0.field17_0x38 = 0;
-            local_1c0.field1_0x4 = (int)p_DAT_01740830_sphere_grid_layout_dat;
-            local_1c0.field5_0xc = 0;
-            local_1c0.field6_0x10 = 0;
-            local_1c0.field7_0x14 = 0;
-            local_1c0.field19_0x40 = 0;
-            local_1c0.field13_0x28 = 0;
-            local_1c0.field12_0x24 = 0;
+            local_1c0.__0x1c = 0;
+            local_1c0.__0xa = 0;
+            local_1c0.__0x3c = 0;
+            local_1c0.__0x38 = 0;
+            local_1c0.__0x4 = (int)p_DAT_01740830_sphere_grid_layout_dat;
+            local_1c0.__0xc = 0;
+            local_1c0.__0x10 = 0;
+            local_1c0.__0x14 = 0;
+            local_1c0.__0x40 = 0;
+            local_1c0.__0x28 = 0;
+            local_1c0.__0x24 = 0;
             local_58.M11 = asmreg_0_zero->X;
             local_58.M12 = asmreg_0_zero->Y;
             local_58.M14 = asmreg_0_zero->W;
@@ -3948,9 +3958,9 @@ public unsafe class CustomCharacterModule : FhModule {
                 if (uVar1 != 0xff) {
                     pVVar10 = &plVar3->node_type_infos[uVar1].pos[0];
                     if (pVVar10->x != 0x1000) {
-                        bVar4 = (byte)(plVar3->active_indicators & node->activated_by);
-                        //local_1c0.field2_0x8 = -0x7f9c;
-                        local_1c0.field2_0x8 = 0x8064;
+                        bVar4 = (byte)(plVar3->available_indicators & node->activated_by);
+                        //local_1c0.__0x8 = -0x7f9c;
+                        local_1c0.__0x8 = 0x8064;
                         piVar7 = local_148;
                         iVar5 = -1;
                         pVVar10->x += 5;
@@ -3959,10 +3969,10 @@ public unsafe class CustomCharacterModule : FhModule {
                                 local_58.M43 = 1.0f;
                                 //local_1c0.rgba = CONCAT13(0x80, (int3) * piVar7);
                                 local_1c0.rgba = (0x80 << 0x18) | (*piVar7 & 0x00FFFFFF);
-                                local_1c0.field0_0x0 = 0x2c;
-                                _FUN_00a5ad30.hook_fptr(&local_98, node, plVar3->node_type_infos[uVar1].field5_0x10);
+                                local_1c0.__0x0 = 0x2c;
+                                _FUN_00a5ad30.hook_fptr(&local_98, node, plVar3->node_type_infos[uVar1].__0x10);
                                 _FUN_00a5a360.hook_fptr(&local_98, node, pVVar10, 0.0008f);
-                                _cdc_FFXVu0MulMatrix(&local_d8, &lpamng->field90_0x113e0, &local_98);
+                                _cdc_FFXVu0MulMatrix(&local_d8, &lpamng->__0x113e0, &local_98);
                                 _FUN_00a68140.hook_fptr(DAT_023057ec, &local_1c0, (lpamng->node_count - iVar11) + -1, iVar5);
                             }
                             piVar7 = piVar7 + 4;
@@ -4035,7 +4045,7 @@ public unsafe class CustomCharacterModule : FhModule {
                     pfVar3[0x57] = pfVar3[0x5f];
                     _FUN_00a51720(pfVar3, (float*)*(SphereGridLinkPoint**)(pbVar5 + 3), (int)*pbVar5);
                 }
-                else if ((SphereGridLink*)(pbVar5 + -0xd) == *(SphereGridLink**)&lpamng->field_0x115f8) {
+                else if ((SphereGridLink*)(pbVar5 + -0xd) == *(SphereGridLink**)&lpamng->next_move_link) {
                     switch (lpamng->current_chr_id) {
                         case 0:
                             pfVar3[0x50] = 0x01000100;
