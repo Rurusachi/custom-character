@@ -1,4 +1,4 @@
-﻿<Project>
+﻿<Project Sdk="Fahrenheit.Sdk/1.0.0-alpha08">
     <!--
     Welcome to an example .csproj file for a Fahrenheit module!
 
@@ -8,100 +8,85 @@
     -->
 
     <!-- ASSEMBLY BASIC PROPERTIES -->
-    <!--
-    All projects should declare these properties.
-
-    TargetFramework MUST match that of every other project and the Fahrenheit version you are linking against.
-    PlatformTarget MUST be x86.
-    EnableDynamicLoading MUST be true.
-
-    The rest of the options are highly recommended, but strictly speaking not mandatory.
-    -->
-    <PropertyGroup>
-        <TargetFramework>net10.0</TargetFramework>
-        <ImplicitUsings>disable</ImplicitUsings>
-        <Nullable>enable</Nullable>
-        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <RuntimeIdentifier>win-x86</RuntimeIdentifier>
-        <EnableDynamicLoading>true</EnableDynamicLoading>
-    </PropertyGroup>
+	<PropertyGroup>
+		<Version>0.5.2-alpha</Version>
+		<FahrenheitVersion>v1.0.0-alpha08</FahrenheitVersion>
+	</PropertyGroup>
 
     <!-- ASSEMBLY ADDITIONAL PROPERTIES -->
-    <!--
-    These properties are unique to your own mod!
-
-    Set what you want here, just keep it brief so it appears nice on the finished artifact.
-
-    AssemblyName is the name of the finished module DLL, ex. `fhtemplate.dll`.
-    AssemblyTitle and Product appear when hovering over the DLL in Windows Explorer.
-    -->
     <PropertyGroup>
         <AssemblyName>custom-character</AssemblyName>
         <AssemblyTitle>Custom Character Mod</AssemblyTitle>
         <Product>Custom Character Mod</Product>
     </PropertyGroup>
 
-    <!-- SDK REFERENCES -->
-    <!--
-    This should be included exactly as-is.
-    -->
-    <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
-    <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
-
     <!-- SHARED FILE LINKS -->
-    <!--
-    This should be included exactly as-is.
-
-    This imports Fahrenheit's code style rules to allow you to write in a uniform way.
-    -->
     <ItemGroup>
         <None Include="$(SolutionDir).editorconfig" Link=".editorconfig" />
     </ItemGroup>
 
     <!-- PROJECT REFERENCES -->
-    <!--
-    This should be included exactly as-is.
-
-    This imports Fahrenheit's core library, which you must link against.
-    You're free to import other libraries as well using NuGet packages, which will automatically add to this group.
-
-    Project references MUST have Private set to "false" and ExcludeAssets set to "runtime;native".
-    -->
-    <ItemGroup>
-        <ProjectReference Include="..\..\core\framework\Fahrenheit.Core.csproj">
-            <Private>false</Private>
-            <ExcludeAssets>runtime;native</ExcludeAssets>
-        </ProjectReference>
-        <ProjectReference Include="..\..\core\ffx\Fahrenheit.Core.FFX.csproj">
-            <Private>false</Private>
-            <ExcludeAssets>runtime;native</ExcludeAssets>
-        </ProjectReference>
-        <ProjectReference Include="..\..\core\ffx2\Fahrenheit.Core.FFX2.csproj">
-            <Private>false</Private>
-            <ExcludeAssets>runtime;native</ExcludeAssets>
-        </ProjectReference>
-    </ItemGroup>
 
     <!-- ASSETS: MANIFEST -->
-    <ItemGroup>
-        <None Include="$(AssemblyName).manifest.json" CopyToOutputDirectory="Always" />
-    </ItemGroup>
+	<!-- BUILD EVENTS -->
+	<Target Name="ReplaceProperties" BeforeTargets="Publish">
+		<PropertyGroup>
+			<File>custom-character.manifest.json</File>
+		</PropertyGroup>
+		<WriteLinesToFile File="$(PublishDir)/$(File)" Lines="$([System.IO.File]::ReadAllText($(PublishDir)/$(File)).Replace('{Version}','$(Version)'))" Overwrite="true" Encoding="UTF-8" />
+	</Target>
 
-    <!-- ASSETS: LOCALIZATION -->
-    <ItemGroup>
-        <None Remove="lang/**" />
-        <None Include="lang/*.json" CopyToOutputDirectory="Always" />
-    </ItemGroup>
+	<Target Name="DownloadFahrenheitRelease" AfterTargets="Publish">
+		<PropertyGroup>
+			<ReleaseUrl>https://github.com/fahrenheit-crew/fahrenheit/releases/download/$(FahrenheitVersion)/fahrenheit_windows_x86_release_$(FahrenheitVersion).zip</ReleaseUrl>
+		</PropertyGroup>
+		<Message Text="Downloading release from $(ReleaseUrl)..." />
+		<DownloadFile SourceUrl="$(ReleaseURL)" DestinationFolder="$(PublishDir)" DestinationFileName="fh.zip" />
+	</Target>
 
-    <!-- ASSETS: EXTERNAL FILE LOADER -->
-    <ItemGroup>
-        <None Remove="efl/**" />
-        <None Include="efl/x/**/*;efl/x2/**/*" CopyToOutputDirectory="Always" />
-    </ItemGroup>
+	<Target Name="ExtractFahrenheitRelease" AfterTargets="Publish">
+		<Message Text="Extracting release from fh.zip..." />
+		<Delete Files="$(PublishDir)fahrenheit" TreatErrorsAsWarnings="true" />
+		<Unzip SourceFiles="$(PublishDir)fh.zip" DestinationFolder="$(PublishDir)fahrenheit" />
+		<Delete Files="$(PublishDir)fh.zip" TreatErrorsAsWarnings="true" />
+	</Target>
 
-    <!-- ASSETS: GENERIC -->
-    <ItemGroup>
-        <None Include="resources/**" CopyToOutputDirectory="Always" />
-    </ItemGroup>
+	<Target Name="CleanupFahrenheitRelease" AfterTargets="Publish">
+		<Message Text="Cleanup unused Fahrenheit mods..." />
+		<RemoveDir Directories="$(PublishDir)fahrenheit\mods" />
+		<MakeDir Directories="$(PublishDir)fahrenheit\mods\$(AssemblyName)" />
+	</Target>
+
+	<Target Name="CopyAssets" AfterTargets="Publish">
+		<PropertyGroup>
+			<AssetsDir>$(ProjectDir)assets\</AssetsDir>
+			<LoadOrderFile>loadorder</LoadOrderFile>
+			<LoadOrder>$(AssetsDir)$(LoadOrderFile)</LoadOrder>
+			<StartGameFile>start_game.bat</StartGameFile>
+			<StartGame>$(AssetsDir)$(StartGameFile)</StartGame>
+			<AssetDestination>$(PublishDir)fahrenheit\mods\$(AssemblyName)</AssetDestination>
+		</PropertyGroup>
+		<ItemGroup>
+			<AssetFiles Include="$(LoadOrder); $(StartGame)"/>
+		</ItemGroup>
+		<Message Text="Copy solution assets..." />
+		<Exec Condition ="'$(OS)' == 'Windows_NT'"
+			  Command="powershell -Command &quot;robocopy '$(AssetsDir)' '$(AssetDestination)' /MIR /R:0 /W:0 /XF '$(LoadOrder)' /XF '$(StartGame)'"
+			  ContinueOnError="true" IgnoreExitCode="true" />
+		<Exec Condition="'$(OS)' == 'Unix'"
+			  Command="rsync -acu --delete '$(AssetsDir)/' '$(AssetDestination)' --exclude='$(LoadOrderFile)' --exclude='$(StartGameFile)'"
+			  ContinueOnError="true" IgnoreExitCode="true" />
+		<Copy SourceFiles="@(AssetFiles)"
+			  DestinationFiles="$(PublishDir)fahrenheit\mods\$(LoadOrderFile); $(PublishDir)fahrenheit\$(StartGameFile)"
+			  ContinueOnError="true" />
+	</Target>
+
+	<Target Name="MoveFilesToFinalDestination" AfterTargets="Publish">
+		<Message Text="Move project files to their final destination..." />
+		<ItemGroup>
+			<ProjectFiles Include="$(PublishDir)*.*" Exclude="**\**\" />
+		</ItemGroup>
+		<Move SourceFiles="@(ProjectFiles)" DestinationFolder="$(PublishDir)fahrenheit\mods\$(AssemblyName)\" />
+	</Target>
 
 </Project>

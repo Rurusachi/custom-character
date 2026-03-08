@@ -1,18 +1,12 @@
 ﻿// SPDX-License-Identifier: MIT
 
-using Fahrenheit.Core.FFX;
 using Fahrenheit.Mods.CustomCharacter.GUI;
 using System;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Runtime.Intrinsics;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Xml.Linq;
-using TerraFX.Interop.Windows;
-using static Fahrenheit.Core.FFX.LpAbilityMapEngine;
-using static Fahrenheit.Mods.CustomCharacter.CustomCharacterModule;
 
 namespace Fahrenheit.Mods.CustomCharacter;
 
@@ -54,7 +48,7 @@ public unsafe class CustomCharacterModule : FhModule {
     private FUN_00a59710 _FUN_00a59710; // => fhutil.get_fptr<FUN_00a59710>(__addr_FUN_00a59710);
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    public delegate uint FUN_00a59760(ushort param_1, nint param_2, ExcelBlock_sphere* param_3);
+    public delegate uint FUN_00a59760(short param_1, nint param_2, ExcelBlock_sphere* param_3);
     public const nint __addr_FUN_00a59760 = 0x659760;
     private FUN_00a59760 _FUN_00a59760; // => fhutil.get_fptr<FUN_00a59760>(__addr_FUN_00a59760);
 
@@ -365,7 +359,7 @@ public unsafe class CustomCharacterModule : FhModule {
     private FUN_00a48c20 _FUN_00a48c20; // => fhutil.get_fptr<FUN_00a48c20>(__addr_FUN_00a48c20);
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    public delegate void FUN_00a48e40(uint param_1, float param_2);
+    public delegate void FUN_00a48e40(int param_1, float param_2);
     public const nint __addr_FUN_00a48e40 = 0x648E40;
     private FUN_00a48e40 _FUN_00a48e40; // => fhutil.get_fptr<FUN_00a48e40>(__addr_FUN_00a48e40);
 
@@ -380,14 +374,14 @@ public unsafe class CustomCharacterModule : FhModule {
     private FUN_00a5a2e0 _FUN_00a5a2e0; // => fhutil.get_fptr<FUN_00a5a2e0>(__addr_FUN_00a5a2e0);
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    public delegate int FUN_00a49310(int param_1, ushort param_2, uint param_3);
+    public delegate int FUN_00a49310(int param_1, short param_2, uint param_3);
     public const nint __addr_FUN_00a49310 = 0x649310;
     private FUN_00a49310 _FUN_00a49310; // => fhutil.get_fptr<FUN_00a49310>(__addr_FUN_00a49310);
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    public delegate uint FUN_00a56e00(ushort param_1, ushort param_2, ushort** param_3);
-    public const nint __addr_FUN_00a56e00 = 0x656E00;
-    private FUN_00a56e00 _FUN_00a56e00; // => fhutil.get_fptr<FUN_00a56e00>(__addr_FUN_00a56e00);
+    public delegate short AbmapFindNextConnectingNode(short node_idx_a, short target_node_idx, SphereGridLink** out_link);
+    public const nint __addr_AbmapFindNextConnectingNode = 0x656E00;
+    private AbmapFindNextConnectingNode _AbmapFindNextConnectingNode; // => fhutil.get_fptr<FUN_00a56e00>(__addr_FUN_00a56e00);
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate void restoreVf00Register();
@@ -421,12 +415,12 @@ public unsafe class CustomCharacterModule : FhModule {
     private FUN_007854a0 _FUN_007854a0; // => fhutil.get_fptr<FUN_007854a0>(__addr_FUN_007854a0);
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    public delegate void FUN_00a474d0(ushort param_1, ushort param_2, byte param_3);
+    public delegate void FUN_00a474d0(short param_1, ushort param_2, byte param_3);
     public const nint __addr_FUN_00a474d0 = 0x6474D0;
     private FUN_00a474d0 _FUN_00a474d0; // => fhutil.get_fptr<FUN_00a474d0>(__addr_FUN_00a474d0);
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    public delegate int FUN_00a5b400(int param_1, ushort param_2, uint param_3, int param_4);
+    public delegate int FUN_00a5b400(int param_1, short param_2, uint param_3, int param_4);
     public const nint __addr_FUN_00a5b400 = 0x65B400;
     private FUN_00a5b400 _FUN_00a5b400; // => fhutil.get_fptr<FUN_00a5b400>(__addr_FUN_00a5b400);
 
@@ -540,7 +534,7 @@ public unsafe class CustomCharacterModule : FhModule {
     private FhMethodHandle<FUN_00a45010> _FUN_00a45010;
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    public delegate uint abmap_get_chr_point(int param_1);
+    public delegate int abmap_get_chr_point(int param_1);
     public static int __addr_abmap_get_chr_point = 0x645870;
     private FhMethodHandle<abmap_get_chr_point> _abmap_get_chr_point;
 
@@ -555,12 +549,12 @@ public unsafe class CustomCharacterModule : FhModule {
     private FhMethodHandle<FUN_00a47f00> _FUN_00a47f00;
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    public delegate void abmap_set_chr_posInternal_00a48a80(int chr_id, ushort node_idx);
+    public delegate void abmap_set_chr_posInternal_00a48a80(int chr_id, short node_idx);
     public static int __addr_abmap_set_chr_posInternal_00a48a80 = 0x648A80;
     private FhMethodHandle<abmap_set_chr_posInternal_00a48a80> _abmap_set_chr_posInternal_00a48a80;
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    public delegate void FUN_00a48c80(int chr_id, ushort node_idx);
+    public delegate void FUN_00a48c80(int chr_id, short node_idx);
     public static int __addr_FUN_00a48c80 = 0x648c80;
     private FhMethodHandle<FUN_00a48c80> _FUN_00a48c80;
 
@@ -647,7 +641,7 @@ public unsafe class CustomCharacterModule : FhModule {
     private FhMethodHandle<FUN_00a5b7b0> _FUN_00a5b7b0;
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    public delegate void FUN_00a5b980(uint param_1, ushort param_2, uint param_3);
+    public delegate void FUN_00a5b980(uint param_1, short param_2, uint param_3);
     public const nint __addr_FUN_00a5b980 = 0x65B980;
     private FhMethodHandle<FUN_00a5b980> _FUN_00a5b980;
     //private FUN_00a5b980 _FUN_00a5b980; // => fhutil.get_fptr<FUN_00a5b980>(__addr_FUN_00a5b980);
@@ -706,9 +700,9 @@ public unsafe class CustomCharacterModule : FhModule {
     private SphereGridChrInfo* custom_party_infos;
 
     // TODO: Initialize with proper values on new game start
-    private ushort[] custom_party_selected_node_idx = new ushort[num_characters - 7];
+    private short[] custom_party_selected_node_idx = new short[num_characters - 7];
 
-    private ushort[][] custom_starting_selected_node_idx = [
+    private short[][] custom_starting_selected_node_idx = [
             [0xe1, 0xe1, 0x14] // Next to Lulu
         ];
 
@@ -723,9 +717,9 @@ public unsafe class CustomCharacterModule : FhModule {
             ]
         ];
 
-    private class CustomSphereGridState(ushort[] custom_party_selected_node_idx) {
+    private class CustomSphereGridState(short[] custom_party_selected_node_idx) {
         [JsonInclude]
-        public ushort[] custom_party_selected_node_idx = custom_party_selected_node_idx;
+        public short[] custom_party_selected_node_idx = custom_party_selected_node_idx;
     }
 
     public void init_fptrs() {
@@ -784,7 +778,7 @@ public unsafe class CustomCharacterModule : FhModule {
         _FUN_00a59860 = FhUtil.get_fptr<FUN_00a59860>(__addr_FUN_00a59860);
         _FUN_00a5a2e0 = FhUtil.get_fptr<FUN_00a5a2e0>(__addr_FUN_00a5a2e0);
         _FUN_00a49310 = FhUtil.get_fptr<FUN_00a49310>(__addr_FUN_00a49310);
-        _FUN_00a56e00 = FhUtil.get_fptr<FUN_00a56e00>(__addr_FUN_00a56e00);
+        _AbmapFindNextConnectingNode = FhUtil.get_fptr<AbmapFindNextConnectingNode>(__addr_AbmapFindNextConnectingNode);
         _restoreVf00Register = FhUtil.get_fptr<restoreVf00Register>(__addr_restoreVf00Register);
         _FUN_00a563b0 = FhUtil.get_fptr<FUN_00a563b0>(__addr_FUN_00a563b0);
         _FUN_00a482d0 = FhUtil.get_fptr<FUN_00a482d0>(__addr_FUN_00a482d0);
@@ -940,7 +934,7 @@ public unsafe class CustomCharacterModule : FhModule {
                 custom_party_selected_node_idx = loaded_state.custom_party_selected_node_idx;
             }
         } catch {
-            custom_party_selected_node_idx = new ushort[num_characters - 7];
+            custom_party_selected_node_idx = new short[num_characters - 7];
         }
     }
     public override void save_local_state(FileStream  local_state_file) {
@@ -1099,7 +1093,7 @@ public unsafe class CustomCharacterModule : FhModule {
 
 
     private void h_FUN_00a44d30() {
-        ushort uVar1;
+        short uVar1;
         ushort uVar2;
         SphereGridMenuData* iVar3;
         uint uVar4;
@@ -1254,12 +1248,12 @@ public unsafe class CustomCharacterModule : FhModule {
         return;
     }
 
-    uint h_abmap_get_chr_point(int param_1) {
+    int h_abmap_get_chr_point(int param_1) {
         byte bVar1;
 
         bVar1 = _MsGetSavePlyJoined((byte)param_1);
         if (bVar1 == 0) {
-            return 0xffffffff;
+            return -1;
         }
         return custom_party_infos[param_1].current_node_idx;
     }
@@ -1293,7 +1287,7 @@ public unsafe class CustomCharacterModule : FhModule {
         if ((plVar4->__0x11650 < 0x14) && (0x13 < plVar4->__0x11650 + 1)) {
             _FUN_00a5bb70.hook_fptr();
             _eiAbmParaGet.hook_fptr();
-            *(short*)((int)&lpamng->nodes[lpamng->__0x1164E] + 6) = *(short*)(&lpamng->___0x1164C);
+            *(short*)((int)&lpamng->nodes[lpamng->__0x1164E] + 6) = *(short*)(&lpamng->__0x1164C);
             lpamng->should_update_node = lpamng->__0x1164E;
             lpamng->should_update = 1;
             lpamng->link_points = SphereGridLinkPoint_ARRAY_01693160;
@@ -1346,8 +1340,8 @@ public unsafe class CustomCharacterModule : FhModule {
         }
         else {
             if (bVar1 == 1) {
-                local_18.X = lpamng->nodes[lpamng->last_move_target_node_idx].x;
-                local_18.Y = lpamng->nodes[lpamng->last_move_target_node_idx].y;
+                local_18.X = lpamng->nodes[lpamng->move_last_target_node_idx].x;
+                local_18.Y = lpamng->nodes[lpamng->move_last_target_node_idx].y;
                 local_18.Z = 0.0f;
                 local_18.W = 1.0f;
                 progress = lpamng->moving_progress + 0.083333336f;
@@ -1363,7 +1357,7 @@ public unsafe class CustomCharacterModule : FhModule {
                     (plVar2->cam_desired_pos).W = local_18.W;
                     _pppCreateHeap(p_DAT_01a86034, p_DAT_016c1830, 0x7d000);
                     _FUN_00a5bad0(p_DAT_01a86060, 1, local_18.X, local_18.Y, 0, 0, 0, 0, 0.5f, 0.5f, 0.5f);
-                    custom_party_infos[lpamng->moving_chr_id].current_node_idx = lpamng->last_move_target_node_idx;
+                    custom_party_infos[lpamng->moving_chr_id].current_node_idx = lpamng->move_last_target_node_idx;
                     _FUN_00a5a990.hook_fptr(lpamng->moving_chr_id);
                     _FUN_00a58080.hook_fptr(lpamng->moving_chr_id);
                     lpamng->__0x115C7 = 1;
@@ -1394,10 +1388,10 @@ public unsafe class CustomCharacterModule : FhModule {
         return;
     }
 
-    void h_abmap_set_chr_posInternal_00a48a80(int chr_id, ushort node_idx) {
+    void h_abmap_set_chr_posInternal_00a48a80(int chr_id, short node_idx) {
         float node_y;
         LpAbilityMapEngine *_lpamng;
-        ushort current_node;
+        short current_node;
         float node_x;
 
         _lpamng = lpamng;
@@ -1412,7 +1406,7 @@ public unsafe class CustomCharacterModule : FhModule {
         lpamng->cam_desired_pos.Y = node_y;
         lpamng->move_prev_node_pos.Y = node_y;
         lpamng->moving_progress = 0;
-        lpamng->last_move_target_node_idx = node_idx;
+        lpamng->move_last_target_node_idx = node_idx;
         lpamng->moving_chr_id = (byte)chr_id;
         _pppCreateHeap(p_DAT_01a86034, p_DAT_016c1830, 0x7d000);
         _FUN_00a5bad0(p_DAT_01a86060, 2, _lpamng->nodes[current_node].x,
@@ -1428,10 +1422,10 @@ public unsafe class CustomCharacterModule : FhModule {
         return;
     }
 
-    void h_FUN_00a48c80(int chr_id, ushort node_idx) {
-        lpamng->next_move_target_node_idx = custom_party_infos[chr_id].current_node_idx;
-        lpamng->move_start_node_idx = lpamng->next_move_target_node_idx;
-        lpamng->last_move_target_node_idx = node_idx;
+    void h_FUN_00a48c80(int chr_id, short node_idx) {
+        lpamng->move_next_target_node_idx = custom_party_infos[chr_id].current_node_idx;
+        lpamng->move_start_node_idx = lpamng->move_next_target_node_idx;
+        lpamng->move_last_target_node_idx = node_idx;
         lpamng->moving_progress = 1.0f;
         lpamng->moving_speed = 0.0f;
         lpamng->moving_chr_id = (byte)chr_id;
@@ -1485,13 +1479,13 @@ public unsafe class CustomCharacterModule : FhModule {
             } while (link_idx < lpamng->link_count);
         }
         // TODO: Handle extra characters
-        custom_party_infos[0].current_node_idx = save_ability_map->party_selected_node_idx[0];
-        custom_party_infos[1].current_node_idx = save_ability_map->party_selected_node_idx[1];
-        custom_party_infos[2].current_node_idx = save_ability_map->party_selected_node_idx[2];
-        custom_party_infos[3].current_node_idx = save_ability_map->party_selected_node_idx[3];
-        custom_party_infos[4].current_node_idx = save_ability_map->party_selected_node_idx[4];
-        custom_party_infos[5].current_node_idx = save_ability_map->party_selected_node_idx[5];
-        custom_party_infos[6].current_node_idx = save_ability_map->party_selected_node_idx[6];
+        custom_party_infos[0].current_node_idx = (short)save_ability_map->party_selected_node_idx[0];
+        custom_party_infos[1].current_node_idx = (short)save_ability_map->party_selected_node_idx[1];
+        custom_party_infos[2].current_node_idx = (short)save_ability_map->party_selected_node_idx[2];
+        custom_party_infos[3].current_node_idx = (short)save_ability_map->party_selected_node_idx[3];
+        custom_party_infos[4].current_node_idx = (short)save_ability_map->party_selected_node_idx[4];
+        custom_party_infos[5].current_node_idx = (short)save_ability_map->party_selected_node_idx[5];
+        custom_party_infos[6].current_node_idx = (short)save_ability_map->party_selected_node_idx[6];
         for (int i = 0; i < num_characters - 7; i++) {
             custom_party_infos[i+7].current_node_idx = custom_party_selected_node_idx[i];
         }
@@ -1499,12 +1493,12 @@ public unsafe class CustomCharacterModule : FhModule {
         lpamng->zoom_level = save_ability_map->zoom_level;
         plVar3 = lpamng;
         tilt_level = lpamng->tilt_level;
-        if (tilt_level != SphereGridTilt.Flat) {
-            if (tilt_level == SphereGridTilt.SlightTilt) {
+        if (tilt_level != SphereGridTilt.FLAT) {
+            if (tilt_level == SphereGridTilt.SLIGHT_TILT) {
                 fVar2 = -3640.0f;
                 goto LAB_00a496fe;
             }
-            if (tilt_level == SphereGridTilt.FarTilt) {
+            if (tilt_level == SphereGridTilt.FAR_TILT) {
                 fVar2 = -7281.0f;
                 goto LAB_00a496fe;
             }
@@ -1512,18 +1506,18 @@ public unsafe class CustomCharacterModule : FhModule {
         fVar2 = 0.0f;
     LAB_00a496fe:
         node_idx = (int)(fVar2); // Is this equivalent to ftol(fVar2)?
-        (plVar3->tilt_vector)[0] = node_idx;
+        plVar3->tilt_vector.x = node_idx;
         switch (lpamng->zoom_level) {
             default:
                 fVar2 = 1.0f;
                 break;
-            case SphereGridZoom.Medium:
+            case SphereGridZoom.MEDIUM:
                 fVar2 = 0.5f;
                 break;
-            case SphereGridZoom.Far:
+            case SphereGridZoom.FAR:
                 fVar2 = 0.25f;
                 break;
-            case SphereGridZoom.VeryFar:
+            case SphereGridZoom.VERY_FAR:
                 fVar2 = 0.125f;
                 break;
         }
@@ -1907,7 +1901,7 @@ public unsafe class CustomCharacterModule : FhModule {
 
     void h_FUN_00a4c8d0() {
         short sVar1;
-        ushort uVar2;
+        short uVar2;
         LpAbilityMapEngine *plVar3;
         int iVar4;
         uint uVar5;
@@ -2042,10 +2036,10 @@ public unsafe class CustomCharacterModule : FhModule {
                                                  0xfff] + 1.0f) * 16.0f) & 0xFF);
                 local_150.rgba = (p_DAT_00c86660)[uVar5];
                 local_150.a = (byte)((char)uStack_154 + 0x60U);
-                var halo_alpha_alpha = lpamng->halo_alpha_alpha;
-                if (lpamng->halo_alpha_alpha < 1.0) {
+                var halo_alpha = lpamng->halo_alpha;
+                if (lpamng->halo_alpha < 1.0) {
                     uStack_154 = (byte)((char)uStack_154 + 0x60U);
-                    iVar4 = (int)(lpamng->halo_alpha_alpha * (float)uStack_154);
+                    iVar4 = (int)(lpamng->halo_alpha * (float)uStack_154);
                     local_150.a = (byte)iVar4;
                     //fVar7 = extraout_ST0;
                 }
@@ -2071,7 +2065,7 @@ public unsafe class CustomCharacterModule : FhModule {
     void h_eiAbmStart() {
         float fVar1;
         short sVar2;
-        ushort uVar3;
+        short uVar3;
         short pSVar4;
         short pSVar5;
         LpAbilityMapEngine *plVar6;
@@ -2978,7 +2972,7 @@ public unsafe class CustomCharacterModule : FhModule {
 
         plVar1 = lpamng;
         chr_info = &custom_party_infos[(int)chr_id];
-        chr_info->current_node_idx = (ushort)node_idx;
+        chr_info->current_node_idx = (short)node_idx;
         (chr_info->pos).X = (float)(int)plVar1->nodes[node_idx].x;
         (chr_info->pos).Y = (float)(int)plVar1->nodes[node_idx].y;
         (chr_info->pos).Z = 0.0f;
@@ -3095,7 +3089,7 @@ public unsafe class CustomCharacterModule : FhModule {
         }
         else {
             lpamng->should_update = 1;
-            lpamng->should_update_node = 0xffffffff;
+            lpamng->should_update_node = -1;
             _SndSepPlaySimple(0x80000004);
         }
         _FUN_00a48d70(custom_party_infos[lpamng->current_chr_id].current_node_idx, 0.25f);
@@ -3112,7 +3106,7 @@ public unsafe class CustomCharacterModule : FhModule {
 
 
     void h_FUN_00a598a0() {
-        ushort uVar1;
+        short uVar1;
         SphereGridMenuData *pSVar2;
         int iVar3;
         int iVar4;
@@ -3141,14 +3135,14 @@ public unsafe class CustomCharacterModule : FhModule {
     void h_FUN_00a59990() {
         byte *puVar1;
         float fVar2;
-        ushort uVar3;
+        short uVar3;
         LpAbilityMapEngine *plVar4;
-        uint uVar5;
+        short uVar5;
         int iVar6;
         SphereGridChrInfo *pSVar7;
         float fVar8;
         Vector4 local_58 = new();
-        ushort *local_44;
+        SphereGridLink* local_44;
         //int local_40;
         //float fStack_3c;
         Vector4 local_38 = new();
@@ -3162,18 +3156,18 @@ public unsafe class CustomCharacterModule : FhModule {
         if (lpamng->should_update == 0) {
             lpamng->should_update = 1;
         }
-        local_18.X = (float)lpamng->nodes[lpamng->next_move_target_node_idx].x;
-        //local_44 = (ushort*)(int)lpamng->nodes[lpamng->next_move_target_node_idx].y;
+        local_18.X = (float)lpamng->nodes[lpamng->move_next_target_node_idx].x;
+        //local_44 = (ushort*)(int)lpamng->nodes[lpamng->move_next_target_node_idx].y;
         //local_18.Y = (float)(int)local_44;
-        local_18.Y = (float)lpamng->nodes[lpamng->next_move_target_node_idx].y;
+        local_18.Y = (float)lpamng->nodes[lpamng->move_next_target_node_idx].y;
         fVar2 = lpamng->moving_progress;
         if (!float.IsNaN(fVar2) && 1.0f < fVar2 != (fVar2 == 1.0f)) {
             do {
                 local_18.W = 1.0f;
                 local_18.Z = 0.0f;
-                lpamng->next_move_link = 0;
+                lpamng->next_move_link = (SphereGridLink*)0;
                 plVar4 = lpamng;
-                if (lpamng->next_move_target_node_idx == lpamng->last_move_target_node_idx) {
+                if (lpamng->move_next_target_node_idx == lpamng->move_last_target_node_idx) {
                 //LAB_00a59d91:
                     (pSVar7->pos).X = local_18.X;
                     (pSVar7->pos).Y = local_18.Y;
@@ -3184,11 +3178,11 @@ public unsafe class CustomCharacterModule : FhModule {
                     lpamng->__0x115B0 = 0;
                     return;
                 }
-                uVar5 = _FUN_00a56e00(lpamng->next_move_target_node_idx, lpamng->last_move_target_node_idx,
+                uVar5 = _AbmapFindNextConnectingNode(lpamng->move_next_target_node_idx, lpamng->move_last_target_node_idx,
                                      &local_44);
-                plVar4->next_move_target_node_idx = (ushort)uVar5;
-                //if (*(short*)&lpamng->next_move_target_node_idx == -1) goto LAB_00a59d91;
-                if (*(short*)&lpamng->next_move_target_node_idx == -1) {
+                plVar4->move_next_target_node_idx = uVar5;
+                //if (*(short*)&lpamng->move_next_target_node_idx == -1) goto LAB_00a59d91;
+                if (*(short*)&lpamng->move_next_target_node_idx == -1) {
                     (pSVar7->pos).X = local_18.X;
                     (pSVar7->pos).Y = local_18.Y;
                     (pSVar7->pos).Z = local_18.Z;
@@ -3198,23 +3192,23 @@ public unsafe class CustomCharacterModule : FhModule {
                     lpamng->__0x115B0 = 0;
                     return;
                 }
-                lpamng->next_move_link_anchor_idx = local_44[2];
-                if ((byte)((byte)local_44[6] & (byte)(1 << (lpamng->moving_chr_id & 0x1f))) == 0) {
-                    *(byte*)(local_44 + 6) = (byte)(1 << (lpamng->moving_chr_id & 0x1f) | (byte)local_44[6]);
-                    *(byte*)(local_44 + 7) = (byte)((byte)local_44[7] | 8);
-                    *(ushort**)&lpamng->next_move_link = local_44;
+                lpamng->move_next_link_anchor_idx = local_44->anchor_idx;
+                if ((byte)(local_44->activated_by & (byte)(1 << (lpamng->moving_chr_id & 0x1f))) == 0) {
+                    *(byte*)(local_44 + 6) = (byte)(1 << (lpamng->moving_chr_id & 0x1f) | local_44->activated_by);
+                    *(byte*)(local_44 + 7) = (byte)(local_44->point_count | 8);
+                    lpamng->next_move_link = local_44;
                 }
-                pSVar7->current_node_idx = *(ushort*)&lpamng->next_move_target_node_idx;
+                pSVar7->current_node_idx = lpamng->move_next_target_node_idx;
                 plVar4 = lpamng;
                 (lpamng->move_prev_node_pos).X = (pSVar7->pos).X;
                 (plVar4->move_prev_node_pos).Y = (pSVar7->pos).Y;
                 (plVar4->move_prev_node_pos).Z = (pSVar7->pos).Z;
                 (plVar4->move_prev_node_pos).W = (pSVar7->pos).W;
-                local_18.X = (float)lpamng->nodes[lpamng->next_move_target_node_idx].x;
-                //iVar6 = (int)lpamng->nodes[*(ushort*)&lpamng->next_move_target_node_idx].y;
+                local_18.X = (float)lpamng->nodes[lpamng->move_next_target_node_idx].x;
+                //iVar6 = (int)lpamng->nodes[*(ushort*)&lpamng->move_next_target_node_idx].y;
                 //_local_40 = CONCAT44(iVar6, local_40);
                 //local_18.y = (float)iVar6;
-                local_18.Y = (float)lpamng->nodes[lpamng->next_move_target_node_idx].y;
+                local_18.Y = (float)lpamng->nodes[lpamng->move_next_target_node_idx].y;
                 asmreg_vf9->X = (lpamng->move_prev_node_pos).X;
                 asmreg_vf9->Y = (lpamng->move_prev_node_pos).Y;
                 asmreg_vf10->X = local_18.X - asmreg_vf9->X;
@@ -3250,8 +3244,8 @@ public unsafe class CustomCharacterModule : FhModule {
                              >> 1);
                 lpamng->moving_halo_target_width = (float)iVar6 + 3.0f;
                 //local_40 = SUB84((double)iVar6, 0);
-                local_18.X = (float)(int)lpamng->nodes[lpamng->next_move_target_node_idx].x;
-                iVar6 = (int)lpamng->nodes[lpamng->next_move_target_node_idx].y;
+                local_18.X = (float)(int)lpamng->nodes[lpamng->move_next_target_node_idx].x;
+                iVar6 = (int)lpamng->nodes[lpamng->move_next_target_node_idx].y;
                 //_local_40 = CONCAT44(iVar6, local_40);
                 local_18.Y = (float)iVar6;
                 fVar2 = plVar4->moving_progress;
@@ -3259,8 +3253,8 @@ public unsafe class CustomCharacterModule : FhModule {
         }
         local_18.W = 1.0f;
         local_18.Z = 0.0f;
-        uVar3 = lpamng->next_move_link_anchor_idx;
-        if (uVar3 == 0xffff) {
+        uVar3 = lpamng->move_next_link_anchor_idx;
+        if (uVar3 == -1) {
             _FFXVu0InterVectorXYZ
                       (&local_28, &local_18, &lpamng->move_prev_node_pos,
                        lpamng->moving_progress);
@@ -3365,7 +3359,7 @@ public unsafe class CustomCharacterModule : FhModule {
     }
 
     void h_FUN_00a5a990(int param_1) {
-        ushort uVar1;
+        short uVar1;
         LpAbilityMapEngine *plVar2;
         SphereGridChrInfo *pSVar3;
 
@@ -3408,7 +3402,7 @@ public unsafe class CustomCharacterModule : FhModule {
     }
 
     void h_FUN_00a5b7b0() {
-        ushort uVar1;
+        short uVar1;
         ushort uVar2;
         byte *pbVar3;
         uint uVar4;
@@ -3460,7 +3454,7 @@ public unsafe class CustomCharacterModule : FhModule {
     }
 
     // Calculates valid nodes for item?
-    void h_FUN_00a5b980(uint chr_id, ushort node_idx, uint item_id) {
+    void h_FUN_00a5b980(uint chr_id, short node_idx, uint item_id) {
         uint node_to_select;
         byte *pbVar1;
         SphereGridNode *psVar2;
@@ -3536,13 +3530,13 @@ public unsafe class CustomCharacterModule : FhModule {
             } while (link_idx < lpamng->link_count);
         }
         // TODO: Handle extra characters
-        ability_map->party_selected_node_idx[0] = custom_party_infos[0].current_node_idx;
-        ability_map->party_selected_node_idx[1] = custom_party_infos[1].current_node_idx;
-        ability_map->party_selected_node_idx[2] = custom_party_infos[2].current_node_idx;
-        ability_map->party_selected_node_idx[3] = custom_party_infos[3].current_node_idx;
-        ability_map->party_selected_node_idx[4] = custom_party_infos[4].current_node_idx;
-        ability_map->party_selected_node_idx[5] = custom_party_infos[5].current_node_idx;
-        ability_map->party_selected_node_idx[6] = custom_party_infos[6].current_node_idx;
+        ability_map->party_selected_node_idx[0] = (ushort)custom_party_infos[0].current_node_idx;
+        ability_map->party_selected_node_idx[1] = (ushort)custom_party_infos[1].current_node_idx;
+        ability_map->party_selected_node_idx[2] = (ushort)custom_party_infos[2].current_node_idx;
+        ability_map->party_selected_node_idx[3] = (ushort)custom_party_infos[3].current_node_idx;
+        ability_map->party_selected_node_idx[4] = (ushort)custom_party_infos[4].current_node_idx;
+        ability_map->party_selected_node_idx[5] = (ushort)custom_party_infos[5].current_node_idx;
+        ability_map->party_selected_node_idx[6] = (ushort)custom_party_infos[6].current_node_idx;
         for (int i = 0; i < num_characters - 7; i++) {
             custom_party_selected_node_idx[i] = custom_party_infos[i + 7].current_node_idx;
         }
@@ -4045,7 +4039,7 @@ public unsafe class CustomCharacterModule : FhModule {
                     pfVar3[0x57] = pfVar3[0x5f];
                     _FUN_00a51720(pfVar3, (float*)*(SphereGridLinkPoint**)(pbVar5 + 3), (int)*pbVar5);
                 }
-                else if ((SphereGridLink*)(pbVar5 + -0xd) == *(SphereGridLink**)&lpamng->next_move_link) {
+                else if ((SphereGridLink*)(pbVar5 + -0xd) == lpamng->next_move_link) {
                     switch (lpamng->current_chr_id) {
                         case 0:
                             pfVar3[0x50] = 0x01000100;
@@ -4113,7 +4107,7 @@ public unsafe class CustomCharacterModule : FhModule {
     // Initializes Sphere Grid
     void h_FUN_00a53de0(SaveSphereGrid* save_sphere_grid) {
         _FUN_00a53de0.orig_fptr(save_sphere_grid);
-        custom_party_selected_node_idx = new ushort[num_characters - 7];
+        custom_party_selected_node_idx = new short[num_characters - 7];
         for (int chr_id = 0; chr_id < num_characters-7; chr_id++) {
             uint grid_type = Globals.save_data->config_grid_type switch {
                 0 => 0, // Original
