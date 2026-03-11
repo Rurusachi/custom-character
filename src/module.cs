@@ -463,20 +463,12 @@ public unsafe class CustomCharacterModule : FhModule {
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
     public delegate void FUN_00a5ad30(Matrix4x4* param_1, SphereGridNode* node, float param_3);
     public const nint __addr_FUN_00a5ad30 = 0x65AD30;
-    //private FUN_00a5ad30 _FUN_00a5ad30;
-    private FhMethodHandle<FUN_00a5ad30> _FUN_00a5ad30;
-
-    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    public delegate int op1_md_draw_eiabm_sphe(int param_1, temp_FUN_00a4c8d0_struct* param_2, int node_idx, int chr_id);
-    public const nint __addr_op1_md_draw_eiabm_sphe = 0x668140;
-    //private op1_md_draw_eiabm_sphe _op1_md_draw_eiabm_sphe;
-    private FhMethodHandle<op1_md_draw_eiabm_sphe> _op1_md_draw_eiabm_sphe;
+    private FUN_00a5ad30 _FUN_00a5ad30;
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
     public delegate void FUN_00a5a360(Matrix4x4* param_1, SphereGridNode* node, Vec2s16* param_3, float param_4);
     public const nint __addr_FUN_00a5a360 = 0x65A360;
-    //private FUN_00a5a360 _FUN_00a5a360;
-    private FhMethodHandle<FUN_00a5a360> _FUN_00a5a360;
+    private FUN_00a5a360 _FUN_00a5a360;
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
     public delegate void FUN_00639280(int param_1);
@@ -706,6 +698,11 @@ public unsafe class CustomCharacterModule : FhModule {
     public const nint __addr_AbmapManager_AllocBuffMemory = 0x281db0;
     private FhMethodHandle<AbmapManager_AllocBuffMemory> _AbmapManager_AllocBuffMemory;
 
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate int op1_md_draw_eiabm_sphe(int param_1, temp_FUN_00a4c8d0_struct* param_2, int node_idx, int chr_id);
+    public const nint __addr_op1_md_draw_eiabm_sphe = 0x668140;
+    private FhMethodHandle<op1_md_draw_eiabm_sphe> _op1_md_draw_eiabm_sphe;
+
 
 
 
@@ -814,9 +811,8 @@ public unsafe class CustomCharacterModule : FhModule {
         _FUN_008b9e70 = FhUtil.get_fptr<FUN_008b9e70>(__addr_FUN_008b9e70);
         _FUN_008ba330 = FhUtil.get_fptr<FUN_008ba330>(__addr_FUN_008ba330);
         _FUN_008ba3c0 = FhUtil.get_fptr<FUN_008ba3c0>(__addr_FUN_008ba3c0);
-        //_FUN_00a5ad30 = FhUtil.get_fptr<FUN_00a5ad30>(__addr_FUN_00a5ad30);
-        //_FUN_00a68140 = FhUtil.get_fptr<FUN_00a68140>(__addr_FUN_00a68140);
-        //_FUN_00a5a360 = FhUtil.get_fptr<FUN_00a5a360>(__addr_FUN_00a5a360);
+        _FUN_00a5ad30 = FhUtil.get_fptr<FUN_00a5ad30>(__addr_FUN_00a5ad30);
+        _FUN_00a5a360 = FhUtil.get_fptr<FUN_00a5a360>(__addr_FUN_00a5a360);
         _FUN_00639280 = FhUtil.get_fptr<FUN_00639280>(__addr_FUN_00639280);
         _MsInitChrAbilityMap = FhUtil.get_fptr<MsInitChrAbilityMap>(__addr_MsInitChrAbilityMap);
         _MsGetChrAbilityMap = FhUtil.get_fptr<MsGetChrAbilityMap>(__addr_MsGetChrAbilityMap);
@@ -866,8 +862,6 @@ public unsafe class CustomCharacterModule : FhModule {
         _FUN_00a50ed0 = new FhMethodHandle<FUN_00a50ed0>(this, game, __addr_FUN_00a50ed0, h_FUN_00a50ed0);
 
         _op1_md_draw_eiabm_sphe = new FhMethodHandle<op1_md_draw_eiabm_sphe>(this, game, __addr_op1_md_draw_eiabm_sphe, h_op1_md_draw_eiabm_sphe);
-        _FUN_00a5a360 = new FhMethodHandle<FUN_00a5a360>(this, game, __addr_FUN_00a5a360, h_FUN_00a5a360);
-        _FUN_00a5ad30 = new FhMethodHandle<FUN_00a5ad30>(this, game, __addr_FUN_00a5ad30, h_FUN_00a5ad30);
 
         _FUN_00a4b4b0 = new FhMethodHandle<FUN_00a4b4b0>(this, game, __addr_FUN_00a4b4b0, h_FUN_00a4b4b0);
 
@@ -941,8 +935,6 @@ public unsafe class CustomCharacterModule : FhModule {
                _FUN_00a50ed0.hook() &&
                _FUN_00a534c0.hook() &&
                _op1_md_draw_eiabm_sphe.hook() && _AbmapManager_AllocBuffMemory.hook() && // Testing
-               _FUN_00a5a360.hook() && // Testing
-               _FUN_00a5ad30.hook() &&
                _FUN_00a4b4b0.hook() &&
                _FUN_00a53de0.hook() &&
                _eiAbmParaGet.hook();
@@ -1183,8 +1175,6 @@ public unsafe class CustomCharacterModule : FhModule {
     }
 
     void h_FUN_00a45010() {
-        //ushort abmap_input_1 = lpamng->abmap_input[1];
-        //_FUN_00a45010.orig_fptr();
         byte *pbVar1;
         ushort uVar2;
         SphereGridMenuData *pSVar3;
@@ -3674,8 +3664,6 @@ public unsafe class CustomCharacterModule : FhModule {
         return;
     }
     void h_FUN_008bddc0() {
-        //_FUN_008bddc0.orig_fptr();
-        //return;
         byte uVar1;
         int ply_chr_id;
         int iVar2;
@@ -3800,7 +3788,7 @@ public unsafe class CustomCharacterModule : FhModule {
                     iVar7 = 0;
                     do {
                         plVar5 = lpamng;
-                        _FUN_00a5ad30.hook_fptr(&local_98, node, 1.0f);
+                        _FUN_00a5ad30(&local_98, node, 1.0f);
                         _cdc_FFXVu0MulMatrix(&local_d8, &plVar5->__0x113E0, &local_98);
                         local_58.M43 = -1.0f;
                         local_150.rgba = 0;
@@ -3816,7 +3804,7 @@ public unsafe class CustomCharacterModule : FhModule {
                         pSVar4 = &lpamng->node_type_infos[0];
                         do {
                             plVar5 = lpamng;
-                            _FUN_00a5ad30.hook_fptr(&local_98, node, pSVar4[uVar1].__0x10);
+                            _FUN_00a5ad30(&local_98, node, pSVar4[uVar1].__0x10);
                             _cdc_FFXVu0MulMatrix(&local_d8, &plVar5->__0x113E0, &local_98);
                             local_58.M43 = -1.0f;
                             local_150.rgba = 0;
@@ -3867,9 +3855,9 @@ public unsafe class CustomCharacterModule : FhModule {
                             }
                             local_58.M43 = (float)fVar9;
                             //_logger.Debug($"node type:{uVar1}, size:{plVar5->node_type_infos[uVar1].width} x {plVar5->node_type_infos[uVar1].height}, 0x10:{plVar5->node_type_infos[uVar1].__0x10}");
-                            _FUN_00a5ad30.hook_fptr(&local_98, node, plVar5->node_type_infos[uVar1].__0x10);
+                            _FUN_00a5ad30(&local_98, node, plVar5->node_type_infos[uVar1].__0x10);
                             //_logger.Debug($"Pos: {node->pos} + {local_164->xy}");
-                            _FUN_00a5a360.hook_fptr(&local_98, node, local_164, 0.0008f);
+                            _FUN_00a5a360(&local_98, node, local_164, 0.0008f);
                             _cdc_FFXVu0MulMatrix(&local_d8, &plVar8->__0x113E0, &local_98);
                             _op1_md_draw_eiabm_sphe.hook_fptr(DAT_023057ec, &local_150, (lpamng->node_count - iVar6) + -1, chr_id);
                             chr_id = chr_id + 1;
@@ -4003,8 +3991,8 @@ public unsafe class CustomCharacterModule : FhModule {
                                 //local_1c0.rgba = CONCAT13(0x80, (int3) * piVar7);
                                 local_1c0.rgba = (0x80 << 0x18) | (*piVar7 & 0x00FFFFFF);
                                 local_1c0.__0x0 = 0x2c;
-                                _FUN_00a5ad30.hook_fptr(&local_98, node, plVar3->node_type_infos[uVar1].__0x10);
-                                _FUN_00a5a360.hook_fptr(&local_98, node, pVVar10, 0.0008f);
+                                _FUN_00a5ad30(&local_98, node, plVar3->node_type_infos[uVar1].__0x10);
+                                _FUN_00a5a360(&local_98, node, pVVar10, 0.0008f);
                                 _cdc_FFXVu0MulMatrix(&local_d8, &lpamng->__0x113E0, &local_98);
                                 _op1_md_draw_eiabm_sphe.hook_fptr(DAT_023057ec, &local_1c0, (lpamng->node_count - iVar11) + -1, iVar5);
                             }
@@ -4057,9 +4045,6 @@ public unsafe class CustomCharacterModule : FhModule {
         Matrix4x4 local_58;
         float fVar9;
 
-        //_FUN_00a50ed0.orig_fptr(param_1);
-        //return;
-
         pLVar5 = lpamng;
         fVar9 = (float)1;
         pSVar1 = &lpamng->nodes[param_1];
@@ -4100,7 +4085,7 @@ public unsafe class CustomCharacterModule : FhModule {
             iVar6 = -1;
             do {
                 pLVar5 = lpamng;
-                _FUN_00a5ad30.hook_fptr(&local_98, pSVar1, lpamng->node_type_infos[(int)SVar2].__0x10);
+                _FUN_00a5ad30(&local_98, pSVar1, lpamng->node_type_infos[(int)SVar2].__0x10);
                 _cdc_FFXVu0MulMatrix(&local_d8, &pLVar5->__0x113E0, &local_98);
                 local_58.M43 = -1.0f;
                 local_150.rgba = 0;
@@ -4149,8 +4134,8 @@ public unsafe class CustomCharacterModule : FhModule {
                     fVar8 = fVar9;
                 }
                 local_58.M43 = (float)fVar8;
-                _FUN_00a5ad30.hook_fptr(&local_98, pSVar1, pLVar5->node_type_infos[(int)SVar2].__0x10);
-                _FUN_00a5a360.hook_fptr(&local_98, pSVar1, local_164, 0.0008f);
+                _FUN_00a5ad30(&local_98, pSVar1, pLVar5->node_type_infos[(int)SVar2].__0x10);
+                _FUN_00a5a360(&local_98, pSVar1, local_164, 0.0008f);
                 _cdc_FFXVu0MulMatrix(&local_d8, &pLVar7->__0x113E0, &local_98);
                 _op1_md_draw_eiabm_sphe.hook_fptr(DAT_023057ec, &local_150, param_1, local_15c);
                 local_15c = local_15c + -1;
@@ -4621,15 +4606,6 @@ public unsafe class CustomCharacterModule : FhModule {
         }
         return 0;
     }
-
-    void h_FUN_00a5a360(Matrix4x4* param_1, SphereGridNode* node, Vec2s16* param_3, float param_4) {
-        _FUN_00a5a360.orig_fptr(param_1, node, param_3, param_4);
-    }
-
-    void h_FUN_00a5ad30(Matrix4x4* param_1, SphereGridNode* node, float param_3) {
-        _FUN_00a5ad30.orig_fptr(param_1, node, param_3);
-    }
-
 
     void h_FUN_00a4b4b0() {
         byte bVar1;
