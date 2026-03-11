@@ -3238,8 +3238,8 @@ public unsafe class CustomCharacterModule : FhModule {
                 }
                 lpamng->move_next_link_anchor_idx = local_44->anchor_idx;
                 if ((byte)(local_44->activated_by & (byte)(1 << (lpamng->moving_chr_id & 0x1f))) == 0) {
-                    *(byte*)(local_44 + 6) = (byte)(1 << (lpamng->moving_chr_id & 0x1f) | local_44->activated_by);
-                    *(byte*)(local_44 + 7) = (byte)(local_44->point_count | 8);
+                    local_44->activated_by = (byte)(1 << (lpamng->moving_chr_id & 0x1f) | local_44->activated_by);
+                    local_44->__0xE = (byte)(local_44->__0xE | 8);
                     lpamng->next_move_link = local_44;
                 }
                 pSVar7->current_node_idx = lpamng->move_next_target_node_idx;
