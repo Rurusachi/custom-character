@@ -138,7 +138,6 @@ public unsafe class CustomCharacterModule : FhModule {
         public AbilityInlineArray abilities;
     }
 
-    
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate SaveSphereGrid* MsGetSaveAbilityMap();
@@ -156,7 +155,7 @@ public unsafe class CustomCharacterModule : FhModule {
     private FUN_00642a80 _FUN_00642a80; // => fhutil.get_fptr<FUN_00642a80>(__addr_FUN_00642a80);
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    public delegate void graphicDrawUIAbmapElement(float* param_1, char* tex_name, uint param_3);
+    public delegate void graphicDrawUIAbmapElement(float* param_1, byte* tex_name, uint param_3);
     public const nint __addr_graphicDrawUIAbmapElement = 0x23EAE0;
     private graphicDrawUIAbmapElement _graphicDrawUIAbmapElement; // => fhutil.get_fptr<graphicDrawUIAbmapElement>(__addr_graphicDrawUIAbmapElement);
 
@@ -468,10 +467,10 @@ public unsafe class CustomCharacterModule : FhModule {
     private FhMethodHandle<FUN_00a5ad30> _FUN_00a5ad30;
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    public delegate int FUN_00a68140(int param_1, temp_FUN_00a4c8d0_struct* param_2, int param_3, int param_4);
-    public const nint __addr_FUN_00a68140 = 0x668140;
-    //private FUN_00a68140 _FUN_00a68140;
-    private FhMethodHandle<FUN_00a68140> _FUN_00a68140;
+    public delegate int op1_md_draw_eiabm_sphe(int param_1, temp_FUN_00a4c8d0_struct* param_2, int node_idx, int chr_id);
+    public const nint __addr_op1_md_draw_eiabm_sphe = 0x668140;
+    //private op1_md_draw_eiabm_sphe _op1_md_draw_eiabm_sphe;
+    private FhMethodHandle<op1_md_draw_eiabm_sphe> _op1_md_draw_eiabm_sphe;
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
     public delegate void FUN_00a5a360(Matrix4x4* param_1, SphereGridNode* node, Vec2s16* param_3, float param_4);
@@ -514,10 +513,25 @@ public unsafe class CustomCharacterModule : FhModule {
     public const nint __addr_FUN_00a521a0 = 0x006521a0;
     private FUN_00a521a0 _FUN_00a521a0;
 
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void FFXVu0MulVector(Vector4* param_1, Vector4* param_2, Vector4* param_3);
+    public const nint __addr_FFXVu0MulVector = 0x002ed710;
+    private FFXVu0MulVector _FFXVu0MulVector;
 
-    
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void graphicFontGetScreenWH(int* out_width, int* out_height);
+    public const nint __addr_graphicFontGetScreenWH = 0x00240f60;
+    private graphicFontGetScreenWH _graphicFontGetScreenWH;
 
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate abmapVertexInfo* graphicAbmapGetVertexInfo(byte* param_1, int param_2);
+    public const nint __addr_graphicAbmapGetVertexInfo = 0x00239180;
+    private graphicAbmapGetVertexInfo _graphicAbmapGetVertexInfo;
 
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void fiosUnifyFilename(nint in_string, nint out_buffer, int buffer_size);
+    public const nint __addr_fiosUnifyFilename = 0x002799d0;
+    private fiosUnifyFilename _fiosUnifyFilename;
 
 
 
@@ -687,8 +701,12 @@ public unsafe class CustomCharacterModule : FhModule {
     public const nint __addr_FUN_00a53de0 = 0x653de0;
     private FhMethodHandle<FUN_00a53de0> _FUN_00a53de0;
 
+    [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
+    public delegate abmapVertexInfo* AbmapManager_AllocBuffMemory(nint abmapManager, int param_1);
+    public const nint __addr_AbmapManager_AllocBuffMemory = 0x281db0;
+    private FhMethodHandle<AbmapManager_AllocBuffMemory> _AbmapManager_AllocBuffMemory;
 
-    
+
 
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
@@ -713,9 +731,11 @@ public unsafe class CustomCharacterModule : FhModule {
                 [   // Expert
                   14, 15, 16, 17, 154, 155, 156, 157, // Fire, Thunder, Water, Blizzard, Fira, Thundara, Watera, Blizzara
                   8, 185, 3, 4, 5, 56                 // Cure, Cura, NulBlaze, NulShock, NulTide, Scan
-                ] 
+                ]
             ]
         ];
+
+    private Vec2s16[,] custom_node_indicator_pos = new Vec2s16[130, num_characters-7]; // 130 node types
 
     private class CustomSphereGridState(short[] custom_party_selected_node_idx) {
         [JsonInclude]
@@ -804,6 +824,10 @@ public unsafe class CustomCharacterModule : FhModule {
         _MsSetSaveParamAll = FhUtil.get_fptr<MsSetSaveParamAll>(__addr_MsSetSaveParamAll);
         _FUN_00a51720 = FhUtil.get_fptr<FUN_00a51720>(__addr_FUN_00a51720);
         _FUN_00a521a0 = FhUtil.get_fptr<FUN_00a521a0>(__addr_FUN_00a521a0);
+        _FFXVu0MulVector = FhUtil.get_fptr<FFXVu0MulVector>(__addr_FFXVu0MulVector);
+        _graphicFontGetScreenWH = FhUtil.get_fptr<graphicFontGetScreenWH>(__addr_graphicFontGetScreenWH);
+        _graphicAbmapGetVertexInfo = FhUtil.get_fptr<graphicAbmapGetVertexInfo>(__addr_graphicAbmapGetVertexInfo);
+        _fiosUnifyFilename = FhUtil.get_fptr<fiosUnifyFilename>(__addr_fiosUnifyFilename);
 
 
 
@@ -841,13 +865,15 @@ public unsafe class CustomCharacterModule : FhModule {
         _FUN_00a534c0 = new FhMethodHandle<FUN_00a534c0>(this, game, __addr_FUN_00a534c0, h_FUN_00a534c0);
         _FUN_00a50ed0 = new FhMethodHandle<FUN_00a50ed0>(this, game, __addr_FUN_00a50ed0, h_FUN_00a50ed0);
 
-        _FUN_00a68140 = new FhMethodHandle<FUN_00a68140>(this, game, __addr_FUN_00a68140, h_FUN_00a68140);
+        _op1_md_draw_eiabm_sphe = new FhMethodHandle<op1_md_draw_eiabm_sphe>(this, game, __addr_op1_md_draw_eiabm_sphe, h_op1_md_draw_eiabm_sphe);
         _FUN_00a5a360 = new FhMethodHandle<FUN_00a5a360>(this, game, __addr_FUN_00a5a360, h_FUN_00a5a360);
         _FUN_00a5ad30 = new FhMethodHandle<FUN_00a5ad30>(this, game, __addr_FUN_00a5ad30, h_FUN_00a5ad30);
 
         _FUN_00a4b4b0 = new FhMethodHandle<FUN_00a4b4b0>(this, game, __addr_FUN_00a4b4b0, h_FUN_00a4b4b0);
 
         _FUN_00a53de0 = new FhMethodHandle<FUN_00a53de0>(this, game, __addr_FUN_00a53de0, h_FUN_00a53de0);
+
+        _AbmapManager_AllocBuffMemory = new FhMethodHandle<AbmapManager_AllocBuffMemory>(this, game, __addr_AbmapManager_AllocBuffMemory, h_AbmapManager_AllocBuffMemory);
 
         _eiAbmParaGet = new FhMethodHandle<eiAbmParaGet>(this, game, __addr_eiAbmParaGet, h_eiAbmParaGet);
 
@@ -914,7 +940,7 @@ public unsafe class CustomCharacterModule : FhModule {
                _FUN_00a505e0.hook() &&
                _FUN_00a50ed0.hook() &&
                _FUN_00a534c0.hook() &&
-               _FUN_00a68140.hook() && // Testing
+               _op1_md_draw_eiabm_sphe.hook() && _AbmapManager_AllocBuffMemory.hook() && // Testing
                _FUN_00a5a360.hook() && // Testing
                _FUN_00a5ad30.hook() &&
                _FUN_00a4b4b0.hook() &&
@@ -1009,6 +1035,8 @@ public unsafe class CustomCharacterModule : FhModule {
     private nint  p_DAT_016c1830  => (nint)FhUtil.ptr_at<nint>(0x12C1830);
     private nint  p_DAT_01a86060  => (nint)FhUtil.ptr_at<nint>(0x1686060);
     private nint* p_ppvCurPrimp => FhUtil.ptr_at<nint>(0x1F0FD2C);
+
+    private uint _gParticleDoNotRender => FhUtil.get_at<uint>(0xEFB790);
 
 
     private uint*  p_DAT_01841bf0                       => FhUtil.ptr_at<uint>(0x01441bf0);
@@ -1132,7 +1160,7 @@ public unsafe class CustomCharacterModule : FhModule {
                              (int)_MsGetExcelData(pMVar5->command_pdata.sphere_grid_role, sphere_bin_ptr, &local_c);
                     }
                     if ((void*)local_28.desc != (void*)0x0) {
-                        if (*(char*)(local_28.desc + 0xc) == ' ') {
+                        if (*(byte*)(local_28.desc + 0xc) == ' ') {
                             _FUN_00a59710((nint)FhUtil.ptr_at<nint>(__addr_FUN_00a49440), &local_28);
                         }
                         else {
@@ -1328,7 +1356,7 @@ public unsafe class CustomCharacterModule : FhModule {
         bVar1 = lpamng->__0x1164C;
         if (bVar1 == 0) {
             lpamng->__0x1164D += 1;
-            lpamng->__0x115C6 = (byte)(-0x80 - (char)(((uint)lpamng->__0x1164D << 7) / 0x28));
+            lpamng->__0x115C6 = (byte)(-0x80 - (byte)(((uint)lpamng->__0x1164D << 7) / 0x28));
             if (0x7f < lpamng->__0x115C6) {
                 lpamng->__0x115C6 = 0x80;
             }
@@ -1585,8 +1613,8 @@ public unsafe class CustomCharacterModule : FhModule {
                     fixed (int* local_128 = _local_128) {
                         float[] _local_118 = new float[3];
                         fixed (float* local_118 = _local_118) {
-                            char[] _local_108 = new char[256];
-                            fixed (char* local_108 = _local_108) {
+                            byte[] _local_108 = new byte[256];
+                            fixed (byte* local_108 = _local_108) {
 
                                 piVar3 = (float*)_user_malloc(0x1ec);
                                 Span<float> _piVar3 = new Span<float>(piVar3, 0x7b);
@@ -2035,10 +2063,10 @@ public unsafe class CustomCharacterModule : FhModule {
                      (uint)((int)Math.Round((eff_sin_t[(int)(uVar5 * 0x2000 + (uint)(ushort)(sVar1 << 0xb)) >> 4 &
                                                  0xfff] + 1.0f) * 16.0f) & 0xFF);
                 local_150.rgba = (p_DAT_00c86660)[uVar5];
-                local_150.a = (byte)((char)uStack_154 + 0x60U);
+                local_150.a = (byte)((byte)uStack_154 + 0x60U);
                 var halo_alpha = lpamng->halo_alpha;
                 if (lpamng->halo_alpha < 1.0) {
-                    uStack_154 = (byte)((char)uStack_154 + 0x60U);
+                    uStack_154 = (byte)((byte)uStack_154 + 0x60U);
                     iVar4 = (int)(lpamng->halo_alpha * (float)uStack_154);
                     local_150.a = (byte)iVar4;
                     //fVar7 = extraout_ST0;
@@ -2093,6 +2121,32 @@ public unsafe class CustomCharacterModule : FhModule {
         _FUN_00a57620();
         _FUN_00a45570();
         _TOMenuTransFacePlyTex();
+
+        // Calculate node activation indicator positions
+        for (int n = 0; n < 130; n++) {
+            if (lpamng->node_type_infos[n].pos[0].x == 0x1000) {
+                for (int i = 0; i < num_characters-7; i++) {
+                    custom_node_indicator_pos[n, i] = lpamng->node_type_infos[n].pos[0];
+                }
+            } else {
+                float offset = lpamng->node_type_infos[n].pos[0].xy.Length();
+
+                float angle = (float)(2*Math.PI / num_characters);
+
+                Vector2 vec = new Vector2(0, -1) * offset;
+
+                for (int i = 0; i < num_characters; i ++) {
+                    if (i < 7) {
+                        lpamng->node_type_infos[n].pos[i] = new() { x = (short)vec.X, y = (short)vec.Y };
+                    } else {
+                        custom_node_indicator_pos[n, i - 7] = new() { x = (short)vec.X, y = (short)vec.Y };
+                    }
+
+                    vec = Vector2.Transform(vec, Quaternion.CreateFromAxisAngle(new(0, 0, 1), angle));
+                }
+            }
+        }
+
         chr_id = 0;
         lpamng->available_indicators = 0;
         do {
@@ -3699,11 +3753,6 @@ public unsafe class CustomCharacterModule : FhModule {
         Matrix4x4 local_98 = new();
         Matrix4x4 local_58 = new();
 
-        if (!CustomCharacterGUI.override_FUN_00a505e0) {
-            _FUN_00a505e0.orig_fptr();
-            return;
-        }
-
         iVar6 = (int)lpamng->node_count;
         node = &lpamng->nodes[0];
         iVar2 = *(int*)&lpamng->__0x11698;
@@ -3755,7 +3804,7 @@ public unsafe class CustomCharacterModule : FhModule {
                         _cdc_FFXVu0MulMatrix(&local_d8, &plVar5->__0x113E0, &local_98);
                         local_58.M43 = -1.0f;
                         local_150.rgba = 0;
-                        _FUN_00a68140.hook_fptr(DAT_023057ec, &local_150, (lpamng->node_count - iVar6) + -1, iVar7);
+                        _op1_md_draw_eiabm_sphe.hook_fptr(DAT_023057ec, &local_150, (lpamng->node_count - iVar6) + -1, iVar7);
                         iVar7 = iVar7 + 1;
                     } while (iVar7 < num_characters);
                 }
@@ -3771,7 +3820,7 @@ public unsafe class CustomCharacterModule : FhModule {
                             _cdc_FFXVu0MulMatrix(&local_d8, &plVar5->__0x113E0, &local_98);
                             local_58.M43 = -1.0f;
                             local_150.rgba = 0;
-                            _FUN_00a68140.hook_fptr(DAT_023057ec, &local_150, (lpamng->node_count - iVar6) + -1, iVar7);
+                            _op1_md_draw_eiabm_sphe.hook_fptr(DAT_023057ec, &local_150, (lpamng->node_count - iVar6) + -1, iVar7);
                             iVar7 = iVar7 + 1;
                         } while (iVar7 < num_characters);
                     }
@@ -3794,7 +3843,6 @@ public unsafe class CustomCharacterModule : FhModule {
                         local_150.__0x8 = 0x8064;
                         chr_id = 0;
                         plVar8 = plVar5;
-                        local_164->x += 5;
                         while (true) {
                             if ((activated_by & 1) == 0) {
                                 local_150.rgba = p_DAT_00c86644[chr_id]; // Inactive indicator colors
@@ -3803,15 +3851,14 @@ public unsafe class CustomCharacterModule : FhModule {
                             else {
                                 uVar3 = (uint)p_DAT_00c8659c[chr_id]; // Active indicator colors
                                 local_150.rgba =
-                                     //CONCAT13(0x80, (((int3)((int)(((int)uVar3 >> 0x18 & 0xffU) * local_16c) >> 7) *
-                                     //                0x100 + (int3)((int)(((int)uVar3 >> 0x10 & 0xffU) * local_170) >>
-                                     //                              7)) * 0x100 +
-                                     //              (int3)((int)(((int)uVar3 >> 8 & 0xffU) * local_17c) >> 7)) * 0x100
-                                     //              + (int3)((int)((uVar3 & 0xff) * local_174) >> 7));
+                                     //CONCAT13(0x80, (((int3)((int)(((int)uVar3 >> 0x18 & 0xffU) * local_16c) >> 7)  * 0x100 +
+                                     //                 (int3)((int)(((int)uVar3 >> 0x10 & 0xffU) * local_170) >> 7)) * 0x100 +
+                                     //                 (int3)((int)(((int)uVar3 >> 8 & 0xffU) * local_17c)    >> 7)) * 0x100 +
+                                     //                 (int3)((int)(     (uVar3      & 0xff ) * local_174)    >> 7));
                                      (0x80 << 0x18) | ((((((int)(((int)uVar3 >> 0x18 & 0xffU) * local_16c) >> 7)  * 0x100 + 
                                                           ((int)(((int)uVar3 >> 0x10 & 0xffU) * local_170) >> 7)) * 0x100 +
                                                           ((int)(((int)uVar3 >> 0x08 & 0xffU) * local_17c) >> 7)) * 0x100 + 
-                                                          ((int)(     (uVar3         & 0xff)  * local_174) >> 7))
+                                                          ((int)(     (uVar3         & 0xff ) * local_174) >> 7))
                                                           & 0x00FFFFFF);
                                 // Animating the color intensity(?)
                                 //local_150.rgba = (int)uVar3;
@@ -3824,18 +3871,16 @@ public unsafe class CustomCharacterModule : FhModule {
                             //_logger.Debug($"Pos: {node->pos} + {local_164->xy}");
                             _FUN_00a5a360.hook_fptr(&local_98, node, local_164, 0.0008f);
                             _cdc_FFXVu0MulMatrix(&local_d8, &plVar8->__0x113E0, &local_98);
-                            _FUN_00a68140.hook_fptr(DAT_023057ec, &local_150, (lpamng->node_count - iVar6) + -1, chr_id);
-                            if (chr_id == 0) local_164->x -= 5; // Undo change
+                            _op1_md_draw_eiabm_sphe.hook_fptr(DAT_023057ec, &local_150, (lpamng->node_count - iVar6) + -1, chr_id);
                             chr_id = chr_id + 1;
+                            activated_by = (byte)(activated_by >> 1);
+                            if (num_characters-1 < chr_id) break;
                             if (chr_id >= 7) {
-                                Vec2s16 tempVec2s16 = lpamng->node_type_infos[uVar1].pos[0];
-                                tempVec2s16.y -= 5;
+                                Vec2s16 tempVec2s16 = custom_node_indicator_pos[uVar1, chr_id - 7];
                                 local_164 = &tempVec2s16;
                             } else {
                                 local_164 = local_164 + 1;
                             }
-                            activated_by = (byte)(activated_by >> 1);
-                            if (num_characters-1 < chr_id) break;
                             fVar9 = 6.0;
                             plVar8 = lpamng;
                         }
@@ -3867,11 +3912,6 @@ public unsafe class CustomCharacterModule : FhModule {
         Matrix4x4 local_98 = new();
         Matrix4x4 local_58 = new();
         int iVar11;
-
-        if (!CustomCharacterGUI.override_FUN_00a534c0) {
-            _FUN_00a534c0.orig_fptr();
-            return;
-        }
 
         fixed (int* local_148 = _local_148) {
 
@@ -3957,7 +3997,6 @@ public unsafe class CustomCharacterModule : FhModule {
                         local_1c0.__0x8 = 0x8064;
                         piVar7 = local_148;
                         iVar5 = -1;
-                        pVVar10->x += 5;
                         do {
                             if ((bVar4 & 1) != 0) {
                                 local_58.M43 = 1.0f;
@@ -3967,15 +4006,13 @@ public unsafe class CustomCharacterModule : FhModule {
                                 _FUN_00a5ad30.hook_fptr(&local_98, node, plVar3->node_type_infos[uVar1].__0x10);
                                 _FUN_00a5a360.hook_fptr(&local_98, node, pVVar10, 0.0008f);
                                 _cdc_FFXVu0MulMatrix(&local_d8, &lpamng->__0x113E0, &local_98);
-                                _FUN_00a68140.hook_fptr(DAT_023057ec, &local_1c0, (lpamng->node_count - iVar11) + -1, iVar5);
+                                _op1_md_draw_eiabm_sphe.hook_fptr(DAT_023057ec, &local_1c0, (lpamng->node_count - iVar11) + -1, iVar5);
                             }
                             piVar7 = piVar7 + 4;
-                            if (iVar5 == -1) pVVar10->x -= 5; // Undo change
                             iVar5 = iVar5 + -1;
                             bVar4 = (byte)(bVar4 >> 1);
-                            if (-iVar5 > 7) {
-                                Vec2s16 tempVec2s16 = plVar3->node_type_infos[uVar1].pos[0];
-                                tempVec2s16.x -= 5;
+                            if (-iVar5 > 7 && -(num_characters + 1) < iVar5) {
+                                Vec2s16 tempVec2s16 = custom_node_indicator_pos[uVar1, -iVar5 - 8];
                                 pVVar10 = &tempVec2s16;
                             }
                             else {
@@ -3993,14 +4030,596 @@ public unsafe class CustomCharacterModule : FhModule {
     }
 
     void h_FUN_00a50ed0(int param_1) {
-        // TODO: Reimplement
-        _FUN_00a50ed0.orig_fptr(param_1);
+        SphereGridNode* pSVar1;
+        NodeType SVar2;
+        uint uVar3;
+        SphereGridNodeTypeInfo* pSVar4;
+        LpAbilityMapEngine* pLVar5;
+        int iVar6;
+        LpAbilityMapEngine* pLVar7;
+        float extraout_ST0;
+        float fVar8;
+        uint local_190 = 0;
+        uint local_18c = 0;
+        uint local_188 = 0;
+        uint local_184 = 0;
+        uint local_180;
+        uint local_178;
+        uint local_174;
+        uint local_170;
+        int local_16c;
+        Vec2s16* local_164;
+        int local_15c;
+        byte local_151;
+        temp_FUN_00a4c8d0_struct local_150;
+        Matrix4x4 local_d8;
+        Matrix4x4 local_98;
+        Matrix4x4 local_58;
+        float fVar9;
+
+        //_FUN_00a50ed0.orig_fptr(param_1);
+        //return;
+
+        pLVar5 = lpamng;
+        fVar9 = (float)1;
+        pSVar1 = &lpamng->nodes[param_1];
+        local_150.__0x20 = &local_d8;
+        local_150.__0x44 = &local_58;
+        local_150.__0x2C = &local_98;
+        local_58.M44 = (float)fVar9;
+        local_58.M13 = asmreg_0_zero->Z;
+        local_58.M14 = asmreg_0_zero->W;
+        local_58.M23 = asmreg_0_zero->Z;
+        local_58.M24 = asmreg_0_zero->W;
+        local_58.M33 = asmreg_0_zero->Z;
+        local_58.M34 = asmreg_0_zero->W;
+        local_58.M43 = asmreg_0_zero->Z;
+        local_58.M11 = asmreg_0_zero->X;
+        local_58.M21 = asmreg_0_zero->X;
+        local_58.M31 = asmreg_0_zero->X;
+        local_58.M41 = asmreg_0_zero->X;
+        local_58.M12 = asmreg_0_zero->Y;
+        local_58.M22 = asmreg_0_zero->Y;
+        local_58.M32 = asmreg_0_zero->Y;
+        local_58.M42 = asmreg_0_zero->Y;
+        local_150.__0x1C = 0;
+        local_150.__0xA = 0;
+        local_150.__0x3C = 0;
+        local_150.__0x38 = 0;
+        local_150.__0x4 = (int)p_DAT_01740830_sphere_grid_layout_dat;
+        local_150.__0xC = 0;
+        local_150.__0x10 = 0;
+        local_150.__0x14 = 0;
+        local_150.__0x40 = 0;
+        SVar2 = pSVar1->node_type;
+        local_150.__0x28 = (int)&lpamng->__0x11520;
+        local_150.__0x24 = (int)&lpamng->__0x11560;
+        local_164 = &lpamng->node_type_infos[(int)SVar2].pos[0];
+        if (local_164->x == 0x1000) {
+            //pSVar4 = lpamng->node_type_infos;
+            iVar6 = -1;
+            do {
+                pLVar5 = lpamng;
+                _FUN_00a5ad30.hook_fptr(&local_98, pSVar1, lpamng->node_type_infos[(int)SVar2].__0x10);
+                _cdc_FFXVu0MulMatrix(&local_d8, &pLVar5->__0x113E0, &local_98);
+                local_58.M43 = -1.0f;
+                local_150.rgba = 0;
+                _op1_md_draw_eiabm_sphe.hook_fptr(DAT_023057ec, &local_150, param_1, iVar6);
+                iVar6 = iVar6 + -1;
+            } while (-(num_characters+1) < iVar6);
+        }
+        else {
+            local_151 = (byte)(lpamng->available_indicators & pSVar1->activated_by);
+            if (local_151 == 0) {
+                local_170 = local_184;
+                local_178 = local_188;
+                local_180 = local_18c;
+                local_174 = local_190;
+            } else {
+                //iVar6 = _FUN_009497e0(pSVar1, 0x1000);
+                iVar6 = (int)(eff_sin_t[(int)(pSVar1->__0x26 + *(int*)&lpamng->__0x11698 * 0x800) >> 4 & 0xfff] * 0.15 * -96.0);
+                local_180 = (uint)(0x6cU - iVar6 & 0xff);
+                //fVar9 = extraout_ST0;
+                local_178 = local_180;
+                local_174 = local_180;
+                local_170 = local_180;
+            }
+            local_150.__0x8 = 0x8064;
+            local_15c = -1;
+            local_16c = 0;
+            pLVar7 = pLVar5;
+            while (true) {
+                fVar8 = (float)6.0;
+                if ((local_151 & 1) == 0) {
+                    local_150.rgba = *(int*)(p_DAT_00c86644 + local_16c);
+                    local_150.__0x0 = 0x24;
+                } else {
+                    uVar3 = *(uint*)(p_DAT_00c8659c + local_16c);
+                    local_150.rgba =
+                         //CONCAT13(0x80, (((int3)((int)(((int)uVar3 >> 0x18 & 0xffU) * local_170) >> 7)  * 0x100 +
+                         //                 (int3)((int)(((int)uVar3 >> 0x10 & 0xffU) * local_178) >> 7)) * 0x100 +
+                         //                 (int3)((int)(((int)uVar3 >> 8 & 0xffU) * local_180)    >> 7)) * 0x100 +
+                         //                 (int3)((int)(     (uVar3      & 0xff ) * local_174)    >> 7));
+                         (0x80 << 0x18) | ((((((int)(((int)uVar3 >> 0x18 & 0xffU) * local_170) >> 7)  * 0x100 +
+                                              ((int)(((int)uVar3 >> 0x10 & 0xffU) * local_178) >> 7)) * 0x100 +
+                                              ((int)(((int)uVar3 >> 0x08 & 0xffU) * local_180) >> 7)) * 0x100 +
+                                              ((int)(     (uVar3         & 0xff ) * local_174) >> 7))
+                                              & 0x00FFFFFF);
+                    local_150.__0x0 = 0x2c;
+                    fVar8 = fVar9;
+                }
+                local_58.M43 = (float)fVar8;
+                _FUN_00a5ad30.hook_fptr(&local_98, pSVar1, pLVar5->node_type_infos[(int)SVar2].__0x10);
+                _FUN_00a5a360.hook_fptr(&local_98, pSVar1, local_164, 0.0008f);
+                _cdc_FFXVu0MulMatrix(&local_d8, &pLVar7->__0x113E0, &local_98);
+                _op1_md_draw_eiabm_sphe.hook_fptr(DAT_023057ec, &local_150, param_1, local_15c);
+                local_15c = local_15c + -1;
+                local_16c = local_16c + 1;
+                local_151 = (byte)(local_151 >> 1);
+                if (local_15c < -num_characters) break;
+                if (-local_15c > 7) {
+                    Vec2s16 tempVec2s16 = custom_node_indicator_pos[(int)SVar2, -local_15c - 8];
+                    local_164 = &tempVec2s16;
+                } else {
+                    local_164 = local_164 + 1;
+                }
+                fVar9 = (float)1;
+                pLVar7 = lpamng;
+            }
+        }
         return;
     }
 
-    int h_FUN_00a68140(int param_1, temp_FUN_00a4c8d0_struct* param_2, int param_3, int param_4) {
-        int result = _FUN_00a68140.orig_fptr(param_1, param_2, param_3, param_4);
-        return result;
+
+    [StructLayout(LayoutKind.Explicit, Pack = 4, Size = 0x6C)]
+    public struct VertexInfo_0x94 {
+        [FieldOffset(0x00)] public int    field0_0x0;
+        [FieldOffset(0x04)] public int    field1_0x4;
+        [FieldOffset(0x08)] public int    field2_0x8;
+        [FieldOffset(0x0c)] public float* field3_0xc;  // [6020][12]
+        [FieldOffset(0x10)] public float* field4_0x10; // [6020][12]
+        [FieldOffset(0x14)] public float* field5_0x14; // [6020][16]
+        [FieldOffset(0x18)] public float* field6_0x18; // [6020][ 8]
+        [FieldOffset(0x1c)] public short* field7_0x1c; // [6020][ 6]
+        [FieldOffset(0x20)] public byte*  field8_0x20;
+        [FieldOffset(0x24)] public int    field9_0x24;
+
+        
+        [FieldOffset(0x2c)] public float field14_0x2c;
+        [FieldOffset(0x48)] public float field33_0x48;
+        [FieldOffset(0x30)] public float field15_0x30;
+        [FieldOffset(0x4c)] public float field34_0x4c;
+        [FieldOffset(0x34)] public float field16_0x34;
+        [FieldOffset(0x50)] public float field35_0x50;
+    }
+
+    [StructLayout(LayoutKind.Explicit, Pack = 4, Size = 0xD0)]
+    public struct abmapVertexInfo {
+        [FieldOffset(0x0 )] public float field0_0x0;
+        [FieldOffset(0x4 )] public float field1_0x4;
+        [FieldOffset(0x8 )] public float field2_0x8;
+        [FieldOffset(0xc )] public float field3_0xc;
+        [FieldOffset(0x10)] public float field4_0x10;
+        [FieldOffset(0x14)] public float field5_0x14;
+        [FieldOffset(0x18)] public float field6_0x18;
+        [FieldOffset(0x1c)] public float field7_0x1c;
+        [FieldOffset(0x20)] public float field8_0x20;
+        [FieldOffset(0x24)] public float field9_0x24;
+        [FieldOffset(0x28)] public float field10_0x28;
+        [FieldOffset(0x2c)] public float field11_0x2c;
+        [FieldOffset(0x30)] public float field12_0x30;
+        [FieldOffset(0x34)] public float field13_0x34;
+        [FieldOffset(0x38)] public float field14_0x38;
+        [FieldOffset(0x3c)] public float field15_0x3c;
+
+        [FieldOffset(0x90)] public int   field96_0x90;
+        [FieldOffset(0x94)] public VertexInfo_0x94* field97_0x94;
+        [FieldOffset(0x98)] public float field98_0x98;
+        [FieldOffset(0x9c)] public float field99_0x9c;
+        [FieldOffset(0xa0)] public float field100_0xa0;
+        [FieldOffset(0xa4)] public float field101_0xa4;
+        [FieldOffset(0xa8)] public float field102_0xa8;
+        [FieldOffset(0xac)] public float field103_0xac;
+
+        [FieldOffset(0xb8)] public int field112_0xb8;
+        [FieldOffset(0xbc)] public int field113_0xbc;
+    }
+
+    abmapVertexInfo* h_AbmapManager_AllocBuffMemory(nint abmapManager, int param_1) {
+        if (param_1 == 7) {
+            abmapVertexInfo* puVar3 = (abmapVertexInfo*)_user_malloc(0xd0);
+            NativeMemory.Fill(puVar3, 0xd0, 0);
+            puVar3->field112_0xb8 = 2;
+            puVar3->field113_0xbc = 0;
+
+
+            uint field3_0xc_size  = 0x35C * num_characters * 0x0c * 4;
+            uint field4_0x10_size = 0x35C * num_characters * 0x0c * 4;
+            uint field5_0x14_size = 0x35C * num_characters * 0x10 * 4;
+            uint field6_0x18_size = 0x35C * num_characters * 0x08 * 4;
+            uint field7_0x1c_size = 0x35C * num_characters * 0x06 * 2;
+
+
+
+            VertexInfo_0x94* pVVar3 = (VertexInfo_0x94*)_user_malloc(0x6c);
+            NativeMemory.Fill(pVVar3, 0x6c, 0);
+            puVar3->field97_0x94 = pVVar3;
+            puVar3->field96_0x90 = 1;
+            pVVar3->field1_0x4   = (int)(0x35C * num_characters * 4);
+            puVar3->field97_0x94->field2_0x8  = (int)(0x35C * num_characters * 6);
+            puVar3->field97_0x94->field3_0xc  = (float*)_user_malloc((nint)field3_0xc_size);
+            puVar3->field97_0x94->field4_0x10 = (float*)_user_malloc((nint)field4_0x10_size);
+            puVar3->field97_0x94->field5_0x14 = (float*)_user_malloc((nint)field5_0x14_size);
+            puVar3->field97_0x94->field6_0x18 = (float*)_user_malloc((nint)field6_0x18_size);
+            puVar3->field97_0x94->field7_0x1c = (short*)_user_malloc((nint)field7_0x1c_size);
+            puVar3->field97_0x94->field8_0x20 = (byte*)_user_malloc(0x100);
+            puVar3->field97_0x94->field9_0x24 = 1;
+
+            //memset(puVar3->field97_0x94->field8_0x20, 0, 0x100);
+            NativeMemory.Fill(puVar3->field97_0x94->field8_0x20, 0x100, 0);
+
+            nint tempStringPointer = Marshal.StringToHGlobalAnsi("NoTexture");
+            NativeMemory.Copy((void*)tempStringPointer, puVar3->field97_0x94->field8_0x20, 9);
+            Marshal.FreeHGlobal(tempStringPointer);
+            //builtin_strncpy(puVar3->field97_0x94->field8_0x20, "NoTexture", 9);
+
+
+
+            //memset(puVar3->field97_0x94->field4_0x10, 0, 0x468c0);
+            //memset(puVar3->field97_0x94->field5_0x14, 0, 0x5e100);
+            //memset(puVar3->field97_0x94->field7_0x1c, 0, 0x11a30);
+            //memset(puVar3->field97_0x94->field6_0x18, 0, 0x2f080);
+            NativeMemory.Fill(puVar3->field97_0x94->field4_0x10, field4_0x10_size, 0);
+            NativeMemory.Fill(puVar3->field97_0x94->field5_0x14, field5_0x14_size, 0);
+            NativeMemory.Fill(puVar3->field97_0x94->field6_0x18, field6_0x18_size, 0);
+            NativeMemory.Fill(puVar3->field97_0x94->field7_0x1c, field7_0x1c_size, 0);
+
+            //memset(puVar3->field97_0x94->field3_0xc, 0, 0x468c0);
+            NativeMemory.Fill(puVar3->field97_0x94->field3_0xc, field3_0xc_size, 0);
+            puVar3->field97_0x94->field0_0x0 = 0;
+
+            puVar3->field97_0x94->field14_0x2c = 0;
+            puVar3->field97_0x94->field33_0x48 = 0;
+            puVar3->field97_0x94->field15_0x30 = 0;
+            puVar3->field97_0x94->field34_0x4c = 0;
+            puVar3->field97_0x94->field16_0x34 = 0;
+            puVar3->field97_0x94->field35_0x50 = 0;
+            puVar3->field0_0x0    = 1.0f;
+            puVar3->field1_0x4    = 0.0f;
+            puVar3->field2_0x8    = 0.0f;
+            puVar3->field3_0xc    = 0.0f;
+            puVar3->field4_0x10   = 0.0f;
+            puVar3->field6_0x18   = 0.0f;
+            puVar3->field7_0x1c   = 0.0f;
+            puVar3->field8_0x20   = 0.0f;
+            puVar3->field9_0x24   = 0.0f;
+            puVar3->field11_0x2c  = 0.0f;
+            puVar3->field12_0x30  = 0.0f;
+            puVar3->field13_0x34  = 0.0f;
+            puVar3->field14_0x38  = 0.0f;
+            puVar3->field5_0x14   = 1.0f;
+            puVar3->field10_0x28  = 1.0f;
+            puVar3->field15_0x3c  = 1.0f;
+            puVar3->field98_0x98  = -1000.0f;
+            puVar3->field99_0x9c  = -1000.0f;
+            puVar3->field100_0xa0 = -1000.0f;
+            puVar3->field101_0xa4 = 2000.0f;
+            puVar3->field102_0xa8 = 2000.0f;
+            puVar3->field103_0xac = 2000.0f;
+            int iVar11 = 0;
+            byte[] local_108 = new byte[256];
+            if (0 < puVar3->field96_0x90) {
+                int iVar12 = 0;
+                do {
+                    fixed (byte* p_local_108 = local_108) {
+                        _fiosUnifyFilename((nint)(*(byte**)((int)&puVar3->field97_0x94->field8_0x20 + iVar12)), (nint)p_local_108,
+                                      0x100);
+                        int i = 0;
+                        do {
+                            i++;
+                        } while (p_local_108[i] != 0);
+                        //byte* pcVar9 = local_108;
+                        //do
+                        //{
+                        //    cVar1 = *pcVar9;
+                        //    pcVar9 = pcVar9 + 1;
+                        //} while (cVar1 != '\0');
+
+                        NativeMemory.Copy(p_local_108, *(byte**)((int)&puVar3->field97_0x94->field8_0x20 + iVar12), (nuint)i);
+                    }
+
+
+                    //memcpy(*(void**)((int)&puVar3->field97_0x94->field8_0x20 + iVar12), local_108, (int)pcVar9 - (int)(local_108 + 1));
+                    iVar11 = iVar11 + 1;
+                    iVar12 = iVar12 + 0x6c;
+                } while (iVar11 < puVar3->field96_0x90);
+            }
+            return puVar3;
+        } else {
+            return _AbmapManager_AllocBuffMemory.orig_fptr(abmapManager, param_1);
+        }
+    }
+
+    int h_op1_md_draw_eiabm_sphe(int param_1, temp_FUN_00a4c8d0_struct* param_2, int node_idx, int chr_id) {
+        Matrix4x4* pMVar1;
+        VertexInfo_0x94* pVVar2;
+        float* pfVar3;
+        float fVar4;
+        short sVar5;
+        abmapVertexInfo* paVar6;
+        int iVar7;
+        int iVar8;
+        //int extraout_EDX;
+        int local_a8;
+        int local_a4;
+        float local_a0;
+        int local_9c;
+        float local_98;
+        float local_94;
+        int local_90;
+        VertexInfo_0x94* local_8c;
+        float local_88;
+        float local_84;
+        float local_80;
+        float local_7c;
+        float local_78;
+        float local_74;
+        //undefined4 local_70;
+        float fStack_6c;
+        Vector4 local_68 = new();
+        Vector4 rgba     = new();
+        Matrix4x4 local_48 = new();
+
+
+        local_68.X = 0.0078125f;
+        local_68.Y = 0.0078125f;
+        local_68.Z = 0.0078125f;
+        local_68.W = 0.0078125f;
+        local_88 = (param_2->__0x44->W).Z;
+        if (_gParticleDoNotRender == 0) {
+            local_9c = *(int*)(param_1 + 8) + param_1;
+            pMVar1 = param_2->__0x20;
+            local_90 = *(int*)(param_1 + 4);
+            local_94 = ((pMVar1->W).X / (pMVar1->W).W - 2048.0f) + 256.0f;
+            local_98 = ((pMVar1->W).Y / (pMVar1->W).W - 2048.0f) + 208.0f;
+            rgba.X = (float)(byte)param_2->rgba;
+            rgba.Y = (float)*(byte*)((int)&param_2->rgba + 1);
+            rgba.Z = (float)*(byte*)((int)&param_2->rgba + 2);
+            rgba.W = (float)(uint)*(byte*)((int)&param_2->rgba + 3);
+            _FFXVu0MulVector(&rgba, &local_68, &rgba);
+            _graphicFontGetScreenWH(&local_a8, &local_a4);
+            local_7c = (float)local_a8 * 0.001953125f;
+            local_84 = (float)local_a4 / 416.0f;
+            local_78 = (param_2->__0x20->Z).W;
+            if (float.IsNaN(local_78) != (local_78 == 0.0)) {
+                local_78 = 1.0f;
+            }
+            local_80 = (local_84 * 4.0f * local_78) / (local_7c * 3.0f);
+            local_a0 = (float)local_a8 * 0.5f;
+            local_74 = (float)local_a4 * 0.5f;
+
+            nint tempStringPointer = Marshal.StringToHGlobalAnsi("NoTexture");
+            paVar6 = _graphicAbmapGetVertexInfo((byte*)tempStringPointer, 7);
+            Marshal.FreeHGlobal(tempStringPointer);
+
+            if (-1 < chr_id) {
+                pVVar2 = paVar6->field97_0x94;
+                iVar8 = (int)(node_idx * num_characters + chr_id);
+                local_48.M11 = (float)(uint)*(byte*)(local_90 + 0x10 + param_1);
+                local_48.M12 = (float)(uint)*(byte*)(local_90 + 0x11 + param_1);
+                local_48.M13 = (float)(uint)*(byte*)(local_90 + 0x12 + param_1);
+                local_48.M14 = (float)(uint)*(byte*)(local_90 + 0x13 + param_1);
+                local_48.M21 = (float)(uint)*(byte*)(local_90 + 0x14 + param_1);
+                local_48.M22 = (float)(uint)*(byte*)(local_90 + 0x15 + param_1);
+                local_48.M23 = (float)(uint)*(byte*)(local_90 + 0x16 + param_1);
+                local_48.M24 = (float)(uint)*(byte*)(local_90 + 0x17 + param_1);
+                local_48.M31 = (float)(uint)*(byte*)(local_90 + 0x18 + param_1);
+                local_48.M32 = (float)(uint)*(byte*)(local_90 + 0x19 + param_1);
+                local_48.M33 = (float)(uint)*(byte*)(local_90 + 0x1a + param_1);
+                local_48.M34 = (float)(uint)*(byte*)(local_90 + 0x1b + param_1);
+                //_local_70 = CONCAT44(local_48.M34, local_70);
+                local_8c = (VertexInfo_0x94*)(iVar8 * 4);
+                local_48.M41 = local_48.M31;
+                local_48.M42 = local_48.M32;
+                local_48.M43 = local_48.M33;
+                local_48.M44 = local_48.M34;
+                _FFXVu0MulVector((Vector4*)&local_48.M11, &rgba, (Vector4*)&local_48.M11);
+                _FFXVu0MulVector((Vector4*)&local_48.M21, &rgba, (Vector4*)&local_48.M21);
+                _FFXVu0MulVector((Vector4*)&local_48.M31, &rgba, (Vector4*)&local_48.M31);
+                _FFXVu0MulVector((Vector4*)&local_48.M41, &rgba, (Vector4*)&local_48.M41);
+                pVVar2->field5_0x14[iVar8 * 0x10]       = local_48.M11 / 255.0f;
+                pVVar2->field5_0x14[iVar8 * 0x10 + 1]   = local_48.M12 / 255.0f;
+                pVVar2->field5_0x14[iVar8 * 0x10 + 2]   = local_48.M13 / 255.0f;
+                pVVar2->field5_0x14[iVar8 * 0x10 + 3]   = local_48.M14 / 255.0f;
+                pVVar2->field5_0x14[iVar8 * 0x10 + 4]   = local_48.M21 / 255.0f;
+                pVVar2->field5_0x14[iVar8 * 0x10 + 5]   = local_48.M22 / 255.0f;
+                pVVar2->field5_0x14[iVar8 * 0x10 + 6]   = local_48.M23 / 255.0f;
+                pVVar2->field5_0x14[iVar8 * 0x10 + 7]   = local_48.M24 / 255.0f;
+                pVVar2->field5_0x14[iVar8 * 0x10 + 8]   = local_48.M31 / 255.0f;
+                pVVar2->field5_0x14[iVar8 * 0x10 + 9]   = local_48.M32 / 255.0f;
+                pVVar2->field5_0x14[iVar8 * 0x10 + 10]  = local_48.M33 / 255.0f;
+                pVVar2->field5_0x14[iVar8 * 0x10 + 0xb] = local_48.M34 / 255.0f;
+                pVVar2->field5_0x14[iVar8 * 0x10 + 0xc] = local_48.M41 / 255.0f;
+                pVVar2->field5_0x14[iVar8 * 0x10 + 0xd] = local_48.M42 / 255.0f;
+                pVVar2->field5_0x14[iVar8 * 0x10 + 0xe] = local_48.M43 / 255.0f;
+                pVVar2->field5_0x14[iVar8 * 0x10 + 0xf] = local_48.M44 / 255.0f;
+                if (*(byte*)((int)&param_2->rgba + 3) == 0) {
+                    pVVar2->field3_0xc[iVar8 * 0xc    ] = -10000.0f;
+                    pVVar2->field3_0xc[iVar8 * 0xc + 1] = -10000.0f;
+                    pVVar2->field3_0xc[iVar8 * 0xc + 2] = local_88;
+                    pVVar2->field3_0xc[iVar8 * 0xc + 3] = -10000.0f;
+                    pVVar2->field3_0xc[iVar8 * 0xc + 4] = -10000.0f;
+                    pVVar2->field3_0xc[iVar8 * 0xc + 5] = local_88;
+                    pVVar2->field3_0xc[iVar8 * 0xc + 6] = -10000.0f;
+                    pVVar2->field3_0xc[iVar8 * 0xc + 7] = -10000.0f;
+                    pVVar2->field3_0xc[iVar8 * 0xc + 8] = local_88;
+                    fVar4 = -10000.0f;
+                    pVVar2->field3_0xc[iVar8 * 0xc + 9] = -10000.0f;
+                    //iVar7 = extraout_EDX;
+                } else {
+                    pVVar2->field3_0xc[iVar8 * 0xc] =
+                         local_7c *
+                         (local_94 +
+                         (float)(int)*(short*)(local_9c + (uint)*(ushort*)(local_90 + 0x1e + param_1) * 6) *
+                         local_80) - local_a0;
+                    pVVar2->field3_0xc[iVar8 * 0xc + 1] =
+                         local_84 *
+                         (local_98 +
+                         (float)(int)*(short*)(local_9c + 2 + (uint)*(ushort*)(local_90 + 0x1e + param_1) * 6)
+                         * local_78) - local_74;
+                    pVVar2->field3_0xc[iVar8 * 0xc + 2] = local_88;
+                    pVVar2->field3_0xc[iVar8 * 0xc + 3] =
+                         (local_94 -
+                         (float)(int)*(short*)(local_9c + (uint)*(ushort*)(local_90 + 0x20 + param_1) * 6) *
+                         local_80) * local_7c - local_a0;
+                    pVVar2->field3_0xc[iVar8 * 0xc + 4] =
+                         local_84 *
+                         (local_98 -
+                         (float)(int)*(short*)(local_9c + 2 + (uint)*(ushort*)(local_90 + 0x20 + param_1) * 6)
+                         * local_78) - local_74;
+                    pVVar2->field3_0xc[iVar8 * 0xc + 5] = local_88;
+                    pVVar2->field3_0xc[iVar8 * 0xc + 6] =
+                         ((float)(int)*(short*)(local_9c + (uint)*(ushort*)(local_90 + 0x20 + param_1) * 6) *
+                          local_80 + local_94) * local_7c - local_a0;
+                    pVVar2->field3_0xc[iVar8 * 0xc + 7] =
+                         ((float)(int)*(short*)(local_9c + 2 + (uint)*(ushort*)(local_90 + 0x20 + param_1) * 6
+                                                ) * local_78 + local_98) * local_84 - local_74;
+                    pVVar2->field3_0xc[iVar8 * 0xc + 8] = local_88;
+                    pVVar2->field3_0xc[iVar8 * 0xc + 9] =
+                         local_7c *
+                         (local_94 -
+                         (float)(int)*(short*)(local_9c + (uint)*(ushort*)(local_90 + 0x1e + param_1) * 6) *
+                         local_80) - local_a0;
+                    iVar7 = (int)*(short*)(local_9c + 2 + (uint)*(ushort*)(local_90 + 0x1e + param_1) * 6);
+                    fVar4 = local_84 * (local_98 - (float)iVar7 * local_78) - local_74;
+                    //local_70 = SUB84((double)iVar7, 0);
+                    iVar7 = local_9c;
+                }
+                pVVar2->field3_0xc[iVar8 * 0xc + 10  ] = fVar4;
+                pVVar2->field3_0xc[iVar8 * 0xc + 0xb ] = local_88;
+                pVVar2->field4_0x10[iVar8 * 0xc      ] = 0.0f;
+                pVVar2->field4_0x10[iVar8 * 0xc + 0x1] = 0.0f;
+                pVVar2->field4_0x10[iVar8 * 0xc + 0x2] = 1.0f;
+                pVVar2->field4_0x10[iVar8 * 0xc + 0x3] = 0.0f;
+                pVVar2->field4_0x10[iVar8 * 0xc + 0x4] = 0.0f;
+                pVVar2->field4_0x10[iVar8 * 0xc + 0x5] = 1.0f;
+                pVVar2->field4_0x10[iVar8 * 0xc + 0x6] = 0.0f;
+                pVVar2->field4_0x10[iVar8 * 0xc + 0x7] = 0.0f;
+                pVVar2->field4_0x10[iVar8 * 0xc + 0x8] = 1.0f;
+                pVVar2->field4_0x10[iVar8 * 0xc + 0x9] = 0.0f;
+                pVVar2->field4_0x10[iVar8 * 0xc + 0xa] = 0.0f;
+                pVVar2->field4_0x10[iVar8 * 0xc + 0xb] = 1.0f;
+                //_local_70 = CONCAT44((float)(iVar8 * 4), local_70);
+                //iVar8 = ftol((float)(iVar8 * 0xc), iVar7);
+                sVar5 = (short)(iVar8 * 4);
+                pVVar2->field7_0x1c[iVar8 * 6    ] = sVar5;
+                pVVar2->field7_0x1c[iVar8 * 6 + 1] = (short)(sVar5 + 1);
+                pVVar2->field7_0x1c[iVar8 * 6 + 2] = (short)(sVar5 + 2);
+                pVVar2->field7_0x1c[iVar8 * 6 + 3] = (short)(sVar5 + 2);
+                pVVar2->field7_0x1c[iVar8 * 6 + 4] = (short)(sVar5 + 1);
+                pVVar2->field7_0x1c[iVar8 * 6 + 5] = (short)(sVar5 + 3);
+                pVVar2->field1_0x4 = pVVar2->field1_0x4 + 4;
+                pVVar2->field2_0x8 = pVVar2->field2_0x8 + 6;
+                return 0;
+            }
+            local_8c = paVar6->field97_0x94;
+            local_48.M11 = (float)(uint)*(byte*)(local_90 + 0x10 + param_1);
+            local_48.M12 = (float)(uint)*(byte*)(local_90 + 0x11 + param_1);
+            local_48.M13 = (float)(uint)*(byte*)(local_90 + 0x12 + param_1);
+            local_48.M14 = (float)(uint)*(byte*)(local_90 + 0x13 + param_1);
+            local_48.M21 = (float)(uint)*(byte*)(local_90 + 0x14 + param_1);
+            local_48.M22 = (float)(uint)*(byte*)(local_90 + 0x15 + param_1);
+            local_48.M23 = (float)(uint)*(byte*)(local_90 + 0x16 + param_1);
+            local_48.M24 = (float)(uint)*(byte*)(local_90 + 0x17 + param_1);
+            iVar8 = (int)(node_idx * num_characters - chr_id + -1);
+            local_48.M31 = (float)(uint)*(byte*)(local_90 + 0x18 + param_1);
+            local_48.M32 = (float)(uint)*(byte*)(local_90 + 0x19 + param_1);
+            local_48.M33 = (float)(uint)*(byte*)(local_90 + 0x1a + param_1);
+            local_48.M34 = (float)(uint)*(byte*)(local_90 + 0x1b + param_1);
+            //_local_70 = CONCAT44(local_48.M34, local_70);
+            local_48.M41 = local_48.M31;
+            local_48.M42 = local_48.M32;
+            local_48.M43 = local_48.M33;
+            local_48.M44 = local_48.M34;
+            _FFXVu0MulVector((Vector4*)&local_48.M11, &rgba, (Vector4*)&local_48.M11);
+            _FFXVu0MulVector((Vector4*)&local_48.M21, &rgba, (Vector4*)&local_48.M21);
+            _FFXVu0MulVector((Vector4*)&local_48.M31, &rgba, (Vector4*)&local_48.M31);
+            _FFXVu0MulVector((Vector4*)&local_48.M41, &rgba, (Vector4*)&local_48.M41);
+            //pfVar3 = local_8c->field5_0x14;
+            local_8c->field5_0x14[iVar8 * 0x10      ] = local_48.M11 / 255.0f;
+            local_8c->field5_0x14[iVar8 * 0x10 + 1  ] = local_48.M12 / 255.0f;
+            local_8c->field5_0x14[iVar8 * 0x10 + 2  ] = local_48.M13 / 255.0f;
+            local_8c->field5_0x14[iVar8 * 0x10 + 3  ] = local_48.M14 / 255.0f;
+            local_8c->field5_0x14[iVar8 * 0x10 + 4  ] = local_48.M21 / 255.0f;
+            local_8c->field5_0x14[iVar8 * 0x10 + 5  ] = local_48.M22 / 255.0f;
+            local_8c->field5_0x14[iVar8 * 0x10 + 6  ] = local_48.M23 / 255.0f;
+            local_8c->field5_0x14[iVar8 * 0x10 + 7  ] = local_48.M24 / 255.0f;
+            local_8c->field5_0x14[iVar8 * 0x10 + 8  ] = local_48.M31 / 255.0f;
+            local_8c->field5_0x14[iVar8 * 0x10 + 9  ] = local_48.M32 / 255.0f;
+            local_8c->field5_0x14[iVar8 * 0x10 + 10 ] = local_48.M33 / 255.0f;
+            local_8c->field5_0x14[iVar8 * 0x10 + 0xb] = local_48.M34 / 255.0f;
+            local_8c->field5_0x14[iVar8 * 0x10 + 0xc] = local_48.M41 / 255.0f;
+            local_8c->field5_0x14[iVar8 * 0x10 + 0xd] = local_48.M42 / 255.0f;
+            local_8c->field5_0x14[iVar8 * 0x10 + 0xe] = local_48.M43 / 255.0f;
+            local_8c->field5_0x14[iVar8 * 0x10 + 0xf] = local_48.M44 / 255.0f;
+            if (*(byte*)((int)&param_2->rgba + 3) == 0) {
+                //pfVar3 = local_8c->field3_0xc;
+                local_8c->field3_0xc[iVar8 * 0xc      ] = -10000.0f;
+                local_8c->field3_0xc[iVar8 * 0xc + 1  ] = -10000.0f;
+                local_8c->field3_0xc[iVar8 * 0xc + 2  ] = local_88;
+                local_8c->field3_0xc[iVar8 * 0xc + 3  ] = -10000.0f;
+                local_8c->field3_0xc[iVar8 * 0xc + 4  ] = -10000.0f;
+                local_8c->field3_0xc[iVar8 * 0xc + 5  ] = local_88;
+                local_8c->field3_0xc[iVar8 * 0xc + 6  ] = -10000.0f;
+                local_8c->field3_0xc[iVar8 * 0xc + 7  ] = -10000.0f;
+                local_8c->field3_0xc[iVar8 * 0xc + 8  ] = local_88;
+                local_8c->field3_0xc[iVar8 * 0xc + 9  ] = -10000.0f;
+                local_8c->field3_0xc[iVar8 * 0xc + 10 ] = -10000.0f;
+                local_8c->field3_0xc[iVar8 * 0xc + 0xb] = local_88;
+                return 0;
+            }
+            //pfVar3 = local_8c->field3_0xc;
+            local_8c->field3_0xc[iVar8 * 0xc] =
+                 local_7c *
+                 (local_94 +
+                 (float)(int)*(short*)(local_9c + (uint)*(ushort*)(local_90 + 0x1e + param_1) * 6) *
+                 local_80) - local_a0;
+            local_8c->field3_0xc[iVar8 * 0xc + 1] =
+                 local_84 *
+                 (local_98 +
+                 (float)(int)*(short*)(local_9c + 2 + (uint)*(ushort*)(local_90 + 0x1e + param_1) * 6) *
+                 local_78) - local_74;
+            local_8c->field3_0xc[iVar8 * 0xc + 2] = local_88;
+            local_8c->field3_0xc[iVar8 * 0xc + 3] =
+                 (local_94 -
+                 (float)(int)*(short*)(local_9c + (uint)*(ushort*)(local_90 + 0x20 + param_1) * 6) *
+                 local_80) * local_7c - local_a0;
+            local_8c->field3_0xc[iVar8 * 0xc + 4] =
+                 local_84 *
+                 (local_98 -
+                 (float)(int)*(short*)(local_9c + 2 + (uint)*(ushort*)(local_90 + 0x20 + param_1) * 6) *
+                 local_78) - local_74;
+            local_8c->field3_0xc[iVar8 * 0xc + 5] = local_88;
+            local_8c->field3_0xc[iVar8 * 0xc + 6] =
+                 ((float)(int)*(short*)(local_9c + (uint)*(ushort*)(local_90 + 0x20 + param_1) * 6) *
+                  local_80 + local_94) * local_7c - local_a0;
+            local_8c->field3_0xc[iVar8 * 0xc + 7] =
+                 ((float)(int)*(short*)(local_9c + 2 + (uint)*(ushort*)(local_90 + 0x20 + param_1) * 6) *
+                  local_78 + local_98) * local_84 - local_74;
+            local_8c->field3_0xc[iVar8 * 0xc + 8] = local_88;
+            local_8c->field3_0xc[iVar8 * 0xc + 9] =
+                 local_7c *
+                 (local_94 -
+                 (float)(int)*(short*)(local_9c + (uint)*(ushort*)(local_90 + 0x1e + param_1) * 6) *
+                 local_80) - local_a0;
+            local_8c->field3_0xc[iVar8 * 0xc + 10] =
+                 local_84 *
+                 (local_98 -
+                 (float)(int)*(short*)(local_9c + 2 + (uint)*(ushort*)(local_90 + 0x1e + param_1) * 6) *
+                 local_78) - local_74;
+            local_8c->field3_0xc[iVar8 * 0xc + 0xb] = local_88;
+        }
+        return 0;
     }
 
     void h_FUN_00a5a360(Matrix4x4* param_1, SphereGridNode* node, Vec2s16* param_3, float param_4) {
