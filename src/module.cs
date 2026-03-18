@@ -155,12 +155,12 @@ public unsafe class CustomCharacterModule : FhModule {
     private FUN_00642a80 _FUN_00642a80; // => fhutil.get_fptr<FUN_00642a80>(__addr_FUN_00642a80);
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    public delegate void graphicDrawUIAbmapElement(float* param_1, byte* tex_name, uint param_3);
+    public delegate void graphicDrawUIAbmapElement(graphicDrawUIAbmapElement_param1* param_1, byte* tex_name, uint param_3);
     public const nint __addr_graphicDrawUIAbmapElement = 0x23EAE0;
     private graphicDrawUIAbmapElement _graphicDrawUIAbmapElement; // => fhutil.get_fptr<graphicDrawUIAbmapElement>(__addr_graphicDrawUIAbmapElement);
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    public delegate void* FUN_008b70e0(nint param_1, float* param_2, int* param_3);
+    public delegate void* FUN_008b70e0(nint param_1, int* param_2, int* param_3);
     public const nint __addr_FUN_008b70e0 = 0x4B70E0;
     private FUN_008b70e0 _FUN_008b70e0; // => fhutil.get_fptr<FUN_008b70e0>(__addr_FUN_008b70e0);
 
@@ -525,6 +525,25 @@ public unsafe class CustomCharacterModule : FhModule {
     public const nint __addr_fiosUnifyFilename = 0x002799d0;
     private fiosUnifyFilename _fiosUnifyFilename;
 
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    public delegate void FUN_00a51340();
+    public const nint __addr_FUN_00a51340 = 0x651340;
+    private FUN_00a51340 _FUN_00a51340;
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void FUN_00a51560(int param_1);
+    public const nint __addr_FUN_00a51560 = 0x651560;
+    private FUN_00a51560 _FUN_00a51560;
+
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    public delegate void FUN_00a4fe40();
+    public const nint __addr_FUN_00a4fe40 = 0x64FE40;
+    private FUN_00a4fe40 _FUN_00a4fe40;
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate int FUN_007f4900(int param_1, FUN_007f4900_param_2* param_2, int param_3, uint param_4);
+    public const nint __addr_FUN_007f4900 = 0x3F4900;
+    private FUN_007f4900 _FUN_007f4900;
 
 
     // Hooks
@@ -703,6 +722,10 @@ public unsafe class CustomCharacterModule : FhModule {
     public const nint __addr_op1_md_draw_eiabm_sphe = 0x668140;
     private FhMethodHandle<op1_md_draw_eiabm_sphe> _op1_md_draw_eiabm_sphe;
 
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    public delegate void FUN_00a53510();
+    public const nint __addr_FUN_00a53510 = 0x653510;
+    private FhMethodHandle<FUN_00a53510> _FUN_00a53510;
 
 
 
@@ -824,6 +847,10 @@ public unsafe class CustomCharacterModule : FhModule {
         _graphicFontGetScreenWH = FhUtil.get_fptr<graphicFontGetScreenWH>(__addr_graphicFontGetScreenWH);
         _graphicAbmapGetVertexInfo = FhUtil.get_fptr<graphicAbmapGetVertexInfo>(__addr_graphicAbmapGetVertexInfo);
         _fiosUnifyFilename = FhUtil.get_fptr<fiosUnifyFilename>(__addr_fiosUnifyFilename);
+        _FUN_00a51340 = FhUtil.get_fptr<FUN_00a51340>(__addr_FUN_00a51340);
+        _FUN_00a51560 = FhUtil.get_fptr<FUN_00a51560>(__addr_FUN_00a51560);
+        _FUN_00a4fe40 = FhUtil.get_fptr<FUN_00a4fe40>(__addr_FUN_00a4fe40);
+        _FUN_007f4900 = FhUtil.get_fptr<FUN_007f4900>(__addr_FUN_007f4900);
 
 
 
@@ -863,6 +890,8 @@ public unsafe class CustomCharacterModule : FhModule {
 
         _op1_md_draw_eiabm_sphe = new FhMethodHandle<op1_md_draw_eiabm_sphe>(this, game, __addr_op1_md_draw_eiabm_sphe, h_op1_md_draw_eiabm_sphe);
 
+        _FUN_00a53510 = new FhMethodHandle<FUN_00a53510>(this, game, __addr_FUN_00a53510, h_FUN_00a53510);
+
         _FUN_00a4b4b0 = new FhMethodHandle<FUN_00a4b4b0>(this, game, __addr_FUN_00a4b4b0, h_FUN_00a4b4b0);
 
         _FUN_00a53de0 = new FhMethodHandle<FUN_00a53de0>(this, game, __addr_FUN_00a53de0, h_FUN_00a53de0);
@@ -881,12 +910,14 @@ public unsafe class CustomCharacterModule : FhModule {
         p_DAT_00c86660 = (int*)NativeMemory.AllocZeroed(sizeof(int) * (num_characters+1)); // Extra is used for selection circle
         p_DAT_00c86644 = (int*)NativeMemory.AllocZeroed(sizeof(int) * num_characters);
         p_DAT_00c8659c = (int*)NativeMemory.AllocZeroed(sizeof(int) * num_characters);
+        p_DAT_00c865bc = (int*)NativeMemory.AllocZeroed(sizeof(int) * num_characters);
 
         Vector4* original_Vector4f_ARRAY_00c86010 = FhUtil.ptr_at<Vector4>(0x886010);
         int* original_p_DAT_00c86580 = FhUtil.ptr_at<int>(0x886580);
         int* original_p_DAT_00c86660 = FhUtil.ptr_at<int>(0x886660);
         int* original_p_DAT_00c86644 = FhUtil.ptr_at<int>(0x886644);
         int* original_p_DAT_00c8659c = FhUtil.ptr_at<int>(0x88659C);
+        int* original_p_DAT_00c865bc = FhUtil.ptr_at<int>(0x8865BC);
 
         for (int i = 0; i < 7; i++) {
             Vector4f_ARRAY_00c86010[i] = original_Vector4f_ARRAY_00c86010[i];
@@ -894,6 +925,7 @@ public unsafe class CustomCharacterModule : FhModule {
             p_DAT_00c86660[i] = original_p_DAT_00c86660[i];
             p_DAT_00c86644[i] = original_p_DAT_00c86644[i];
             p_DAT_00c8659c[i] = original_p_DAT_00c8659c[i];
+            p_DAT_00c865bc[i] = original_p_DAT_00c865bc[i*5]; // Values inbetween seem unused?
         }
         p_DAT_00c86660[num_characters] = original_p_DAT_00c86660[7]; // Selection circle
 
@@ -903,6 +935,7 @@ public unsafe class CustomCharacterModule : FhModule {
         p_DAT_00c86660[7] = original_p_DAT_00c86660[0];
         p_DAT_00c86644[7] = original_p_DAT_00c86644[0];
         p_DAT_00c8659c[7] = original_p_DAT_00c8659c[0];
+        p_DAT_00c865bc[7] = original_p_DAT_00c865bc[0];
 
 
         return _FUN_00a44d30.hook() &&
@@ -935,6 +968,7 @@ public unsafe class CustomCharacterModule : FhModule {
                _FUN_00a50ed0.hook() &&
                _FUN_00a534c0.hook() &&
                _op1_md_draw_eiabm_sphe.hook() && _AbmapManager_AllocBuffMemory.hook() && // Testing
+               _FUN_00a53510.hook() &&
                _FUN_00a4b4b0.hook() &&
                _FUN_00a53de0.hook() &&
                _eiAbmParaGet.hook();
@@ -1053,10 +1087,11 @@ public unsafe class CustomCharacterModule : FhModule {
     //private int* p_DAT_00c86580 => FhUtil.ptr_at<int>(0x886580); // Selected character aura color?
     //private int* p_DAT_00c86660 => FhUtil.ptr_at<int>(0x886660); // Circle color?
     private Vector4* Vector4f_ARRAY_00c86010;
-    private int* p_DAT_00c86580;
-    private int* p_DAT_00c86660;
-    private int* p_DAT_00c86644;
-    private int* p_DAT_00c8659c;
+    private int* p_DAT_00c86580; // Aura color
+    private int* p_DAT_00c86660; // Circle color
+    private int* p_DAT_00c86644; // Inactive indicator color
+    private int* p_DAT_00c8659c; // Active indicator color
+    private int* p_DAT_00c865bc; // Highligted nodes color
 
     private float* eff_sin_t => FhUtil.ptr_at<float>(0x844BE0);
 
@@ -1550,6 +1585,19 @@ public unsafe class CustomCharacterModule : FhModule {
         return;
     }
 
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct graphicDrawUIAbmapElement_param1 {
+        public InlineArray4<float> floats0;
+        public InlineArray4<int  > ints0;
+        public InlineArray4<float> floats1;
+        public InlineArray4<int  > ints1;
+        public InlineArray4<float> floats2;
+        public InlineArray4<int  > ints2;
+        public InlineArray4<float> floats3;
+        public InlineArray4<int  > ints3;
+    }
+
     void h_FUN_00a4b790() {
         //var _asmreg_ACC  = asmreg_ACC;
         //var _asmreg_vf26 = asmreg_vf26;
@@ -1574,13 +1622,13 @@ public unsafe class CustomCharacterModule : FhModule {
         float extraout_ST1_00;
         int local_294;
         float *local_290;
-        float local_28c;
+        int local_28c;
         int local_288 = 0;
         int local_284;
         int *local_280;
         int local_27c;
         int local_278;
-        float *local_274;
+        int local_274;
         float local_270 = 0f;
         float local_26c = 0f;
         int local_268;
@@ -1594,297 +1642,294 @@ public unsafe class CustomCharacterModule : FhModule {
             float local_24c;
             float local_248;
             float local_244;
-            float[] _local_240 = new float[32];
-            fixed (float* local_240 = _local_240) {
+            graphicDrawUIAbmapElement_param1 local_240 = new();
+            int[] _local_1a8 = new int[4 * (num_characters+1)];
+            fixed (int* local_1a8 = _local_1a8) {
+                int[] _local_128 = new int[2];
+                fixed (int* local_128 = _local_128) {
+                    float[] _local_118 = new float[3];
+                    fixed (float* local_118 = _local_118) {
+                        byte[] _local_108 = new byte[256];
+                        fixed (byte* local_108 = _local_108) {
 
-                int[] _local_1a8 = new int[32];
-                fixed (int* local_1a8 = _local_1a8) {
-                    int[] _local_128 = new int[2];
-                    fixed (int* local_128 = _local_128) {
-                        float[] _local_118 = new float[3];
-                        fixed (float* local_118 = _local_118) {
-                            byte[] _local_108 = new byte[256];
-                            fixed (byte* local_108 = _local_108) {
+                            piVar3 = (float*)_user_malloc(0x1ec);
+                            Span<float> _piVar3 = new Span<float>(piVar3, 0x7b);
+                            fVar9 = 0f;
+                            fVar8 = 16.0f;
+                            //local_274 = &custom_party_infos[0].pos_circle_radius;
+                            var chr_info = &custom_party_infos[0];
 
-                                piVar3 = (float*)_user_malloc(0x1ec);
-                                Span<float> _piVar3 = new Span<float>(piVar3, 0x7b);
+                            local_268 = (int)num_characters;
+                            piVar7 = local_1a8 + 3;
+                            local_290 = piVar3;
+                            do {
+                                asmreg_vf27->X = chr_info->label_pos.X;
+                                asmreg_vf27->Y = chr_info->label_pos.Y;
+                                asmreg_vf27->Z = chr_info->label_pos.Z;
+                                asmreg_vf27->W = chr_info->label_pos.W;
+                                asmreg_vf28->X = (lpamng->__0x113E0).M11;
+                                asmreg_vf28->Y = (lpamng->__0x113E0).M12;
+                                asmreg_vf28->Z = (lpamng->__0x113E0).M13;
+                                asmreg_vf28->W = (lpamng->__0x113E0).M14;
+                                asmreg_vf29->X = (lpamng->__0x113E0).M21;
+                                asmreg_vf29->Y = (lpamng->__0x113E0).M22;
+                                asmreg_vf29->Z = (lpamng->__0x113E0).M23;
+                                asmreg_vf29->W = (lpamng->__0x113E0).M24;
+                                asmreg_vf30->X = (lpamng->__0x113E0).M31;
+                                asmreg_vf30->Y = (lpamng->__0x113E0).M32;
+                                asmreg_vf30->Z = (lpamng->__0x113E0).M33;
+                                asmreg_vf30->W = (lpamng->__0x113E0).M34;
+                                asmreg_vf31->X = (lpamng->__0x113E0).M41;
+                                asmreg_vf31->Y = (lpamng->__0x113E0).M42;
+                                asmreg_vf31->Z = (lpamng->__0x113E0).M43;
+                                asmreg_vf31->W = (lpamng->__0x113E0).M44;
+                                asmreg_ACC->X = asmreg_vf27->Z * asmreg_vf30->X +
+                                                asmreg_vf27->Y * asmreg_vf29->X + asmreg_vf27->X * asmreg_vf28->X;
+                                asmreg_ACC->Y = asmreg_vf30->Y * asmreg_vf27->Z +
+                                                asmreg_vf29->Y * asmreg_vf27->Y + asmreg_vf28->Y * asmreg_vf27->X;
+                                asmreg_ACC->Z = asmreg_vf30->Z * asmreg_vf27->Z +
+                                                asmreg_vf29->Z * asmreg_vf27->Y + asmreg_vf28->Z * asmreg_vf27->X;
+                                *piVar7 = 0;
+                                asmreg_ACC->W = asmreg_vf27->Z * asmreg_vf30->W +
+                                                asmreg_vf27->Y * asmreg_vf29->W + asmreg_vf27->X * asmreg_vf28->W;
+                                asmreg_vf26->X = asmreg_ACC->X + asmreg_vf0->W * asmreg_vf31->X;
+                                asmreg_vf26->Y = asmreg_vf31->Y * asmreg_vf0->W + asmreg_ACC->Y;
+                                asmreg_vf26->Z = asmreg_vf31->Z * asmreg_vf0->W + asmreg_ACC->Z;
+                                asmreg_vf26->W = asmreg_vf0->W * asmreg_vf31->W + asmreg_ACC->W;
+                                piVar3[0xc] = asmreg_vf26->X;
+                                piVar3[0xd] = asmreg_vf26->Y;
+                                piVar3[0xe] = asmreg_vf26->Z;
+                                piVar3[0xf] = asmreg_vf26->W;
+                                if ((fVar9 < chr_info->pos_circle_radius != (float.IsNaN(fVar9) || float.IsNaN(chr_info->pos_circle_radius))) &&
+                                   (fVar9 < piVar3[0xf] != (float.IsNaN(fVar9) || float.IsNaN(piVar3[0xf])))) {
+                                    asmreg_vf4->W = piVar3[0xf];
+                                    asmreg_vf5->X = piVar3[0xf];
+                                    iVar6 = 0;
+                                    *_asmreg_Q = asmreg_vf0->W / asmreg_vf5->X;
+                                    asmreg_vf4->X = *_asmreg_Q * piVar3[0xc];
+                                    asmreg_vf4->Y = piVar3[0xd] * *_asmreg_Q;
+                                    asmreg_vf4->Z = *_asmreg_Q * piVar3[0xe];
+                                    piVar3[0xc] = asmreg_vf4->X;
+                                    piVar3[0xd] = asmreg_vf4->Y;
+                                    piVar3[0xe] = asmreg_vf4->Z;
+                                    piVar3[0xf] = asmreg_vf4->W;
+                                    asmreg_vf8->X = piVar3[0xc];
+                                    asmreg_vf8->Y = piVar3[0xd];
+                                    asmreg_vf8->Z = piVar3[0xe];
+                                    asmreg_vf8->W = piVar3[0xf];
+                                    local_260[0] = piVar3[0xc];
+                                    local_260[1] = piVar3[0xd];
+                                    local_260[2] = piVar3[0xe];
+                                    local_260[3] = piVar3[0xf];
+                                    //local_28c = BitConverter.SingleToInt32Bits(asmreg_vf8->Z);
+                                    //local_284 = BitConverter.SingleToInt32Bits(asmreg_vf8->X);
+                                    //local_280 = (int*)BitConverter.SingleToInt32Bits(asmreg_vf8->Y);
+                                    //local_264 = asmreg_vf8->W;
+                                    do {
+                                        iVar4 = (int)((float)(*(local_260 + iVar6) * fVar8));
+                                        *(int*)(asmreg_vf7 + iVar6) = iVar4;
+                                        iVar6 = iVar6 + 1;
+                                        //fVar8 = extraout_ST1;
+                                    } while (iVar6 < 2);
+                                    local_260[4] = asmreg_vf8->X;
+                                    local_260[5] = asmreg_vf8->Y;
+                                    local_260[6] = asmreg_vf8->Z;
+                                    local_260[7] = asmreg_vf8->W;
+                                    asmreg_vf7->Z = (float)(int)(asmreg_vf8->Z);
+                                    asmreg_vf7->W = (float)(int)(local_260[7]);
+                                    piVar3[0x18] = asmreg_vf7->X;
+                                    piVar3[0x19] = asmreg_vf7->Y;
+                                    piVar3[0x1a] = asmreg_vf7->Z;
+                                    piVar3[0x1b] = asmreg_vf7->W;
+                                    piVar7[-3] = BitConverter.SingleToInt32Bits(piVar3[0x18]) >> 4;
+                                    piVar7[-2] = BitConverter.SingleToInt32Bits(piVar3[0x19]) >> 4;
+                                    *piVar7 = 1;
+                                    //fVar9 = extraout_ST0;
+                                    //fVar8 = extraout_ST1_00;
+                                }
+                                //local_274 = local_274 + 0x14;
+                                chr_info += 1;
+                                piVar7 = piVar7 + 4;
+                                local_268 = local_268 + -1;
+                            } while (local_268 != 0);
+                            local_280 = local_1a8;
+                            local_284 = (int)num_characters;
+                            local_274 = 0;
+                            pSVar5 = custom_party_infos;
+                            var temp = &custom_party_infos[0];
+                            local_268 = 0;
+                            do {
+                                if ((fVar9 < pSVar5->pos_circle_radius ==
+                                     (float.IsNaN(fVar9) || float.IsNaN(pSVar5->pos_circle_radius))) || (local_280[3] == 0))
+                                    goto LAB_00a4c3cd;
+                                local_268 = *local_280 + -0x800;
+                                local_118[0] = (float)local_268;
+                                bVar2 = (byte)(pSVar5->__0x4E & 3);
+                                if ((bVar2 == 0) || (bVar2 == 2)) {
+                                    local_118[1] = ((pSVar5->pos).X - local_118[0]) + (pSVar5->pos).Y;
+                                }
+                                else {
+                                    local_118[1] = (pSVar5->pos).Y - ((pSVar5->pos).X - local_118[0]);
+                                }
+                                local_118[2] = 1.0f;
+                                _FUN_00642a80(local_128, local_118);
+                                iVar6 = local_128[0] + 0x100;
+                                iVar4 = local_128[1] + 0xd0;
+                                if (pSVar5->__0x46 != 0) {
+                                    iVar6 = iVar6 + (pSVar5->__0x46 >> 4);
+                                }
+                                if (pSVar5->__0x48 != 0) {
+                                    iVar4 = iVar4 + (pSVar5->__0x48 >> 4);
+                                }
+                                local_264 = (uint)(local_274 != lpamng->current_chr_id ? 1 : 0);
+                                local_268 = (pSVar5->__0x38 + pSVar5->name_width);
+                                local_27c = iVar6;
+                                local_278 = iVar4;
+                                //local_268 = local_268; // ???
+                                local_294 = 0x13;
+                                switch (pSVar5->__0x4E & 3) {
+                                    case 0:
+                                        local_26c = 0.25f;
+                                        break;
+                                    case 1:
+                                        local_26c = 0.51464844f;
+                                        iVar6 = iVar6 + (-7 - local_268);
+                                        local_27c = iVar6;
+                                        break;
+                                    case 2:
+                                        local_26c = 0.51464844f;
+                                        iVar6 = iVar6 + (-7 - local_268);
+                                        local_27c = iVar6;
+                                        goto LAB_00a4bdd3;
+                                    case 3:
+                                        local_26c = 0.25f;
+                                    LAB_00a4bdd3:
+                                        local_288 = 1;
+                                        local_270 = 0.119140625f;
+                                        goto default;
+                                    default:
+                                        goto switchD_00a4bd71_caseD_4;
+                                }
+                                iVar4 = iVar4 + -0x13;
+                                local_270 = 0.18554688f;
+                                local_288 = 0x13;
+                                local_278 = iVar4;
+                            switchD_00a4bd71_caseD_4:
+
+                                if (!(0.5 < local_26c == float.IsNaN(local_26c))) {
+                                    if (local_264 == 1.0) local_26c = 0.76464844f;
+                                    LAB_00a4be2f:
+                                    local_240.floats0[0] = local_268 + iVar6;
+                                    local_240.floats0[1] = local_278;
+                                    local_240.floats1[0] = iVar6 + 7 + local_268;
+                                    local_240.floats2[1] = iVar4 + 0x13;
+                                    local_240.ints0[0] = 0x80;
+                                    local_240.ints0[1] = 0x80;
+                                    local_240.ints0[2] = 0x80;
+                                    local_240.ints0[3] = 0x80;
+                                    local_240.ints1[0] = 0x80;
+                                    local_240.ints1[1] = 0x80;
+                                    local_240.ints1[2] = 0x80;
+                                    local_240.ints1[3] = 0x80;
+                                    local_240.ints2[0] = 0x80;
+                                    local_240.floats0[2] = local_26c + 0.20996094f;
+                                    local_240.ints2[1] = 0x80;
+                                    local_240.ints2[2] = 0x80;
+                                    local_240.ints2[3] = 0x80;
+                                    local_240.ints3[0] = 0x80;
+                                    local_240.ints3[1] = 0x80;
+                                    local_240.ints3[2] = 0x80;
+                                    local_240.ints3[3] = 0x80;
+                                    local_240.floats0[3] = local_270;
+                                    local_240.floats1[2] = local_26c + 0.23632813f;
+                                    local_240.floats1[3] = local_270;
+                                    local_264 = local_270 + 0.05078125f;
+                                    local_240.floats1[1] = local_240.floats0[1];
+                                    local_240.floats2[0] = local_240.floats0[0];
+                                    local_240.floats2[2] = local_240.floats0[2];
+                                    local_240.floats2[3] = local_264;
+                                    local_240.floats3[0] = local_240.floats1[0];
+                                    local_240.floats3[1] = local_240.floats2[1];
+                                    local_240.floats3[2] = local_240.floats1[2];
+                                    local_240.floats3[3] = local_264;
+                                    _graphicDrawUIAbmapElement(&local_240, local_108, 5);
+                                    local_264 = (float)local_27c;
+                                    local_240.floats1[2] = local_26c;
+                                    local_240.floats3[2] = local_26c;
+                                    local_240.floats1[0] = local_264;
+                                    local_240.floats3[0] = local_264;
+                                }
+                                else {
+                                    if (local_264 == 1.0) local_26c = 0.0f;
+                                LAB_00a4c0e9:
+                                    local_240.floats0[0] = (float)local_27c;
+                                    local_240.floats0[1] = (float)local_278;
+                                    local_240.floats1[0] = (float)(iVar6 + 7);
+                                    local_240.floats2[1] = (float)(iVar4 + 0x13);
+                                    local_240.ints0[0] = 0x80;
+                                    local_240.ints0[1] = 0x80;
+                                    local_240.ints0[2] = 0x80;
+                                    local_240.ints0[3] = 0x80;
+                                    local_240.ints1[0] = 0x80;
+                                    local_240.ints1[1] = 0x80;
+                                    local_240.ints1[2] = 0x80;
+                                    local_240.ints1[3] = 0x80;
+                                    local_240.ints2[0] = 0x80;
+                                    local_240.ints2[1] = 0x80;
+                                    local_240.floats0[3] = local_270;
+                                    local_240.ints2[2] = 0x80;
+                                    local_240.ints2[3] = 0x80;
+                                    local_240.floats1[2] = local_26c + 0.026367188f;
+                                    local_240.ints3[0] = 0x80;
+                                    local_240.ints3[1] = 0x80;
+                                    local_240.ints3[2] = 0x80;
+                                    local_240.ints3[3] = 0x80;
+                                    local_240.floats1[3] = local_270;
+                                    local_264 = local_270 + 0.05078125f;
+                                    local_240.floats0[2] = local_26c;
+                                    local_240.floats1[1] = local_240.floats0[1];
+                                    local_240.floats2[0] = local_240.floats0[0];
+                                    local_240.floats2[2] = local_26c;
+                                    local_240.floats2[3] = local_264;
+                                    local_240.floats3[0] = local_240.floats1[0];
+                                    local_240.floats3[1] = local_240.floats2[1];
+                                    local_240.floats3[2] = local_240.floats1[2];
+                                    local_240.floats3[3] = local_264;
+                                    _graphicDrawUIAbmapElement(&local_240, local_108, 5);
+                                    local_240.floats0[0] = (float)(local_268 + 7 + iVar6);
+                                    local_264 = local_26c + 0.23632813f;
+                                    local_240.floats0[2] = local_264;
+                                    local_240.floats2[0] = local_240.floats0[0];
+                                    local_240.floats2[2] = local_264;
+                                }
+                                _graphicDrawUIAbmapElement(&local_240, local_108, 5);
+                                _FUN_008b70e0((nint)pSVar5->chr_name, &local_28c, &local_294);
+                                bVar2 = (byte)(pSVar5->__0x4E & 3);
+                                if ((bVar2 == 1) || (bVar2 == 2)) {
+                                    x = ((float)local_268 - local_28c) * 0.5f;
+                                }
+                                else {
+                                    x = ((float)local_268 - local_28c) * 0.5f + 7.0f;
+                                }
+                                local_268 = local_28c;
+                                local_268 = (int)(x);
+                                plVar1 = lpamng;
+                                iVar4 = pSVar5->__0x4C + local_288 + local_278;
+                                iVar6 = (int)((lpamng->zoom_vector).Y * 100.0);
+                                *p_ppvCurPrimp = _FUN_008e8fb0(*p_ppvCurPrimp + 0x10, 0xffffffff, pSVar5->chr_name,
+                                                           local_27c + local_268, iVar4, 0, 0, 0x80, 0x80, 0x80,
+                                                           plVar1->__0x115B9, iVar6);
                                 fVar9 = 0f;
-                                fVar8 = 16.0f;
-                                //local_274 = &custom_party_infos[0].pos_circle_radius;
-                                var chr_info = &custom_party_infos[0];
-
-                                local_268 = 7;
-                                piVar7 = local_1a8 + 3;
-                                local_290 = piVar3;
-                                do {
-                                    asmreg_vf27->X = chr_info->label_pos.X;
-                                    asmreg_vf27->Y = chr_info->label_pos.Y;
-                                    asmreg_vf27->Z = chr_info->label_pos.Z;
-                                    asmreg_vf27->W = chr_info->label_pos.W;
-                                    asmreg_vf28->X = (lpamng->__0x113E0).M11;
-                                    asmreg_vf28->Y = (lpamng->__0x113E0).M12;
-                                    asmreg_vf28->Z = (lpamng->__0x113E0).M13;
-                                    asmreg_vf28->W = (lpamng->__0x113E0).M14;
-                                    asmreg_vf29->X = (lpamng->__0x113E0).M21;
-                                    asmreg_vf29->Y = (lpamng->__0x113E0).M22;
-                                    asmreg_vf29->Z = (lpamng->__0x113E0).M23;
-                                    asmreg_vf29->W = (lpamng->__0x113E0).M24;
-                                    asmreg_vf30->X = (lpamng->__0x113E0).M31;
-                                    asmreg_vf30->Y = (lpamng->__0x113E0).M32;
-                                    asmreg_vf30->Z = (lpamng->__0x113E0).M33;
-                                    asmreg_vf30->W = (lpamng->__0x113E0).M34;
-                                    asmreg_vf31->X = (lpamng->__0x113E0).M41;
-                                    asmreg_vf31->Y = (lpamng->__0x113E0).M42;
-                                    asmreg_vf31->Z = (lpamng->__0x113E0).M43;
-                                    asmreg_vf31->W = (lpamng->__0x113E0).M44;
-                                    asmreg_ACC->X = asmreg_vf27->Z * asmreg_vf30->X +
-                                                    asmreg_vf27->Y * asmreg_vf29->X + asmreg_vf27->X * asmreg_vf28->X;
-                                    asmreg_ACC->Y = asmreg_vf30->Y * asmreg_vf27->Z +
-                                                    asmreg_vf29->Y * asmreg_vf27->Y + asmreg_vf28->Y * asmreg_vf27->X;
-                                    asmreg_ACC->Z = asmreg_vf30->Z * asmreg_vf27->Z +
-                                                    asmreg_vf29->Z * asmreg_vf27->Y + asmreg_vf28->Z * asmreg_vf27->X;
-                                    *piVar7 = 0;
-                                    asmreg_ACC->W = asmreg_vf27->Z * asmreg_vf30->W +
-                                                    asmreg_vf27->Y * asmreg_vf29->W + asmreg_vf27->X * asmreg_vf28->W;
-                                    asmreg_vf26->X = asmreg_ACC->X + asmreg_vf0->W * asmreg_vf31->X;
-                                    asmreg_vf26->Y = asmreg_vf31->Y * asmreg_vf0->W + asmreg_ACC->Y;
-                                    asmreg_vf26->Z = asmreg_vf31->Z * asmreg_vf0->W + asmreg_ACC->Z;
-                                    asmreg_vf26->W = asmreg_vf0->W * asmreg_vf31->W + asmreg_ACC->W;
-                                    piVar3[0xc] = asmreg_vf26->X;
-                                    piVar3[0xd] = asmreg_vf26->Y;
-                                    piVar3[0xe] = asmreg_vf26->Z;
-                                    piVar3[0xf] = asmreg_vf26->W;
-                                    if ((fVar9 < chr_info->pos_circle_radius != (float.IsNaN(fVar9) || float.IsNaN(chr_info->pos_circle_radius))) &&
-                                       (fVar9 < piVar3[0xf] != (float.IsNaN(fVar9) || float.IsNaN(piVar3[0xf])))) {
-                                        asmreg_vf4->W = piVar3[0xf];
-                                        asmreg_vf5->X = piVar3[0xf];
-                                        iVar6 = 0;
-                                        *_asmreg_Q = asmreg_vf0->W / asmreg_vf5->X;
-                                        asmreg_vf4->X = *_asmreg_Q * piVar3[0xc];
-                                        asmreg_vf4->Y = piVar3[0xd] * *_asmreg_Q;
-                                        asmreg_vf4->Z = *_asmreg_Q * piVar3[0xe];
-                                        piVar3[0xc] = asmreg_vf4->X;
-                                        piVar3[0xd] = asmreg_vf4->Y;
-                                        piVar3[0xe] = asmreg_vf4->Z;
-                                        piVar3[0xf] = asmreg_vf4->W;
-                                        asmreg_vf8->X = piVar3[0xc];
-                                        asmreg_vf8->Y = piVar3[0xd];
-                                        asmreg_vf8->Z = piVar3[0xe];
-                                        asmreg_vf8->W = piVar3[0xf];
-                                        local_260[0] = piVar3[0xc];
-                                        local_260[1] = piVar3[0xd];
-                                        local_260[2] = piVar3[0xe];
-                                        local_260[3] = piVar3[0xf];
-                                        local_28c = asmreg_vf8->Z;
-                                        local_284 = BitConverter.SingleToInt32Bits(asmreg_vf8->X);
-                                        local_280 = (int*)BitConverter.SingleToInt32Bits(asmreg_vf8->Y);
-                                        local_264 = asmreg_vf8->W;
-                                        do {
-                                            iVar4 = (int)((float)(*(local_260 + iVar6) * fVar8));
-                                            *(int*)(asmreg_vf7 + iVar6) = iVar4;
-                                            iVar6 = iVar6 + 1;
-                                            //fVar8 = extraout_ST1;
-                                        } while (iVar6 < 2);
-                                        local_260[4] = (float)local_284;
-                                        local_260[5] = (float)(int)local_280;
-                                        local_260[6] = local_28c;
-                                        local_260[7] = local_264;
-                                        asmreg_vf7->Z = (float)(int)(local_28c);
-                                        asmreg_vf7->W = (float)(int)(local_260[7]);
-                                        piVar3[0x18] = asmreg_vf7->X;
-                                        piVar3[0x19] = asmreg_vf7->Y;
-                                        piVar3[0x1a] = asmreg_vf7->Z;
-                                        piVar3[0x1b] = asmreg_vf7->W;
-                                        piVar7[-3] = BitConverter.SingleToInt32Bits(piVar3[0x18]) >> 4;
-                                        piVar7[-2] = BitConverter.SingleToInt32Bits(piVar3[0x19]) >> 4;
-                                        *piVar7 = 1;
-                                        //fVar9 = extraout_ST0;
-                                        //fVar8 = extraout_ST1_00;
-                                    }
-                                    //local_274 = local_274 + 0x14;
-                                    chr_info += 1;
-                                    piVar7 = piVar7 + 4;
-                                    local_268 = local_268 + -1;
-                                } while (local_268 != 0);
-                                local_280 = local_1a8;
-                                local_284 = 7;
-                                local_274 = (float*)0x0;
-                                pSVar5 = custom_party_infos;
-                                var temp = &custom_party_infos[0];
-                                local_268 = 0;
-                                do {
-                                    if ((fVar9 < pSVar5->pos_circle_radius ==
-                                         (float.IsNaN(fVar9) || float.IsNaN(pSVar5->pos_circle_radius))) || (local_280[3] == 0))
-                                        goto LAB_00a4c3cd;
-                                    local_268 = *local_280 + -0x800;
-                                    local_118[0] = (float)local_268;
-                                    bVar2 = (byte)(pSVar5->__0x4E & 3);
-                                    if ((bVar2 == 0) || (bVar2 == 2)) {
-                                        local_118[1] = ((pSVar5->pos).X - local_118[0]) + (pSVar5->pos).Y;
-                                    }
-                                    else {
-                                        local_118[1] = (pSVar5->pos).Y - ((pSVar5->pos).X - local_118[0]);
-                                    }
-                                    local_118[2] = 1.0f;
-                                    _FUN_00642a80(local_128, local_118);
-                                    iVar6 = local_128[0] + 0x100;
-                                    iVar4 = local_128[1] + 0xd0;
-                                    if (pSVar5->__0x46 != 0) {
-                                        iVar6 = iVar6 + (pSVar5->__0x46 >> 4);
-                                    }
-                                    if (pSVar5->__0x48 != 0) {
-                                        iVar4 = iVar4 + (pSVar5->__0x48 >> 4);
-                                    }
-                                    local_264 = (float)(uint)(local_274 != (float*)(uint)lpamng->current_chr_id ? 1 : 0);
-                                    local_268 = (pSVar5->__0x38 + pSVar5->name_width);
-                                    local_27c = iVar6;
-                                    local_278 = iVar4;
-                                    //local_268 = local_268; // ???
-                                    local_294 = 0x13;
-                                    switch (pSVar5->__0x4E & 3) {
-                                        case 0:
-                                            local_26c = 0.25f;
-                                            break;
-                                        case 1:
-                                            local_26c = 0.51464844f;
-                                            iVar6 = iVar6 + (-7 - local_268);
-                                            local_27c = iVar6;
-                                            break;
-                                        case 2:
-                                            local_26c = 0.51464844f;
-                                            iVar6 = iVar6 + (-7 - local_268);
-                                            local_27c = iVar6;
-                                            goto LAB_00a4bdd3;
-                                        case 3:
-                                            local_26c = 0.25f;
-                                        LAB_00a4bdd3:
-                                            local_288 = 1;
-                                            local_270 = 0.119140625f;
-                                            goto default;
-                                        default:
-                                            goto switchD_00a4bd71_caseD_4;
-                                    }
-                                    iVar4 = iVar4 + -0x13;
-                                    local_270 = 0.18554688f;
-                                    local_288 = 0x13;
-                                    local_278 = iVar4;
-                                switchD_00a4bd71_caseD_4:
-
-                                    if (!(0.5 < local_26c == float.IsNaN(local_26c))) {
-                                        if (local_264 == 1.0) local_26c = 0.76464844f;
-                                        LAB_00a4be2f:
-                                        local_240[0] = (float)(local_268 + iVar6);
-                                        local_240[1] = (float)local_278;
-                                        local_240[8] = (float)(iVar6 + 7 + local_268);
-                                        local_240[0x11] = (float)(iVar4 + 0x13);
-                                        local_240[4] = 1.79366e-43f;
-                                        local_240[5] = 1.79366e-43f;
-                                        local_240[6] = 1.79366e-43f;
-                                        local_240[7] = 1.79366e-43f;
-                                        local_240[0xc] = 1.79366e-43f;
-                                        local_240[0xd] = 1.79366e-43f;
-                                        local_240[0xe] = 1.79366e-43f;
-                                        local_240[0xf] = 1.79366e-43f;
-                                        local_240[0x14] = 1.79366e-43f;
-                                        local_240[2] = local_26c + 0.20996094f;
-                                        local_240[0x15] = 1.79366e-43f;
-                                        local_240[0x16] = 1.79366e-43f;
-                                        local_240[0x17] = 1.79366e-43f;
-                                        local_240[0x1c] = 1.79366e-43f;
-                                        local_240[0x1d] = 1.79366e-43f;
-                                        local_240[0x1e] = 1.79366e-43f;
-                                        local_240[0x1f] = 1.79366e-43f;
-                                        local_240[3] = local_270;
-                                        local_240[10] = local_26c + 0.23632813f;
-                                        local_240[0xb] = local_270;
-                                        local_264 = local_270 + 0.05078125f;
-                                        local_240[9] = local_240[1];
-                                        local_240[0x10] = local_240[0];
-                                        local_240[0x12] = local_240[2];
-                                        local_240[0x13] = local_264;
-                                        local_240[0x18] = local_240[8];
-                                        local_240[0x19] = local_240[0x11];
-                                        local_240[0x1a] = local_240[10];
-                                        local_240[0x1b] = local_264;
-                                        _graphicDrawUIAbmapElement(local_240, local_108, 5);
-                                        local_264 = (float)local_27c;
-                                        local_240[10] = local_26c;
-                                        local_240[0x1a] = local_26c;
-                                        local_240[8] = local_264;
-                                        local_240[0x18] = local_264;
-                                    }
-                                    else {
-                                        if (local_264 == 1.0) local_26c = 0.0f;
-                                    LAB_00a4c0e9:
-                                        local_240[0] = (float)local_27c;
-                                        local_240[1] = (float)local_278;
-                                        local_240[8] = (float)(iVar6 + 7);
-                                        local_240[0x11] = (float)(iVar4 + 0x13);
-                                        local_240[4] = 1.79366e-43f;
-                                        local_240[5] = 1.79366e-43f;
-                                        local_240[6] = 1.79366e-43f;
-                                        local_240[7] = 1.79366e-43f;
-                                        local_240[0xc] = 1.79366e-43f;
-                                        local_240[0xd] = 1.79366e-43f;
-                                        local_240[0xe] = 1.79366e-43f;
-                                        local_240[0xf] = 1.79366e-43f;
-                                        local_240[0x14] = 1.79366e-43f;
-                                        local_240[0x15] = 1.79366e-43f;
-                                        local_240[3] = local_270;
-                                        local_240[0x16] = 1.79366e-43f;
-                                        local_240[0x17] = 1.79366e-43f;
-                                        local_240[10] = local_26c + 0.026367188f;
-                                        local_240[0x1c] = 1.79366e-43f;
-                                        local_240[0x1d] = 1.79366e-43f;
-                                        local_240[0x1e] = 1.79366e-43f;
-                                        local_240[0x1f] = 1.79366e-43f;
-                                        local_240[0xb] = local_270;
-                                        local_264 = local_270 + 0.05078125f;
-                                        local_240[2] = local_26c;
-                                        local_240[9] = local_240[1];
-                                        local_240[0x10] = local_240[0];
-                                        local_240[0x12] = local_26c;
-                                        local_240[0x13] = local_264;
-                                        local_240[0x18] = local_240[8];
-                                        local_240[0x19] = local_240[0x11];
-                                        local_240[0x1a] = local_240[10];
-                                        local_240[0x1b] = local_264;
-                                        _graphicDrawUIAbmapElement(local_240, local_108, 5);
-                                        local_240[0] = (float)(local_268 + 7 + iVar6);
-                                        local_264 = local_26c + 0.23632813f;
-                                        local_240[2] = local_264;
-                                        local_240[0x10] = local_240[0];
-                                        local_240[0x12] = local_264;
-                                    }
-                                    _graphicDrawUIAbmapElement(local_240, local_108, 5);
-                                    _FUN_008b70e0((nint)pSVar5->chr_name, &local_28c, &local_294);
-                                    bVar2 = (byte)(pSVar5->__0x4E & 3);
-                                    if ((bVar2 == 1) || (bVar2 == 2)) {
-                                        x = ((float)local_268 - BitConverter.SingleToInt32Bits(local_28c)) * 0.5f;
-                                    }
-                                    else {
-                                        x = ((float)local_268 - BitConverter.SingleToInt32Bits(local_28c)) * 0.5f + 7.0f;
-                                    }
-                                    local_268 = BitConverter.SingleToInt32Bits(local_28c);
-                                    local_268 = (int)(x);
-                                    plVar1 = lpamng;
-                                    iVar4 = pSVar5->__0x4C + local_288 + local_278;
-                                    iVar6 = (int)((lpamng->zoom_vector).Y * 100.0);
-                                    *p_ppvCurPrimp = _FUN_008e8fb0(*p_ppvCurPrimp + 0x10, 0xffffffff, pSVar5->chr_name,
-                                                               local_27c + local_268, iVar4, 0, 0, 0x80, 0x80, 0x80,
-                                                               plVar1->__0x115B9, iVar6);
-                                    fVar9 = 0f;
-                                LAB_00a4c3cd:
-                                    local_280 = local_280 + 4;
-                                    local_274 = (float*)((int)local_274 + 1);
-                                    pSVar5 = pSVar5 + 1;
-                                    local_284 = local_284 + -1;
-                                    if (local_284 == 0) {
-                                        _user_free((nint)local_290);
-                                        return;
-                                    }
-                                } while (true);
-                            }
+                            LAB_00a4c3cd:
+                                local_280 = local_280 + 4;
+                                local_274 = local_274 + 1;
+                                pSVar5 = pSVar5 + 1;
+                                local_284 = local_284 + -1;
+                                if (local_284 == 0) {
+                                    _user_free((nint)local_290);
+                                    return;
+                                }
+                            } while (true);
                         }
                     }
                 }
@@ -4211,14 +4256,15 @@ public unsafe class CustomCharacterModule : FhModule {
     }
 
     abmapVertexInfo* h_AbmapManager_AllocBuffMemory(nint abmapManager, int param_1) {
+        abmapVertexInfo* puVar3;
         if (param_1 == 7) {
-            abmapVertexInfo* puVar3 = (abmapVertexInfo*)_user_malloc(0xd0);
+            puVar3 = (abmapVertexInfo*)_user_malloc(0xd0);
             NativeMemory.Fill(puVar3, 0xd0, 0);
             puVar3->field112_0xb8 = 2;
             puVar3->field113_0xbc = 0;
 
 
-            uint field3_0xc_size  = 0x35C * num_characters * 0x0c * 4;
+            uint field3_0xc_size = 0x35C * num_characters * 0x0c * 4;
             uint field4_0x10_size = 0x35C * num_characters * 0x0c * 4;
             uint field5_0x14_size = 0x35C * num_characters * 0x10 * 4;
             uint field6_0x18_size = 0x35C * num_characters * 0x08 * 4;
@@ -4230,9 +4276,9 @@ public unsafe class CustomCharacterModule : FhModule {
             NativeMemory.Fill(pVVar3, 0x6c, 0);
             puVar3->field97_0x94 = pVVar3;
             puVar3->field96_0x90 = 1;
-            pVVar3->field1_0x4   = (int)(0x35C * num_characters * 4);
-            puVar3->field97_0x94->field2_0x8  = (int)(0x35C * num_characters * 6);
-            puVar3->field97_0x94->field3_0xc  = (float*)_user_malloc((nint)field3_0xc_size);
+            pVVar3->field1_0x4 = (int)(0x35C * num_characters * 4);
+            puVar3->field97_0x94->field2_0x8 = (int)(0x35C * num_characters * 6);
+            puVar3->field97_0x94->field3_0xc = (float*)_user_malloc((nint)field3_0xc_size);
             puVar3->field97_0x94->field4_0x10 = (float*)_user_malloc((nint)field4_0x10_size);
             puVar3->field97_0x94->field5_0x14 = (float*)_user_malloc((nint)field5_0x14_size);
             puVar3->field97_0x94->field6_0x18 = (float*)_user_malloc((nint)field6_0x18_size);
@@ -4262,67 +4308,147 @@ public unsafe class CustomCharacterModule : FhModule {
             //memset(puVar3->field97_0x94->field3_0xc, 0, 0x468c0);
             NativeMemory.Fill(puVar3->field97_0x94->field3_0xc, field3_0xc_size, 0);
             puVar3->field97_0x94->field0_0x0 = 0;
+            goto LAB_00682189;
 
-            puVar3->field97_0x94->field14_0x2c = 0;
-            puVar3->field97_0x94->field33_0x48 = 0;
-            puVar3->field97_0x94->field15_0x30 = 0;
-            puVar3->field97_0x94->field34_0x4c = 0;
-            puVar3->field97_0x94->field16_0x34 = 0;
-            puVar3->field97_0x94->field35_0x50 = 0;
-            puVar3->field0_0x0    = 1.0f;
-            puVar3->field1_0x4    = 0.0f;
-            puVar3->field2_0x8    = 0.0f;
-            puVar3->field3_0xc    = 0.0f;
-            puVar3->field4_0x10   = 0.0f;
-            puVar3->field6_0x18   = 0.0f;
-            puVar3->field7_0x1c   = 0.0f;
-            puVar3->field8_0x20   = 0.0f;
-            puVar3->field9_0x24   = 0.0f;
-            puVar3->field11_0x2c  = 0.0f;
-            puVar3->field12_0x30  = 0.0f;
-            puVar3->field13_0x34  = 0.0f;
-            puVar3->field14_0x38  = 0.0f;
-            puVar3->field5_0x14   = 1.0f;
-            puVar3->field10_0x28  = 1.0f;
-            puVar3->field15_0x3c  = 1.0f;
-            puVar3->field98_0x98  = -1000.0f;
-            puVar3->field99_0x9c  = -1000.0f;
-            puVar3->field100_0xa0 = -1000.0f;
-            puVar3->field101_0xa4 = 2000.0f;
-            puVar3->field102_0xa8 = 2000.0f;
-            puVar3->field103_0xac = 2000.0f;
-            int iVar11 = 0;
-            byte[] local_108 = new byte[256];
-            if (0 < puVar3->field96_0x90) {
-                int iVar12 = 0;
+
+        } else if (param_1 == 5) {
+            puVar3 = (abmapVertexInfo*)_user_malloc(0xd0);
+            NativeMemory.Fill(puVar3, 0xd0, 0);
+            puVar3->field112_0xb8 = 2;
+            puVar3->field113_0xbc = 0;
+
+
+            uint field3_0xc_size  = 2 * num_characters * 0x0c * 4;
+            uint field4_0x10_size = 2 * num_characters * 0x0c * 4;
+            uint field5_0x14_size = 2 * num_characters * 0x10 * 4;
+            uint field6_0x18_size = 2 * num_characters * 0x08 * 4;
+            uint field7_0x1c_size = 2 * num_characters * 0x06 * 2;
+
+
+            VertexInfo_0x94* pVVar3 = (VertexInfo_0x94*)_user_malloc(0x6c);
+            puVar3->field97_0x94 = pVVar3;
+            puVar3->field96_0x90 = 1;
+            pVVar3->field1_0x4 = (int)(2 * num_characters * 4);
+            puVar3->field97_0x94->field2_0x8 = (int)(2 * num_characters * 6);
+            puVar3->field97_0x94->field3_0xc  = (float*)_user_malloc((nint)field3_0xc_size);
+            puVar3->field97_0x94->field4_0x10 = (float*)_user_malloc((nint)field4_0x10_size);
+            puVar3->field97_0x94->field5_0x14 = (float*)_user_malloc((nint)field5_0x14_size);
+            puVar3->field97_0x94->field6_0x18 = (float*)_user_malloc((nint)field6_0x18_size);
+            puVar3->field97_0x94->field7_0x1c = (short*)_user_malloc((nint)field7_0x1c_size);
+            puVar3->field97_0x94->field8_0x20 = (byte*)_user_malloc(0x100);
+            puVar3->field97_0x94->field9_0x24 = 1;
+            //memset(puVar3->field97_0x94->field8_0x20, 0, 0x100);
+            //memset(puVar3->field97_0x94->field5_0x14, 0, 0x380);
+            //memset(puVar3->field97_0x94->field7_0x1c, 0, 0xa8);
+            //memset(puVar3->field97_0x94->field4_0x10, 0, 0x2a0);
+            //memset(puVar3->field97_0x94->field6_0x18, 0, 0x1c0);
+            //memset(puVar3->field97_0x94->field3_0xc, 0, 0x2a0);
+            NativeMemory.Fill(puVar3->field97_0x94->field3_0xc , field3_0xc_size , 0);
+            NativeMemory.Fill(puVar3->field97_0x94->field4_0x10, field4_0x10_size, 0);
+            NativeMemory.Fill(puVar3->field97_0x94->field5_0x14, field5_0x14_size, 0);
+            NativeMemory.Fill(puVar3->field97_0x94->field6_0x18, field6_0x18_size, 0);
+            NativeMemory.Fill(puVar3->field97_0x94->field7_0x1c, field7_0x1c_size, 0);
+            NativeMemory.Fill(puVar3->field97_0x94->field8_0x20, 0x100, 0);
+            if (*(int*)abmapManager == 0) {
+                byte* pcVar9 = (byte*)FhUtil.get_at<nint>(0x833978);
+                int i = 0;
                 do {
-                    fixed (byte* p_local_108 = local_108) {
-                        _fiosUnifyFilename((nint)(*(byte**)((int)&puVar3->field97_0x94->field8_0x20 + iVar12)), (nint)p_local_108,
-                                      0x100);
-                        int i = 0;
-                        do {
-                            i++;
-                        } while (p_local_108[i] != 0);
-                        //byte* pcVar9 = local_108;
-                        //do
-                        //{
-                        //    cVar1 = *pcVar9;
-                        //    pcVar9 = pcVar9 + 1;
-                        //} while (cVar1 != '\0');
+                    i++;
+                } while (pcVar9[i] != 0);
 
-                        NativeMemory.Copy(p_local_108, *(byte**)((int)&puVar3->field97_0x94->field8_0x20 + iVar12), (nuint)i);
-                    }
+                NativeMemory.Copy(pcVar9, puVar3->field97_0x94->field8_0x20, (nuint)i);
 
+                FhLangId iVar11 = _TOGetFFXLang();
+                if (iVar11 == FhLangId.Debug) {
+                    pcVar9 = (byte*)FhUtil.get_at<nint>(0x8339E0);
+                    int j = 0;
+                    do {
+                        j++;
+                    } while (pcVar9[i] != 0);
 
-                    //memcpy(*(void**)((int)&puVar3->field97_0x94->field8_0x20 + iVar12), local_108, (int)pcVar9 - (int)(local_108 + 1));
-                    iVar11 = iVar11 + 1;
-                    iVar12 = iVar12 + 0x6c;
-                } while (iVar11 < puVar3->field96_0x90);
+                    NativeMemory.Copy(pcVar9, puVar3->field97_0x94->field8_0x20, (nuint)j);
+                }
+            } else if (*(int*)abmapManager == 2) {
+                byte* pcVar9 = (byte*)FhUtil.get_at<nint>(0x8339B4);
+                int i = 0;
+                do {
+                    i++;
+                } while (pcVar9[i] != 0);
+
+                NativeMemory.Copy(pcVar9, puVar3->field97_0x94->field8_0x20, (nuint)i);
+
+                FhLangId iVar11 = _TOGetFFXLang();
+                if (iVar11 == FhLangId.Debug) {
+                    pcVar9 = (byte*)FhUtil.get_at<nint>(0x833A1C);
+                    int j = 0;
+                    do {
+                        j++;
+                    } while (pcVar9[i] != 0);
+
+                    NativeMemory.Copy(pcVar9, puVar3->field97_0x94->field8_0x20, (nuint)j);
+                }
             }
-            return puVar3;
+            puVar3->field97_0x94->field0_0x0 = 1;
+            goto LAB_00682189;
+
+
         } else {
             return _AbmapManager_AllocBuffMemory.orig_fptr(abmapManager, param_1);
         }
+
+
+    LAB_00682189:
+        puVar3->field97_0x94->field14_0x2c = 0;
+        puVar3->field97_0x94->field33_0x48 = 0;
+        puVar3->field97_0x94->field15_0x30 = 0;
+        puVar3->field97_0x94->field34_0x4c = 0;
+        puVar3->field97_0x94->field16_0x34 = 0;
+        puVar3->field97_0x94->field35_0x50 = 0;
+        puVar3->field0_0x0 = 1.0f;
+        puVar3->field1_0x4 = 0.0f;
+        puVar3->field2_0x8 = 0.0f;
+        puVar3->field3_0xc = 0.0f;
+        puVar3->field4_0x10 = 0.0f;
+        puVar3->field6_0x18 = 0.0f;
+        puVar3->field7_0x1c = 0.0f;
+        puVar3->field8_0x20 = 0.0f;
+        puVar3->field9_0x24 = 0.0f;
+        puVar3->field11_0x2c = 0.0f;
+        puVar3->field12_0x30 = 0.0f;
+        puVar3->field13_0x34 = 0.0f;
+        puVar3->field14_0x38 = 0.0f;
+        puVar3->field5_0x14 = 1.0f;
+        puVar3->field10_0x28 = 1.0f;
+        puVar3->field15_0x3c = 1.0f;
+        puVar3->field98_0x98 = -1000.0f;
+        puVar3->field99_0x9c = -1000.0f;
+        puVar3->field100_0xa0 = -1000.0f;
+        puVar3->field101_0xa4 = 2000.0f;
+        puVar3->field102_0xa8 = 2000.0f;
+        puVar3->field103_0xac = 2000.0f;
+        int index = 0;
+        byte[] local_108 = new byte[256];
+        if (0 < puVar3->field96_0x90) {
+            int iVar12 = 0;
+            do {
+                fixed (byte* p_local_108 = local_108) {
+                    _fiosUnifyFilename((nint)(*(byte**)((int)&puVar3->field97_0x94->field8_0x20 + iVar12)), (nint)p_local_108,
+                                  0x100);
+
+                    int i = 0;
+                    do {
+                        i++;
+                    } while (p_local_108[i] != 0);
+
+                    NativeMemory.Copy(p_local_108, *(byte**)((int)&puVar3->field97_0x94->field8_0x20 + iVar12), (nuint)i);
+                }
+
+                index = index + 1;
+                iVar12 = iVar12 + 0x6c;
+            } while (index < puVar3->field96_0x90);
+        }
+        return puVar3;
+
     }
 
     int h_op1_md_draw_eiabm_sphe(int param_1, temp_FUN_00a4c8d0_struct* param_2, int node_idx, int chr_id) {
@@ -4854,7 +4980,114 @@ public unsafe class CustomCharacterModule : FhModule {
         return;
     }
 
-    // TODO: Hook FUN_00a53510 (accesses some color array)
+    [StructLayout(LayoutKind.Explicit, Pack = 4, Size = 0x48)]
+    public struct FUN_007f4900_param_2 {
+
+        [FieldOffset(0x02)] public ushort __0x02;
+        [FieldOffset(0x04)] public byte r;
+        [FieldOffset(0x05)] public byte g;
+        [FieldOffset(0x06)] public byte b;
+        [FieldOffset(0x07)] public byte a;
+        [FieldOffset(0x08)] public uint __0x08;
+        [FieldOffset(0x0C)] public uint __0x0C;
+        [FieldOffset(0x10)] public Matrix4x4* __0x10;
+
+        [FieldOffset(0x18)] public byte __0x18;
+
+        [FieldOffset(0x1C)] public Matrix4x4* __0x1C;
+    }
+    void h_FUN_00a53510() {
+        uint uVar1;
+        LpAbilityMapEngine* pLVar2;
+        int iVar3;
+        uint uVar4;
+        int iVar5;
+        uint uVar6;
+        SphereGridNode* pSVar7;
+        FUN_007f4900_param_2 local_110;
+        Matrix4x4 local_d8;
+        Matrix4x4 local_98;
+        Matrix4x4 local_58;
+
+        iVar3 = lpamng->should_update_node;
+        if (iVar3 != -2) {
+            if (iVar3 < 0) {
+                _FUN_00639280(1);
+                _FUN_00a51340();
+            } else {
+                _FUN_00a51560(iVar3);
+            }
+        }
+        pLVar2 = lpamng;
+        if (lpamng->__0x115C3 != 1) {
+            if (lpamng->__0x115C3 == 0) {
+                _FUN_00a4fe40();
+                lpamng->__0x115C3 = 2;
+            }
+            return;
+        }
+        uVar4 = (uint)(((float)(eff_sin_t)[lpamng->__0x1169C * 0x800 + -0x3ff1 >> 4 & 0xfff] + 1.0) * 24.0 + 128.0);
+        if (pLVar2->__0x116A0 < 0x10) {
+            iVar5 = (int)(uVar4 * pLVar2->__0x116A0);
+            uVar4 = (uint)((int)(iVar5 + (iVar5 >> 0x1f & 0xfU)) >> 4);
+        }
+        uVar4 = uVar4 & 0xff;
+        local_110.__0x08 = 0;
+        local_110.__0x0C = 0;
+        //uVar1 = *(uint*)(p_DAT_00c865bc + (uint)pLVar2->current_chr_id * 0x14);
+        uVar1 = (uint)p_DAT_00c865bc[pLVar2->current_chr_id];
+        local_110.__0x10 = &local_98;
+        local_110.__0x1C = &local_58;
+        local_58.M43 = 16384.0f;
+        local_58.M44 = 1.0f;
+        local_110.__0x18 = 0;
+        local_110.__0x02 = 0x14;
+        local_58.M11 = asmreg_0_zero->X;
+        local_58.M21 = asmreg_0_zero->X;
+        local_58.M31 = asmreg_0_zero->X;
+        local_58.M41 = asmreg_0_zero->X;
+        local_58.M14 = asmreg_0_zero->W;
+        local_58.M24 = asmreg_0_zero->W;
+        local_58.M34 = asmreg_0_zero->W;
+        local_58.M12 = asmreg_0_zero->Y;
+        local_58.M13 = asmreg_0_zero->Z;
+        local_58.M22 = asmreg_0_zero->Y;
+        local_58.M23 = asmreg_0_zero->Z;
+        local_58.M32 = asmreg_0_zero->Y;
+        local_58.M33 = asmreg_0_zero->Z;
+        local_58.M42 = asmreg_0_zero->Y;
+        iVar3 = (int)lpamng->node_count;
+        pSVar7 = &lpamng->nodes[0];
+        while (iVar3 != 0) {
+            iVar3 = iVar3 + -1;
+            if (pSVar7->node_type != NodeType.NULL) {
+                _FUN_00a5ad30(&local_d8, pSVar7, 1.0f);
+                _cdc_FFXVu0MulMatrix(&local_98, &lpamng->__0x113E0, &local_d8);
+                //uVar6 = -(uint)((pSVar7->properties & SphereGridNodeProperties.HIGHLIGHTED) != SphereGridNodeProperties.NONE) &
+                //        ((((int)(((int)uVar1 >> 0x18 & 0xffU) * uVar4) >> 7) * 0x100 +
+                //         ((int)(((int)uVar1 >> 0x10 & 0xffU) * uVar4) >> 7)) * 0x100 +
+                //        ((int)(((int)uVar1 >> 8 & 0xffU) * uVar4) >> 7)) * 0x100 +
+                //        ((int)((uVar1 & 0xff) * uVar4) >> 7);
+                uVar6 = (uint)(-(uint)((pSVar7->properties & SphereGridNodeProperties.HIGHLIGHTED) != SphereGridNodeProperties.NONE ? 1 : 0) &
+                        ((((int)(((int)uVar1 >> 0x18 & 0xffU) * uVar4) >> 7) * 0x100 +
+                         ((int)(((int)uVar1 >> 0x10 & 0xffU) * uVar4) >> 7)) * 0x100 +
+                        ((int)(((int)uVar1 >> 8 & 0xffU) * uVar4) >> 7)) * 0x100 +
+                        ((int)((uVar1 & 0xff) * uVar4) >> 7));
+
+                local_110.r = (byte)uVar6;
+                local_110.g = (byte)(uVar6 >> 8);
+                local_110.g = (byte)(local_110.g >> 1);
+                local_110.r = (byte)(local_110.r >> 1);
+                local_110.b = (byte)(uVar6 >> 0x10);
+                local_110.b = (byte)(local_110.b >> 1);
+                local_110.a = (byte)(uVar6 >> 0x19);
+                _FUN_007f4900(*(int*)((int)&pLVar2->node_type_infos[(int)pSVar7->node_type] + 8), &local_110,
+                             iVar3 - lpamng->node_count, lpamng->__0x116A4);
+            }
+            pSVar7 = pSVar7 + 1;
+        }
+        return;
+    }
 
     // TODO: Hook FUN_008efd90 to draw Seymour face instead of Rikku
 }
