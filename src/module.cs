@@ -764,15 +764,21 @@ public unsafe class CustomCharacterModule : FhModule {
         ];
 
     private ushort[][][] custom_starting_activated_nodes = [
-            [
-                [], // Original
-                [], // Standard
-                [   // Expert
-                  14, 15, 16, 17, 154, 155, 156, 157, // Fire, Thunder, Water, Blizzard, Fira, Thundara, Watera, Blizzara
-                  8, 185, 3, 4, 5, 56                 // Cure, Cura, NulBlaze, NulShock, NulTide, Scan
-                ]
+        [
+            [   // Original
+              220, 221, 223, 222, 251, 246, 748, 252, // Fire, Thunder, Water, Blizzard, Fira, Thundara, Watera, Blizzara
+              335, 146, 337, 338, 340, 648            // Cure, Cura, NulBlaze, NulShock, NulTide, Scan
+            ],
+            [   // Standard
+              220, 221, 223, 222, 251, 246, 748, 252, // Fire, Thunder, Water, Blizzard, Fira, Thundara, Watera, Blizzara
+              335, 146, 337, 338, 340, 648            // Cure, Cura, NulBlaze, NulShock, NulTide, Scan
+            ],
+            [   // Expert
+              14, 15, 16, 17, 154, 155, 156, 157,     // Fire, Thunder, Water, Blizzard, Fira, Thundara, Watera, Blizzara
+              8, 185, 3, 4, 5, 56                     // Cure, Cura, NulBlaze, NulShock, NulTide, Scan
             ]
-        ];
+        ]
+    ];
 
     private Vec2s16[,] custom_node_indicator_pos = new Vec2s16[130, num_characters-7]; // 130 node types
 
@@ -930,18 +936,18 @@ public unsafe class CustomCharacterModule : FhModule {
         custom_party_infos = (SphereGridChrInfo*)NativeMemory.AllocZeroed((nuint)(sizeof(SphereGridChrInfo) * num_characters));
 
         Vector4f_ARRAY_00c86010 = (Vector4*)NativeMemory.AllocZeroed((nuint)(sizeof(Vector4) * 4 * num_characters));
-        p_DAT_00c86580 = (int*)NativeMemory.AllocZeroed(sizeof(int) * num_characters);
-        p_DAT_00c86660 = (int*)NativeMemory.AllocZeroed(sizeof(int) * (num_characters+1)); // Extra is used for selection circle
-        p_DAT_00c86644 = (int*)NativeMemory.AllocZeroed(sizeof(int) * num_characters);
-        p_DAT_00c8659c = (int*)NativeMemory.AllocZeroed(sizeof(int) * num_characters);
-        p_DAT_00c865bc = (int*)NativeMemory.AllocZeroed(sizeof(int) * num_characters);
+        p_DAT_00c86580 = (uint*)NativeMemory.AllocZeroed(sizeof(int) * num_characters);
+        p_DAT_00c86660 = (uint*)NativeMemory.AllocZeroed(sizeof(int) * (num_characters+1)); // Extra is used for selection circle
+        p_DAT_00c86644 = (uint*)NativeMemory.AllocZeroed(sizeof(int) * num_characters);
+        p_DAT_00c8659c = (uint*)NativeMemory.AllocZeroed(sizeof(int) * num_characters);
+        p_DAT_00c865bc = (uint*)NativeMemory.AllocZeroed(sizeof(int) * num_characters);
 
         Vector4* original_Vector4f_ARRAY_00c86010 = FhUtil.ptr_at<Vector4>(0x886010);
-        int* original_p_DAT_00c86580 = FhUtil.ptr_at<int>(0x886580);
-        int* original_p_DAT_00c86660 = FhUtil.ptr_at<int>(0x886660);
-        int* original_p_DAT_00c86644 = FhUtil.ptr_at<int>(0x886644);
-        int* original_p_DAT_00c8659c = FhUtil.ptr_at<int>(0x88659C);
-        int* original_p_DAT_00c865bc = FhUtil.ptr_at<int>(0x8865BC);
+        uint* original_p_DAT_00c86580 = FhUtil.ptr_at<uint>(0x886580);
+        uint* original_p_DAT_00c86660 = FhUtil.ptr_at<uint>(0x886660);
+        uint* original_p_DAT_00c86644 = FhUtil.ptr_at<uint>(0x886644);
+        uint* original_p_DAT_00c8659c = FhUtil.ptr_at<uint>(0x88659C);
+        uint* original_p_DAT_00c865bc = FhUtil.ptr_at<uint>(0x8865BC);
 
         for (int i = 0; i < 7; i++) {
             Vector4f_ARRAY_00c86010[i] = original_Vector4f_ARRAY_00c86010[i];
@@ -953,13 +959,13 @@ public unsafe class CustomCharacterModule : FhModule {
         }
         p_DAT_00c86660[num_characters] = original_p_DAT_00c86660[7]; // Selection circle
 
-        // Use Tidus' colors for Seymour
-        Vector4f_ARRAY_00c86010[7] = original_Vector4f_ARRAY_00c86010[0];
-        p_DAT_00c86580[7] = original_p_DAT_00c86580[0];
-        p_DAT_00c86660[7] = original_p_DAT_00c86660[0];
-        p_DAT_00c86644[7] = original_p_DAT_00c86644[0];
-        p_DAT_00c8659c[7] = original_p_DAT_00c8659c[0];
-        p_DAT_00c865bc[7] = original_p_DAT_00c865bc[0];
+        // Seymour colors
+        Vector4f_ARRAY_00c86010[7] = new Vector4(0.0f, 1.0f, 1.0f, 1.0f); // Selected character ambient(?) light color on surrounding nodes
+        p_DAT_00c86580[7] = 0x805C5C22; // Selected character aura color
+        p_DAT_00c86660[7] = 0x60A0A000; // Circle color
+        p_DAT_00c86644[7] = 0x802D2D18; // Inctive indicator color
+        p_DAT_00c8659c[7] = 0x60A0A000; // Active indicator color
+        p_DAT_00c865bc[7] = 0x806A6A00; // Node to move to color (each byte is circle color * 2/3)
 
 
         return _FUN_00a44d30.hook() &&
@@ -1112,11 +1118,11 @@ public unsafe class CustomCharacterModule : FhModule {
     //private int* p_DAT_00c86580 => FhUtil.ptr_at<int>(0x886580); // Selected character aura color?
     //private int* p_DAT_00c86660 => FhUtil.ptr_at<int>(0x886660); // Circle color?
     private Vector4* Vector4f_ARRAY_00c86010;
-    private int* p_DAT_00c86580; // Aura color
-    private int* p_DAT_00c86660; // Circle color
-    private int* p_DAT_00c86644; // Inactive indicator color
-    private int* p_DAT_00c8659c; // Active indicator color
-    private int* p_DAT_00c865bc; // Highligted nodes color
+    private uint* p_DAT_00c86580; // Aura color
+    private uint* p_DAT_00c86660; // Circle color
+    private uint* p_DAT_00c86644; // Inactive indicator color
+    private uint* p_DAT_00c8659c; // Active indicator color
+    private uint* p_DAT_00c865bc; // Highligted nodes color
 
     private float* eff_sin_t => FhUtil.ptr_at<float>(0x844BE0);
 
@@ -1972,7 +1978,7 @@ public unsafe class CustomCharacterModule : FhModule {
         [FieldOffset(0x0c)] public int        __0xC;
         [FieldOffset(0x10)] public int        __0x10;
         [FieldOffset(0x14)] public int        __0x14;
-        [FieldOffset(0x18)] public int        rgba; // rgba ?
+        [FieldOffset(0x18)] public uint       rgba; // rgba ?
         [FieldOffset(0x1b)] public byte       a; // a ?
         [FieldOffset(0x1c)] public int        __0x1C;
         [FieldOffset(0x20)] public Matrix4x4* __0x20;
@@ -3913,11 +3919,11 @@ public unsafe class CustomCharacterModule : FhModule {
                                      //                 (int3)((int)(((int)uVar3 >> 0x10 & 0xffU) * local_170) >> 7)) * 0x100 +
                                      //                 (int3)((int)(((int)uVar3 >> 8 & 0xffU) * local_17c)    >> 7)) * 0x100 +
                                      //                 (int3)((int)(     (uVar3      & 0xff ) * local_174)    >> 7));
-                                     (0x80 << 0x18) | ((((((int)(((int)uVar3 >> 0x18 & 0xffU) * local_16c) >> 7)  * 0x100 + 
+                                     (uint)((0x80 << 0x18) | ((((((int)(((int)uVar3 >> 0x18 & 0xffU) * local_16c) >> 7)  * 0x100 + 
                                                           ((int)(((int)uVar3 >> 0x10 & 0xffU) * local_170) >> 7)) * 0x100 +
                                                           ((int)(((int)uVar3 >> 0x08 & 0xffU) * local_17c) >> 7)) * 0x100 + 
                                                           ((int)(     (uVar3         & 0xff ) * local_174) >> 7))
-                                                          & 0x00FFFFFF);
+                                                          & 0x00FFFFFF));
                                 // Animating the color intensity(?)
                                 //local_150.rgba = (int)uVar3;
                                 local_150.__0x0 = 0x2c;
@@ -4059,7 +4065,7 @@ public unsafe class CustomCharacterModule : FhModule {
                             if ((bVar4 & 1) != 0) {
                                 local_58.M43 = 1.0f;
                                 //local_1c0.rgba = CONCAT13(0x80, (int3) * piVar7);
-                                local_1c0.rgba = (0x80 << 0x18) | (*piVar7 & 0x00FFFFFF);
+                                local_1c0.rgba = (uint)((0x80 << 0x18) | (*piVar7 & 0x00FFFFFF));
                                 local_1c0.__0x0 = 0x2c;
                                 _FUN_00a5ad30(&local_98, node, plVar3->node_type_infos[uVar1].__0x10);
                                 _FUN_00a5a360(&local_98, node, pVVar10, 0.0008f);
@@ -4186,7 +4192,7 @@ public unsafe class CustomCharacterModule : FhModule {
             while (true) {
                 fVar8 = (float)6.0;
                 if ((local_151 & 1) == 0) {
-                    local_150.rgba = *(int*)(p_DAT_00c86644 + local_16c);
+                    local_150.rgba = *(uint*)(p_DAT_00c86644 + local_16c);
                     local_150.__0x0 = 0x24;
                 } else {
                     uVar3 = *(uint*)(p_DAT_00c8659c + local_16c);
@@ -4195,11 +4201,11 @@ public unsafe class CustomCharacterModule : FhModule {
                          //                 (int3)((int)(((int)uVar3 >> 0x10 & 0xffU) * local_178) >> 7)) * 0x100 +
                          //                 (int3)((int)(((int)uVar3 >> 8 & 0xffU) * local_180)    >> 7)) * 0x100 +
                          //                 (int3)((int)(     (uVar3      & 0xff ) * local_174)    >> 7));
-                         (0x80 << 0x18) | ((((((int)(((int)uVar3 >> 0x18 & 0xffU) * local_170) >> 7)  * 0x100 +
+                         (uint)((0x80 << 0x18) | ((((((int)(((int)uVar3 >> 0x18 & 0xffU) * local_170) >> 7)  * 0x100 +
                                               ((int)(((int)uVar3 >> 0x10 & 0xffU) * local_178) >> 7)) * 0x100 +
                                               ((int)(((int)uVar3 >> 0x08 & 0xffU) * local_180) >> 7)) * 0x100 +
                                               ((int)(     (uVar3         & 0xff ) * local_174) >> 7))
-                                              & 0x00FFFFFF);
+                                              & 0x00FFFFFF));
                     local_150.__0x0 = 0x2c;
                     fVar8 = fVar9;
                 }
