@@ -545,6 +545,21 @@ public unsafe class CustomCharacterModule : FhModule {
     public const nint __addr_FUN_007f4900 = 0x3F4900;
     private FUN_007f4900 _FUN_007f4900;
 
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate char* TOGetShapTextureName(int param_1);
+    public const nint __addr_TOGetShapTextureName = 0x4AC870;
+    private TOGetShapTextureName _TOGetShapTextureName;
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void TOGetImageWH(int param_1, float* param_2, float* param_3);
+    public const nint __addr_TOGetImageWH = 0x4AC3B0;
+    private TOGetImageWH _TOGetImageWH;
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void graphicDrawUIElement(graphicDrawUIAbmapElement_param1* param_1, char* param_2, int param_3, int param_4, int param_5);
+    public const nint __addr_graphicDrawUIElement = 0x23F090;
+    private graphicDrawUIElement _graphicDrawUIElement;
+
 
     // Hooks
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
@@ -727,6 +742,10 @@ public unsafe class CustomCharacterModule : FhModule {
     public const nint __addr_FUN_00a53510 = 0x653510;
     private FhMethodHandle<FUN_00a53510> _FUN_00a53510;
 
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate int FUN_008efd90(int param_1, int chr_id, int param_3, int param_4, int param_5, int param_6, int param_7, int param_8, int param_9);
+    public const nint __addr_FUN_008efd90 = 0x4EFD90;
+    private FhMethodHandle<FUN_008efd90> _FUN_008efd90;
 
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
@@ -851,6 +870,9 @@ public unsafe class CustomCharacterModule : FhModule {
         _FUN_00a51560 = FhUtil.get_fptr<FUN_00a51560>(__addr_FUN_00a51560);
         _FUN_00a4fe40 = FhUtil.get_fptr<FUN_00a4fe40>(__addr_FUN_00a4fe40);
         _FUN_007f4900 = FhUtil.get_fptr<FUN_007f4900>(__addr_FUN_007f4900);
+        _TOGetShapTextureName = FhUtil.get_fptr<TOGetShapTextureName>(__addr_TOGetShapTextureName);
+        _TOGetImageWH = FhUtil.get_fptr<TOGetImageWH>(__addr_TOGetImageWH);
+        _graphicDrawUIElement = FhUtil.get_fptr<graphicDrawUIElement>(__addr_graphicDrawUIElement);
 
 
 
@@ -891,6 +913,8 @@ public unsafe class CustomCharacterModule : FhModule {
         _op1_md_draw_eiabm_sphe = new FhMethodHandle<op1_md_draw_eiabm_sphe>(this, game, __addr_op1_md_draw_eiabm_sphe, h_op1_md_draw_eiabm_sphe);
 
         _FUN_00a53510 = new FhMethodHandle<FUN_00a53510>(this, game, __addr_FUN_00a53510, h_FUN_00a53510);
+        _FUN_008efd90 = new FhMethodHandle<FUN_008efd90>(this, game, __addr_FUN_008efd90, h_FUN_008efd90);
+
 
         _FUN_00a4b4b0 = new FhMethodHandle<FUN_00a4b4b0>(this, game, __addr_FUN_00a4b4b0, h_FUN_00a4b4b0);
 
@@ -971,6 +995,7 @@ public unsafe class CustomCharacterModule : FhModule {
                _FUN_00a53510.hook() &&
                _FUN_00a4b4b0.hook() &&
                _FUN_00a53de0.hook() &&
+               _FUN_008efd90.hook() &&
                _eiAbmParaGet.hook();
     }
 
@@ -5089,5 +5114,86 @@ public unsafe class CustomCharacterModule : FhModule {
         return;
     }
 
-    // TODO: Hook FUN_008efd90 to draw Seymour face instead of Rikku
+    int h_FUN_008efd90(int param_1, int chr_id, int param_3, int param_4, int param_5, int param_6, int param_7, int param_8, int param_9) {
+        if (chr_id == 7) {
+            int iVar1;
+            uint uVar2;
+            float local_b8;
+            float local_b4;
+            float local_b0;
+            float local_ac;
+            float local_a4;
+            char* texture_name;
+            graphicDrawUIAbmapElement_param1 local_a0 = new();
+
+            // Seymour
+            chr_id = 8; // Skip second Rikku face
+
+            if (param_9 == 6) {
+                texture_name = _TOGetShapTextureName(0x2ed0);
+                _TOGetImageWH(0x2ed0, &local_b4, &local_b8);
+
+                local_a0.floats0[0] = (float)param_3;
+                local_a0.floats0[1] = (float)param_4;
+                //uVar2 = chr_id & 0x80000003;
+                uVar2 = 4;
+                if ((int)uVar2 < 0) {
+                    uVar2 = (uVar2 - 1 | 0xfffffffc) + 1;
+                }
+                local_a0.floats0[2] = (float)(int)(uVar2 * 100) / local_b4;
+                //iVar1 = ((int)(((int)chr_id >> 0x1f & 3U) + chr_id) >> 2) * 100;
+                iVar1 = 1 * 100;
+                local_a4 = (float)iVar1;
+                local_a0.ints0[0] = param_5;
+                local_a0.floats0[3] = local_a4 / local_b8;
+                local_a0.ints0[1] = param_6;
+                local_a0.ints0[2] = param_7;
+                local_a0.ints0[3] = param_8;
+                local_a0.floats1[0] = (float)(local_a0.floats0[0] + 53.333332);
+                local_a0.floats1[1] = (float)(local_a0.floats0[1] + 77.03704);
+                local_a0.floats1[2] = (float)(int)(uVar2 * 100 + 100) / local_b4;
+                local_b0 = (float)(iVar1 + 100);
+                local_a0.ints1[0] = param_5;
+                local_a0.floats1[3] = local_b0 / local_b8;
+                local_a0.ints1[1] = param_6;
+                local_a0.ints1[2] = param_7;
+                local_a0.ints1[3] = param_8;
+                _graphicDrawUIElement(&local_a0, texture_name, 1, 0, 6);
+                return param_1;
+            }
+            texture_name = _TOGetShapTextureName(0x2ed0);
+            _TOGetImageWH(0x2ed0, &local_b4, &local_b8);
+            local_a0.floats0[0] = (float)param_3;
+            local_a0.floats0[1] = (float)param_4;
+            //uVar2 = chr_id & 0x80000003;
+            uVar2 = 4;
+            if ((int)uVar2 < 0) {
+                uVar2 = (uVar2 - 1 | 0xfffffffc) + 1;
+            }
+            local_b0 = (float)(uVar2 * 100);
+            local_a0.floats0[2] = (float)(int)local_b0 / local_b4;
+            //local_a4 = (float)(((int)(((int)chr_id >> 0x1f & 3U) + chr_id) >> 2) * 100);
+            local_a4 = 1 * 100;
+            local_a0.floats0[3] = (float)(int)local_a4 / local_b8;
+            local_a0.ints0[0] = param_5;
+            local_a0.ints0[1] = param_6;
+            local_a0.ints0[2] = param_7;
+            local_a0.ints0[3] = param_8;
+            local_a0.floats1[0] = (float)(local_a0.floats0[0] + 63.0);
+            local_a0.floats1[1] = (float)(param_4 + 0x62);
+            local_a0.floats1[2] = (float)((int)local_b0 + 100) / local_b4;
+            local_ac = (float)((int)local_a4 + 100);
+            local_a0.ints1[0] = param_5;
+            local_a0.floats1[3] = local_ac / local_b8;
+            local_a0.ints1[1] = param_6;
+            local_a0.ints1[2] = param_7;
+            local_a0.ints1[3] = param_8;
+            _graphicDrawUIElement(&local_a0, texture_name, 1, 0, 0);
+            return param_1;
+        } else {
+            return _FUN_008efd90.orig_fptr(param_1, chr_id, param_3, param_4, param_5, param_6, param_7, param_8, param_9);
+        }
+    }
+
+    // TODO: Fix bug where Special spheres (black magic spheres, white magic spheres, etc.) can't be used on nodes only activated by Seymour
 }
