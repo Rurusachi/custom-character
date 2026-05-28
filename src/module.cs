@@ -4814,6 +4814,9 @@ public unsafe class CustomCharacterModule : FhModule {
                         case 6:
                             pfVar3[0x50] = 0x01000300;
                             break;
+                        case 7:
+                            pfVar3[0x50] = 0x01000301;
+                            break;
                         default:
                             pfVar3[0x50] = 0x01000100; // Tidus color
                             break;
@@ -4842,6 +4845,9 @@ public unsafe class CustomCharacterModule : FhModule {
                             break;
                         case 6:
                             pfVar3[0x50] = 0x300;
+                            break;
+                        case 7:
+                            pfVar3[0x50] = 0x301;
                             break;
                         default:
                             pfVar3[0x50] = 0x100; // Tidus color
