@@ -560,6 +560,16 @@ public unsafe class CustomCharacterModule : FhModule {
     public const nint __addr_graphicDrawUIElement = 0x23F090;
     private graphicDrawUIElement _graphicDrawUIElement;
 
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate int FUN_00a457d0(int chr_id, int node_idx);
+    public const nint __addr_FUN_00a457d0 = 0x6457D0;
+    private FUN_00a457d0 _FUN_00a457d0;
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate int FUN_00a45870(int chr_id);
+    public const nint __addr_FUN_00a45870 = 0x645870;
+    private FUN_00a45870 _FUN_00a45870;
+
 
     // Hooks
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
@@ -753,6 +763,16 @@ public unsafe class CustomCharacterModule : FhModule {
     public static int __addr_eiAbmParaGet = 0x654860;
     private FhMethodHandle<eiAbmParaGet> _eiAbmParaGet; // => fhutil.get_fptr<eiAbmParaGet>(__addr_eiAbmParaGet);
 
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate bool FUN_00a5d120(byte sphere_type, int node_idx, ExcelBlock_panel* param_3, int chr_id);
+    public static int __addr_FUN_00a5d120 = 0x65d120;
+    private FhMethodHandle<FUN_00a5d120> _FUN_00a5d120;
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate bool FUN_00a45800(int chr_id, int nodes_idx);
+    public static int __addr_FUN_00a45800 = 0x645800;
+    private FhMethodHandle<FUN_00a45800> _FUN_00a45800;
+
     private static uint num_characters = 8;
     private SphereGridChrInfo* custom_party_infos;
 
@@ -879,6 +899,8 @@ public unsafe class CustomCharacterModule : FhModule {
         _TOGetShapTextureName = FhUtil.get_fptr<TOGetShapTextureName>(__addr_TOGetShapTextureName);
         _TOGetImageWH = FhUtil.get_fptr<TOGetImageWH>(__addr_TOGetImageWH);
         _graphicDrawUIElement = FhUtil.get_fptr<graphicDrawUIElement>(__addr_graphicDrawUIElement);
+        _FUN_00a457d0 = FhUtil.get_fptr<FUN_00a457d0>(__addr_FUN_00a457d0);
+        _FUN_00a45870 = FhUtil.get_fptr<FUN_00a45870>(__addr_FUN_00a45870);
 
 
 
@@ -930,6 +952,8 @@ public unsafe class CustomCharacterModule : FhModule {
 
         _eiAbmParaGet = new FhMethodHandle<eiAbmParaGet>(this, game, __addr_eiAbmParaGet, h_eiAbmParaGet);
 
+        _FUN_00a5d120 = new FhMethodHandle<FUN_00a5d120>(this, game, __addr_FUN_00a5d120, h_FUN_00a5d120);
+        _FUN_00a45800 = new FhMethodHandle<FUN_00a45800>(this, game, __addr_FUN_00a45800, h_FUN_00a45800);
 
         init_fptrs();
 
@@ -1002,7 +1026,9 @@ public unsafe class CustomCharacterModule : FhModule {
                _FUN_00a4b4b0.hook() &&
                _FUN_00a53de0.hook() &&
                _FUN_008efd90.hook() &&
-               _eiAbmParaGet.hook();
+               _eiAbmParaGet.hook() &&
+               _FUN_00a5d120.hook() &&
+               _FUN_00a45800.hook();
     }
 
 
@@ -5207,5 +5233,154 @@ public unsafe class CustomCharacterModule : FhModule {
         }
     }
 
-    // TODO: Fix bug where Special spheres (black magic spheres, white magic spheres, etc.) can't be used on nodes only activated by Seymour
+    bool h_FUN_00a5d120(byte sphere_type, int node_idx, ExcelBlock_panel* param_3, int chr_id) {
+        byte bVar1;
+        int  iVar3;
+        bool bVar4;
+
+        switch (sphere_type) {
+            case 1:
+                bVar4 = param_3->icon_id == 0x12;
+                goto LAB_00a5d141;
+            case 2:
+                if (param_3->icon_id == 0x11) {
+                    return true;
+                }
+                break;
+            case 3:
+                if (param_3->icon_id == 0) {
+                    return true;
+                }
+                break;
+            case 4:
+                if (param_3->icon_id == 0x10) {
+                    return true;
+                }
+                break;
+            case 5:
+            case 6:
+            case 7:
+            case 0x10:
+            case 0x11:
+            case 0x12:
+            case 0x13:
+            case 0x14:
+            case 0x15:
+            case 0x16:
+                if (param_3->icon_id == 0x01) {
+                    return true;
+                }
+                break;
+            case 8:
+                iVar3 = _FUN_00a457d0(chr_id, node_idx);
+                if (iVar3 != 0) {
+                    return false;
+                }
+                bVar4 = param_3->icon_id == 0x0f;
+                goto LAB_00a5d1cc;
+            case 9:
+                iVar3 = _FUN_00a457d0(chr_id, node_idx);
+                if (iVar3 != 0) {
+                    return false;
+                }
+                bVar4 = param_3->icon_id == 0x0e;
+                goto LAB_00a5d1cc;
+            case 10:
+                iVar3 = _FUN_00a457d0(chr_id, node_idx);
+                if (iVar3 != 0) {
+                    return false;
+                }
+                bVar4 = param_3->icon_id == 0x0c;
+                goto LAB_00a5d1cc;
+            case 0xb:
+                iVar3 = _FUN_00a457d0(chr_id, node_idx);
+                if (iVar3 != 0) {
+                    return false;
+                }
+                bVar4 = param_3->icon_id == 0x0d;
+            LAB_00a5d1cc:
+                if (bVar4) {
+                LAB_00a5d1d4:
+                    iVar3 = _FUN_00a45800.hook_fptr(chr_id, node_idx) ? 1 : 0;
+                LAB_00a5d1d9:
+                    if (iVar3 != 0) {
+                        return true;
+                    }
+                }
+                break;
+            case 0xc:
+                iVar3 = _FUN_00a45870(chr_id);
+                if (iVar3 == node_idx) {
+                    return false;
+                }
+                iVar3 = _FUN_00a457d0(chr_id, node_idx);
+                //goto LAB_00a5d1d9;
+                if (iVar3 != 0) {
+                    return true;
+                }
+                break;
+            case 0xd:
+                iVar3 = _FUN_00a45870(chr_id);
+                if (iVar3 == node_idx) {
+                    return false;
+                }
+                //goto LAB_00a5d1d4;
+                iVar3 = _FUN_00a45800.hook_fptr(chr_id, node_idx) ? 1 : 0;
+                if (iVar3 != 0) {
+                    return true;
+                }
+                break;
+            case 0xe:
+                iVar3 = _FUN_00a45870(chr_id);
+                if (iVar3 == node_idx) {
+                    return false;
+                }
+                iVar3 = 0;
+
+                for (byte i = 0; i < num_characters; i++) {
+                    if (chr_id != i && _MsGetSavePlyJoined(i) != 0 && _FUN_00a45870(i) == node_idx) {
+                        return true;
+                    }
+                }
+                return false;
+            case 0xf:
+                iVar3 = _FUN_00a45870(chr_id);
+                if (iVar3 == node_idx) {
+                    return false;
+                }
+                bVar4 = (param_3->sphere_effect & 0x8000U) == 0;
+            LAB_00a5d141:
+                if (bVar4) {
+                    return true;
+                }
+                break;
+            case 0x17:
+                bVar1 = param_3->icon_id;
+                if ((1 < bVar1) && (bVar1 < 0xc)) {
+                    return true;
+                }
+                break;
+            case 0x18:
+                /* Attribute Sphere */
+                iVar3 = _FUN_00a457d0(chr_id, node_idx);
+                bVar1 = param_3->icon_id;
+                if ((((iVar3 == 0) && (1 < bVar1)) && (bVar1 < 0xc)) &&
+                   (_FUN_00a45800.hook_fptr(chr_id, node_idx))) {
+                    return true;
+                }
+                break;
+        }
+        return false;
+    }
+
+    bool h_FUN_00a45800(int chr_id, int nodes_idx) {
+        byte activated_by = lpamng->nodes[nodes_idx].activated_by;
+
+        for (byte i = 0; i < num_characters; i++) {
+            if (i != chr_id && _MsGetSavePlyJoined(i) == 1 && (activated_by & (1 << i)) != 0) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
