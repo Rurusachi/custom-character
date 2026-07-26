@@ -3264,7 +3264,7 @@ public unsafe class CustomCharacterModule : FhModule {
         Vector4 *pfVar6;
         int local_80;
         int local_7c;
-        Vector4[] _local_78 = new Vector4[7];
+        Vector4[] _local_78 = new Vector4[num_characters];
 
         fixed (Vector4* local_78 = _local_78) {
             chr_id = 0;
