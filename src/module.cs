@@ -3272,21 +3272,21 @@ public unsafe class CustomCharacterModule : FhModule {
         Vector4 *pfVar6;
         int local_80;
         int local_7c;
-        Vector4[] _local_78 = new Vector4[7];
+        Vector4[] _local_78 = new Vector4[num_characters];
 
         fixed (Vector4* local_78 = _local_78) {
             chr_id = 0;
-        iVar5 = 0;
-        do {
-            (&custom_party_infos[0].__0x4E)[iVar5] = 0;
-            FUN_00a58080.fnptr!(chr_id);
-            iVar5 = iVar5 + 0x50;
-            chr_id = chr_id + 1;
-        //} while (iVar5 < 0x230);
-        } while (chr_id < num_characters);
-        local_7c = 0;
-        uVar2 = lpamng->current_chr_id;
-        pfVar4 = local_78;
+            iVar5 = 0;
+            do {
+                (&custom_party_infos[0].__0x4E)[iVar5] = 0;
+                FUN_00a58080.fnptr!(chr_id);
+                iVar5 = iVar5 + 0x50;
+                chr_id = chr_id + 1;
+            //} while (iVar5 < 0x230);
+            } while (chr_id < num_characters);
+            local_7c = 0;
+            uVar2 = lpamng->current_chr_id;
+            pfVar4 = local_78;
             do {
                 pSVar3 = &custom_party_infos[(int)uVar2];
                 FUN_00a482d0.fnptr!(pSVar3, pfVar4);
@@ -3308,7 +3308,7 @@ public unsafe class CustomCharacterModule : FhModule {
             LAB_00a5a56c:
                 local_7c = local_7c + 1;
                 pfVar4 = pfVar4 + 1;
-                uVar2 = (uint)((6 < (int)(uVar2 + 1) ? 1 : 0) - 1 & uVar2 + 1);
+                uVar2 = (uint)(((num_characters - 1) < (int)(uVar2 + 1) ? 1 : 0) - 1 & uVar2 + 1);
             } while (local_7c < num_characters);
             uVar2 = lpamng->current_chr_id;
             local_80 = 0;
@@ -3319,7 +3319,7 @@ public unsafe class CustomCharacterModule : FhModule {
                     iVar5 = 0;
                     pfVar6 = local_78;
                     while (true) {
-                        if (6 < iVar5) goto LAB_00a5a606;
+                        if ((num_characters - 1) < iVar5) goto LAB_00a5a606;
                         if ((local_80 != iVar5) &&
                         //   (bVar1 = FUN_00a49270(pfVar4, pfVar6), CONCAT31(extraout_var_00, bVar1) != 0)) break;
                              FUN_00a49270.fnptr!(pfVar4, pfVar6)) break;
@@ -3333,8 +3333,8 @@ public unsafe class CustomCharacterModule : FhModule {
             LAB_00a5a606:
                 local_80 = local_80 + 1;
                 pfVar4 = pfVar4 + 1;
-                uVar2 = (uint)((6 < (int)(uVar2 + 1) ? 1 : 0) - 1 & uVar2 + 1);
-                if (6 < local_80) {
+                uVar2 = (uint)(((num_characters - 1) < (int)(uVar2 + 1) ? 1 : 0) - 1 & uVar2 + 1);
+                if ((num_characters - 1) < local_80) {
                     return;
                 }
             } while (true);
@@ -5220,4 +5220,6 @@ public unsafe class CustomCharacterModule : FhModule {
         }
         return false;
     }
+    
+    // TODO: Hook abmap_para_get_special to clear node activation for custom character as well
 }
