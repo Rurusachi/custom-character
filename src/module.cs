@@ -30,17 +30,17 @@ public unsafe class CustomCharacterModule : FhModule {
         => new( new FhMethodLocation("FFX.exe", 0x390500) ) ;
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    public delegate uint d_FUN_00a59710(nint param_1, Sphere* param_2);
+    public delegate uint d_FUN_00a59710(nint param_1, FUN_00a59710_Struct* param_2);
     private FhMethodHandle<d_FUN_00a59710> FUN_00a59710
         => new( new FhMethodLocation("FFX.exe", 0x659710) );
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    public delegate uint d_FUN_00a59760(short param_1, nint param_2, Sphere* param_3);
+    public delegate uint d_FUN_00a59760(short param_1, nint param_2, FUN_00a59710_Struct* param_3);
     private FhMethodHandle<d_FUN_00a59760> FUN_00a59760
         => new( new FhMethodLocation("FFX.exe", 0x659760) );
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    public delegate uint d_FUN_00a49440(SphereGridNode* node, Sphere* sphere);
+    public delegate uint d_FUN_00a49440(SphereGridNode* node, FUN_00a59710_Struct* sphere);
     private FhMethodHandle<d_FUN_00a49440> FUN_00a49440
         => new( new FhMethodLocation("FFX.exe", 0x649440) );
 
@@ -1033,6 +1033,13 @@ public unsafe class CustomCharacterModule : FhModule {
     private SphereGridLinkPoint* SphereGridLinkPoint_ARRAY_01693160 => FhUtil.ptr_at<SphereGridLinkPoint>(0x1293160);
 
 
+    public struct FUN_00a59710_Struct {
+        public Sphere*                  ptr_sphere;
+        public int                      chr_id;
+        public int                      chr_flag;
+        public int                      status;
+        public SphereGridNodeProperties properties;
+    }
 
     private void h_FUN_00a44d30() {
         short uVar1;
@@ -1042,7 +1049,7 @@ public unsafe class CustomCharacterModule : FhModule {
         PCommand *pMVar5;
         //byte *puVar6;
         int iVar6;
-        Sphere local_28;
+        FUN_00a59710_Struct local_28 = new();
         int local_c;
         uint local_8;
 
@@ -1062,26 +1069,26 @@ public unsafe class CustomCharacterModule : FhModule {
                     entry.unknown1 = 1;
                 }
                 else {
-                    local_28.sphere_type = 1 << ((byte)local_8 & 0x1f);
-                    local_28.desc_hira = (int)local_8;
-                    local_28._0xc = 0;
+                    local_28.chr_flag = 1 << ((byte)local_8 & 0x1f);
+                    local_28.chr_id = (int)local_8;
+                    local_28.status = 0;
                     pMVar5 = MsGetRomItem.fnptr!(uVar2, &local_c);
                     if (pMVar5->command_pdata.sphere_grid_role == 0xff) {
-                        local_28.desc = 0;
+                        local_28.ptr_sphere = (Sphere*)0;
                     }
                     else {
-                        local_28.desc =
-                             (int)FhXCall.MsGetExcelData.fnptr!(pMVar5->command_pdata.sphere_grid_role, sphere_bin_ptr, &local_c);
+                        local_28.ptr_sphere =
+                             (Sphere*)FhXCall.MsGetExcelData.fnptr!(pMVar5->command_pdata.sphere_grid_role, sphere_bin_ptr, &local_c);
                     }
-                    if ((void*)local_28.desc != (void*)0x0) {
-                        if (*(byte*)(local_28.desc + 0xc) == ' ') {
+                    if (local_28.ptr_sphere != (Sphere*)0x0) {
+                        if (local_28.ptr_sphere->range == SphereRange.UNLIMITED) {
                             FUN_00a59710.fnptr!((nint)FhUtil.ptr_at<nint>(0x649440), &local_28);
                         }
                         else {
                             FUN_00a59760.fnptr!(uVar1, (nint)FhUtil.ptr_at<nint>(0x649440), &local_28);
                         }
                     }
-                    if (local_28._0xc == 0) {
+                    if (local_28.status == 0) {
                         //*puVar6 = 1;
                         entry.unknown1 = 1;
                     } else {
