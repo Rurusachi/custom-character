@@ -19,6 +19,10 @@
         <AssemblyTitle>Custom Character Mod</AssemblyTitle>
         <Product>Custom Character Mod</Product>
 		<IsPublishable>false</IsPublishable>
+		<Authors>Rurusachi</Authors>
+		<RepositoryType>git</RepositoryType>
+		<RepositoryUrl>https://github.com/rurusachi/custom-character.git</RepositoryUrl>
+		<FhManifestFlags>NONE</FhManifestFlags>
     </PropertyGroup>
 
     <!-- SHARED FILE LINKS -->
