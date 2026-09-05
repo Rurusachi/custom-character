@@ -4766,7 +4766,7 @@ public unsafe class CustomCharacterModule : FhModule {
         int new_strength;
         int new_defense;
         byte _chr_id;
-        ushort sphere_effect;
+        SphereTargets sphere_effect;
 
         MsInitChrAbilityMap.fnptr!();
         chr_id = 0;
@@ -4794,43 +4794,43 @@ public unsafe class CustomCharacterModule : FhModule {
                     ;
                     sphere_effect = panel->sphere_effect;
                     /* Strength */
-                    if ((sphere_effect & 1) != 0) {
+                    if (sphere_effect == SphereTargets.STRENGTH) {
                         strength = strength + panel->amount;
                     }
                     /* Defense */
-                    if ((sphere_effect & 2) != 0) {
+                    if (sphere_effect == SphereTargets.DEFENSE) {
                         defense = defense + panel->amount;
                     }
                     /* Magic */
-                    if ((sphere_effect & 4) != 0) {
+                    if (sphere_effect == SphereTargets.MAGIC) {
                         magic = magic + panel->amount;
                     }
                     /* Magic Defense */
-                    if ((sphere_effect & 8) != 0) {
+                    if (sphere_effect == SphereTargets.MAGIC_DEFENSE) {
                         magic_defense = magic_defense + panel->amount;
                     }
                     /* Agility */
-                    if ((sphere_effect & 0x10) != 0) {
+                    if (sphere_effect == SphereTargets.AGILITY) {
                         agility = agility + panel->amount;
                     }
                     /* Luck */
-                    if ((sphere_effect & 0x20) != 0) {
+                    if (sphere_effect == SphereTargets.LUCK) {
                         luck = luck + panel->amount;
                     }
                     /* Evasion */
-                    if ((sphere_effect & 0x40) != 0) {
+                    if (sphere_effect == SphereTargets.EVASION) {
                         evasion = evasion + panel->amount;
                     }
                     /* Accuracy */
-                    if ((sphere_effect & 0x80) != 0) {
+                    if (sphere_effect == SphereTargets.ACCURACY) {
                         accuracy = accuracy + panel->amount;
                     }
                     /* HP */
-                    if ((sphere_effect & 0x100) != 0) {
+                    if (sphere_effect == SphereTargets.HP) {
                         hp = hp + panel->amount;
                     }
                     /* MP */
-                    if ((sphere_effect & 0x200) != 0) {
+                    if (sphere_effect == SphereTargets.MP) {
                         mp = mp + panel->amount;
                     }
                     MsSetChrAbilityMapCommand.fnptr!((uint)chr_id, (uint)panel->ability_id);
@@ -5185,7 +5185,7 @@ public unsafe class CustomCharacterModule : FhModule {
                 if (iVar3 == node_idx) {
                     return false;
                 }
-                bVar4 = (param_3->sphere_effect & 0x8000U) == 0;
+                bVar4 = ((short)param_3->sphere_effect & 0x8000U) == 0;
             LAB_00a5d141:
                 if (bVar4) {
                     return true;
