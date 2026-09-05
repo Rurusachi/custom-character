@@ -1,4 +1,4 @@
-﻿<Project Sdk="Fahrenheit.Sdk/1.0.0-alpha10">
+﻿<Project Sdk="Fahrenheit.Sdk/1.0.0-alpha11">
     <!--
     Welcome to an example .csproj file for a Fahrenheit module!
 
@@ -18,7 +18,6 @@
         <AssemblyName>custom-character</AssemblyName>
         <AssemblyTitle>Custom Character Mod</AssemblyTitle>
         <Product>Custom Character Mod</Product>
-		<IsPublishable>false</IsPublishable>
 		<Authors>Rurusachi</Authors>
 		<RepositoryType>git</RepositoryType>
 		<RepositoryUrl>https://github.com/rurusachi/custom-character.git</RepositoryUrl>
@@ -28,9 +27,5 @@
     <!-- SHARED FILE LINKS -->
     <ItemGroup>
         <None Include="$(SolutionDir).editorconfig" Link=".editorconfig" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <PackageReference Update="Fahrenheit" Version="1.0.0-alpha11" />
     </ItemGroup>
 </Project>
