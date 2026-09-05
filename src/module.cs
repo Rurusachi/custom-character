@@ -4794,43 +4794,43 @@ public unsafe class CustomCharacterModule : FhModule {
                     ;
                     sphere_effect = panel->sphere_effect;
                     /* Strength */
-                    if (sphere_effect == SphereTargets.STRENGTH) {
+                    if (sphere_effect.HasFlag(SphereTargets.STRENGTH)) {
                         strength = strength + panel->amount;
                     }
                     /* Defense */
-                    if (sphere_effect == SphereTargets.DEFENSE) {
+                    if (sphere_effect.HasFlag(SphereTargets.DEFENSE)) {
                         defense = defense + panel->amount;
                     }
                     /* Magic */
-                    if (sphere_effect == SphereTargets.MAGIC) {
+                    if (sphere_effect.HasFlag(SphereTargets.MAGIC)) {
                         magic = magic + panel->amount;
                     }
                     /* Magic Defense */
-                    if (sphere_effect == SphereTargets.MAGIC_DEFENSE) {
+                    if (sphere_effect.HasFlag(SphereTargets.MAGIC_DEFENSE)) {
                         magic_defense = magic_defense + panel->amount;
                     }
                     /* Agility */
-                    if (sphere_effect == SphereTargets.AGILITY) {
+                    if (sphere_effect.HasFlag(SphereTargets.AGILITY)) {
                         agility = agility + panel->amount;
                     }
                     /* Luck */
-                    if (sphere_effect == SphereTargets.LUCK) {
+                    if (sphere_effect.HasFlag(SphereTargets.LUCK)) {
                         luck = luck + panel->amount;
                     }
                     /* Evasion */
-                    if (sphere_effect == SphereTargets.EVASION) {
+                    if (sphere_effect.HasFlag(SphereTargets.EVASION)) {
                         evasion = evasion + panel->amount;
                     }
                     /* Accuracy */
-                    if (sphere_effect == SphereTargets.ACCURACY) {
+                    if (sphere_effect.HasFlag(SphereTargets.ACCURACY)) {
                         accuracy = accuracy + panel->amount;
                     }
                     /* HP */
-                    if (sphere_effect == SphereTargets.HP) {
+                    if (sphere_effect.HasFlag(SphereTargets.HP)) {
                         hp = hp + panel->amount;
                     }
                     /* MP */
-                    if (sphere_effect == SphereTargets.MP) {
+                    if (sphere_effect.HasFlag(SphereTargets.MP)) {
                         mp = mp + panel->amount;
                     }
                     MsSetChrAbilityMapCommand.fnptr!((uint)chr_id, (uint)panel->ability_id);
